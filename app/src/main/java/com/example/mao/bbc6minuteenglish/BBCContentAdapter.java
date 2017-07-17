@@ -55,7 +55,7 @@ public class BBCContentAdapter extends
         // Description set
         holder.mDescriptionTextView.setText(mCursor.getString(desIndex));
 
-        // Thumbnail Set
+        // TODO: Thumbnail Set
         // For test, use local img
         holder.mThumbnailImageView.setImageResource(R.drawable.example);
     }
