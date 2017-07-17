@@ -14,6 +14,7 @@ public class BBCContentContract {
 
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_TIME = "time";
+        public static final String COLUMN_TIMESTAMP = "timeStamp";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_MP3_HREF = "mp3";
         public static final String COLUMN_HREF = "href";
