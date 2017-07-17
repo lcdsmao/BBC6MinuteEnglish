@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 public class BBCContentAdapter extends
         RecyclerView.Adapter<BBCContentAdapter.BBCContentAdapterViewHolder> {
 
+    public BBCContentAdapter() {
+
+    }
+
     @Override
     public BBCContentAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
