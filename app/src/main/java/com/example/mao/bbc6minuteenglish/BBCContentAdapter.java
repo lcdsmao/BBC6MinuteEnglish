@@ -2,6 +2,7 @@ package com.example.mao.bbc6minuteenglish;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract.BBC6MinuteEnglishEntry;
+import com.example.mao.bbc6minuteenglish.utilities.DbBitmapUtility;
 
 /**
  * Created by MAO on 7/17/2017.
@@ -57,7 +59,8 @@ public class BBCContentAdapter extends
 
         // TODO: Thumbnail Set
         // For test, use local img
-        holder.mThumbnailImageView.setImageResource(R.drawable.example);
+        Bitmap thumbnail = DbBitmapUtility.getImage(mCursor.getBlob(imgIndex));
+        holder.mThumbnailImageView.setImageBitmap(thumbnail);
     }
 
     @Override

@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
  * Created by MAO on 7/17/2017.
  */
 
-public class BBCHtmlUtil {
+public class BBCHtmlUtility {
 
     // Base url of bbc
     private static final String BBC_URL = "http://www.bbc.co.uk";
@@ -27,7 +27,7 @@ public class BBCHtmlUtil {
     private static final String BBC_6_MINUTE_ENGLISH_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/6-minute-english";
 
-    private BBCHtmlUtil(){}
+    private BBCHtmlUtility(){}
 
     /**
      * Connect to bbc 6 minute English to get the newest document html.

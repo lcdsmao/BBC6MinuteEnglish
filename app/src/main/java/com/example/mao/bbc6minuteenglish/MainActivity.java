@@ -3,7 +3,6 @@ package com.example.mao.bbc6minuteenglish;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,7 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtil;
+import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
+import com.example.mao.bbc6minuteenglish.utilities.DbBitmapUtility;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity
             final String[] projections = {
                     BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
                     BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION
+                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
+                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL
             };
 
             @Override
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity
     // TODO: Need to modify
     private void updateDatabase(){
         Log.v(TAG, "Update");
-        Elements contentList = BBCHtmlUtil.getContentsList();
+        Elements contentList = BBCHtmlUtility.getContentsList();
 
         for (int i = 0; i < MAX_NUMBER_OF_CONTENTS; i++) {
             try {
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity
                         BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
                         null,
                         BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " = "
-                                + BBCHtmlUtil.getTimeStamp(content),
+                                + BBCHtmlUtility.getTimeStamp(content),
                         null, null);
                 if (cursor.getCount() > 0) {
                     return;
@@ -189,33 +190,22 @@ public class MainActivity extends AppCompatActivity
     private ContentValues setContentValues(Element content) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-                BBCHtmlUtil.getTitle(content));
+                BBCHtmlUtility.getTitle(content));
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-                BBCHtmlUtil.getTime(content));
+                BBCHtmlUtility.getTime(content));
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-                BBCHtmlUtil.getDescription(content));
+                BBCHtmlUtility.getDescription(content));
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
-                BBCHtmlUtil.getArticleHref(content));
+                BBCHtmlUtility.getArticleHref(content));
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
-                BBCHtmlUtil.getTimeStamp(content));
-//        String imgHref = BBCHtmlUtil.getImageHref(content);
-//        Bitmap bitmap = getBitmapFromURL(imgHref);
+                BBCHtmlUtility.getTimeStamp(content));
+        String imgHref = BBCHtmlUtility.getImageHref(content);
+        Bitmap bitmap = DbBitmapUtility.getBitmapFromURL(imgHref);
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL,
+                DbBitmapUtility.getBytes(bitmap));
         return contentValues;
     }
 
-//    public Bitmap getBitmapFromURL(String src) {
-//        try {
-//            URL url = new URL(src);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            connection.setDoInput(true);
-//            connection.connect();
-//            InputStream input = connection.getInputStream();
-//            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-//            return myBitmap;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+
 
 }
