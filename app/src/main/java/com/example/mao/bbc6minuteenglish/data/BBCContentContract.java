@@ -1,5 +1,6 @@
 package com.example.mao.bbc6minuteenglish.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -8,7 +9,16 @@ import android.provider.BaseColumns;
 
 public class BBCContentContract {
 
+    // URI String
+    public static final String AUTHORITY = "com.example.mao.bbc6minutenglish";
+    public static final String PATH_BBC = "bbc";
+
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+
     public static class BBC6MinuteEnglishEntry implements BaseColumns{
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_BBC).build();
 
         public static final String TABLE_NAME = "bbc";
 
