@@ -2,6 +2,7 @@ package com.example.mao.bbc6minuteenglish.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ public class DbBitmapUtility {
     }
 
     // download image as bitmap
+    @Nullable
     public static Bitmap getBitmapFromURL(String src) {
         try {
             URL url = new URL(src);
@@ -34,8 +36,7 @@ public class DbBitmapUtility {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
+            return BitmapFactory.decodeStream(input);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

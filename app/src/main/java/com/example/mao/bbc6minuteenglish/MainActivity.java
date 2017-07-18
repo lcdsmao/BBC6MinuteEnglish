@@ -15,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
@@ -39,13 +41,15 @@ public class MainActivity extends AppCompatActivity
 
     private BBCContentAdapter mBBCContentAdapter;
     private RecyclerView mContentRecycleView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_content_list);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_content_list);
 
         /*Set the recycler view*/
         mContentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             protected void onStartLoading() {
+                mProgressBar.setVisibility(View.VISIBLE);
                 if (mBBCData != null) {
                     deliverResult(mBBCData);
                 } else {
@@ -125,6 +130,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
+        mProgressBar.setVisibility(View.INVISIBLE);
         mBBCContentAdapter.swapCursor(data);
     }
 
