@@ -10,7 +10,7 @@ public class BBCContentContract {
 
     public static class BBC6MinuteEnglishEntry implements BaseColumns{
 
-        public static final String TABLE_NAME = "bbc_6_minute_english";
+        public static final String TABLE_NAME = "bbc";
 
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_TIME = "time";

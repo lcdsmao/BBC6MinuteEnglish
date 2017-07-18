@@ -12,7 +12,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bbc6minute.db";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 6;
 
     public BBCContentDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -20,28 +20,31 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String createTable = "CREATE TABLE "
+        String createTable = "CREATE TABLE "
                 + BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME + "("
-                + BBCContentContract.BBC6MinuteEnglishEntry._ID + "PRIMARY AUTOINCREMENT NOT NULL,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE + "TEXT NOT NULL,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + "TEXT NOT NULL,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION + "TEXT NOT NULL,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF + "TEXT NOT NULL,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF + "TEXT NOT NULL,"
+                + BBCContentContract.BBC6MinuteEnglishEntry._ID + " INTEGER PRIMARY KEY,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE + " TEXT NOT NULL,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " TEXT NOT NULL,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF + " TEXT NOT NULL,"
+
 
                 // For test, not null disable
                 // TODO: set type to not null
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE + "TEXT,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL + "BLOB,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + "INTEGER)";
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF + " TEXT,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE + " TEXT,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL + " BLOB,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " INTEGER"
+                + ")";
 
         db.execSQL(createTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        final String dropTable = "DROP TABLE IF EXISTS "
+        String dropTable = "DROP TABLE IF EXISTS "
                 + BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME;
         db.execSQL(dropTable);
+        onCreate(db);
     }
 }

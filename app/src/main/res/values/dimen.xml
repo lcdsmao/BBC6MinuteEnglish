@@ -3,6 +3,6 @@
 
     <dimen name="list_item_img_height">90dp</dimen>
     <dimen name="list_item_img_width">120dp</dimen>
-    <dimen name="list_item_height">100dp</dimen>
+    <dimen name="list_item_height">120dp</dimen>
 
 </resources>

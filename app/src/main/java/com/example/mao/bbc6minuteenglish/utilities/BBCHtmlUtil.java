@@ -22,7 +22,7 @@ public class BBCHtmlUtil {
 
     private static final String ALL_CONTENT_CLASS = ".widget-progress-enabled";
 
-    private static Elements sAllContents;
+    public static Elements sAllContents;
 
     public static void updateDocument() throws IOException{
         Document document = Jsoup.connect(BBC_6_MINUTE_ENGLISH_URL).get();
@@ -36,7 +36,7 @@ public class BBCHtmlUtil {
 
         Elements contents = new Elements();
         contents.add(sAllContents.first());
-        contents.addAll(contents.get(1).select("li"));
+        contents.addAll(sAllContents.get(1).select("li"));
         return contents;
     }
 
@@ -60,7 +60,7 @@ public class BBCHtmlUtil {
         return details.select("h3").text();
     }
 
-    public static String getDescription(Elements content){
+    public static String getDescription(Element content){
         Elements details = content.select(".details");
         return details.select("p").text();
     }
