@@ -47,29 +47,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Cursor doInBackground(Void... params) {
             Log.v(TAG, "Do in background");
-            SQLiteDatabase database = dbHelper.getWritableDatabase();
-            try{
-                BBCHtmlUtil.updateDocument();
-            } catch (Exception e) {
-                return null;
-            }
-            //Log.v(TAG, BBCHtmlUtil.sAllContents.toString());
-            Elements contentList = BBCHtmlUtil.getContentsList();
-
-            for (int i = 0; i < 20; i++) {
-                Element element = contentList.get(i);
-                //Log.v(TAG, element.toString());
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-                        BBCHtmlUtil.getTitle(element));
-                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-                        BBCHtmlUtil.getTime(element));
-                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-                        BBCHtmlUtil.getDescription(element));
-                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
-                        BBCHtmlUtil.getHref(element));
-                database.insert(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME, null, contentValues);
-            }
+//            SQLiteDatabase database = dbHelper.getWritableDatabase();
+//            try{
+//                BBCHtmlUtil.updateDocument();
+//            } catch (Exception e) {
+//                return null;
+//            }
+//            //Log.v(TAG, BBCHtmlUtil.sAllContents.toString());
+//            Elements contentList = BBCHtmlUtil.getContentsList();
+//
+//            for (int i = 0; i < 20; i++) {
+//                Element element = contentList.get(i);
+//                //Log.v(TAG, element.toString());
+//                ContentValues contentValues = new ContentValues();
+//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
+//                        BBCHtmlUtil.getTitle(element));
+//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
+//                        BBCHtmlUtil.getTime(element));
+//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
+//                        BBCHtmlUtil.getDescription(element));
+//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
+//                        BBCHtmlUtil.getHref(element));
+//                database.insert(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME, null, contentValues);
+//            }
             return dbHelper.getReadableDatabase().query(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
                     null,
                     null,

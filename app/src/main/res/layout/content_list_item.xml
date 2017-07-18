@@ -19,16 +19,19 @@
             android:adjustViewBounds="true"
             android:contentDescription="thumbnail"
             android:scaleType="centerCrop"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             tool:src="@drawable/example" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="top"
             android:paddingTop="8dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:paddingBottom="8dp"
             android:orientation="vertical">
 
             <TextView
@@ -43,6 +46,7 @@
 
             <TextView
                 android:id="@+id/tv_time"
+                android:layout_below="@id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
@@ -52,21 +56,25 @@
 
             <TextView
                 android:id="@+id/tv_description"
+                android:layout_below="@+id/tv_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:maxLines="3"
                 tool:text="How do lost cats and dogs find their way home?" />
 
-        </LinearLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentBottom="true"
+                android:layerType="software"
+                android:tintMode="src_in"
+                android:src="@drawable/dotted_line"/>
+
+        </RelativeLayout>
     </LinearLayout>
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignBottom="@id/ll_item"
-        android:background="@android:color/darker_gray"/>
 
 
 </RelativeLayout>
