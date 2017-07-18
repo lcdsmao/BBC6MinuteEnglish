@@ -9,6 +9,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by MAO on 7/17/2017.
@@ -126,5 +130,20 @@ public class BBCHtmlUtil {
     public static String getMp3Href(Document document) {
         Elements mp3Href = document.select(".download.bbcle-download-extension-mp3");
         return mp3Href.attr("href");
+    }
+
+    public static String getTimeStamp(Element content) {
+        String time = getTime(content);
+        //Timestamp timestamp = null;
+        String timestamp = "";
+        try {
+            time = time.split("/")[1].trim();
+            DateFormat format = new SimpleDateFormat("dd MMM yyyy");
+            //timestamp = new Timestamp(format.parse(time).getTime());
+            timestamp = String.valueOf(format.parse(time).getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return timestamp;
     }
 }

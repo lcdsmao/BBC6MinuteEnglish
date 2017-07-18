@@ -21,7 +21,7 @@
         </activity>
         <provider
             android:authorities="com.example.mao.bbc6minuteenglish"
-            android:name=".data.BBCContentProvider"
+            android:name="com.example.mao.bbc6minuteenglish.data.BBCContentProvider"
             android:exported="false"/>
     </application>
 

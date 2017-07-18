@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 public class BBCContentContract {
 
     // URI String
-    public static final String AUTHORITY = "com.example.mao.bbc6minutenglish";
+    public static final String AUTHORITY = "com.example.mao.bbc6minuteenglish";
     public static final String PATH_BBC = "bbc";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);

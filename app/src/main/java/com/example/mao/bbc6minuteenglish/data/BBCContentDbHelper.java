@@ -12,7 +12,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bbc6minute.db";
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 10;
 
     public BBCContentDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -25,6 +25,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
                 + BBCContentContract.BBC6MinuteEnglishEntry._ID + " INTEGER PRIMARY KEY,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE + " TEXT NOT NULL,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " TEXT NOT NULL,"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " INTEGER NOT NULL UNIQUE,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF + " TEXT NOT NULL,"
 
@@ -33,8 +34,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
                 // TODO: set type to not null
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF + " TEXT,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE + " TEXT,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL + " BLOB,"
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " INTEGER"
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL + " BLOB"
                 + ")";
 
         db.execSQL(createTable);

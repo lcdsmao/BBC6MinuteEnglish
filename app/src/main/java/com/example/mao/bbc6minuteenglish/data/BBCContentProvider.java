@@ -46,7 +46,7 @@ public class BBCContentProvider extends ContentProvider {
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getReadableDatabase();
         int code = sUriMatcher.match(uri);
-        Cursor cursor = null;
+        Cursor cursor;
         switch (code) {
             case CONTENT_CODE :
                 cursor = sqLiteDatabase.query(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
@@ -70,6 +70,7 @@ public class BBCContentProvider extends ContentProvider {
             default:
                 throw new SQLException("Query failed!");
         }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -85,20 +86,25 @@ public class BBCContentProvider extends ContentProvider {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
         int code = sUriMatcher.match(uri);
         long id = -1;
+        Uri returnedUri;
         switch (code) {
             case CONTENT_CODE:
                 id = sqLiteDatabase.insert(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
                         null,
                         values);
+                if (id > 0) {
+                    returnedUri = ContentUris.withAppendedId(
+                            BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                            id);
+                } else {
+                    throw new SQLException("Insert failed!");
+                }
                 break;
             default:
                 throw new SQLException("Insert failed!");
         }
-        if (id > 0) {
-            return ContentUris.withAppendedId(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                    id);
-        }
-        return null;
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnedUri;
     }
 
     @Override
@@ -122,6 +128,7 @@ public class BBCContentProvider extends ContentProvider {
             default:
                 throw new SQLException("Delete failed!");
         }
+        getContext().getContentResolver().notifyChange(uri, null);
         return n;
     }
 
@@ -148,6 +155,7 @@ public class BBCContentProvider extends ContentProvider {
             default:
                 throw new SQLException("Update failed!");
         }
+        getContext().getContentResolver().notifyChange(uri, null);
         return n;
     }
 }

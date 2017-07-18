@@ -1,87 +1,221 @@
 package com.example.mao.bbc6minuteenglish;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.data.BBCContentDbHelper;
 import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtil;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class MainActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = MainActivity.class.getName();
 
+    private static final int MAX_NUMBER_OF_CONTENTS = 20;
+
+    private static final int BBC_CONTENT_LOADER_ID = 1;
+    private static final int BBC_CONTENT_UPDATE_LOADER_ID = 2;
+
     private BBCContentAdapter mBBCContentAdapter;
     private RecyclerView mContentRecycleView;
-    BBCContentDbHelper dbHelper;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setContentView(R.layout.activity_content_list);
 
+        /*Set the recycler view*/
         mContentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
 
         mBBCContentAdapter = new BBCContentAdapter(this);
         mContentRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mContentRecycleView.setAdapter(mBBCContentAdapter);
+        /*Set the recycler view complete*/
 
-        dbHelper = new BBCContentDbHelper(this);
-        new TestTask().execute();
+        getLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
-    // For test
-    public class TestTask extends AsyncTask<Void, Void, Cursor> {
-
-        @Override
-        protected Cursor doInBackground(Void... params) {
-            Log.v(TAG, "Do in background");
-//            SQLiteDatabase database = dbHelper.getWritableDatabase();
-//            try{
-//                BBCHtmlUtil.updateDocument();
-//            } catch (Exception e) {
-//                return null;
-//            }
-//            //Log.v(TAG, BBCHtmlUtil.sAllContents.toString());
-//            Elements contentList = BBCHtmlUtil.getContentsList();
-//
-//            for (int i = 0; i < 20; i++) {
-//                Element element = contentList.get(i);
-//                //Log.v(TAG, element.toString());
-//                ContentValues contentValues = new ContentValues();
-//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-//                        BBCHtmlUtil.getTitle(element));
-//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-//                        BBCHtmlUtil.getTime(element));
-//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-//                        BBCHtmlUtil.getDescription(element));
-//                contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
-//                        BBCHtmlUtil.getHref(element));
-//                database.insert(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME, null, contentValues);
-//            }
-            return dbHelper.getReadableDatabase().query(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
-        }
-
-        @Override
-        protected void onPostExecute(Cursor cursor) {
-            mBBCContentAdapter.swapCursor(cursor);
-        }
+    /* Set Loader */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.v(TAG, "On create loader");
+        return new AsyncTaskLoader<Cursor>(this) {
+            Cursor mBBCData;
+
+            final String[] projections = {
+                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
+                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
+                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION
+            };
+
+            @Override
+            protected void onStartLoading() {
+                if (mBBCData != null) {
+                    deliverResult(mBBCData);
+                } else {
+                    forceLoad();
+                }
+            }
+
+            @Override
+            public Cursor loadInBackground() {
+
+                Cursor cursor = getContentResolver().query(
+                        BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                        projections,
+                        null,
+                        null,
+                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " DESC");
+
+                if (getId() == BBC_CONTENT_UPDATE_LOADER_ID || cursor.getCount() == 0) {
+                    updateDatabase();
+                    cursor = getContentResolver().query(
+                            BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                            projections,
+                            null,
+                            null,
+                            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " DESC");
+                }
+                return cursor;
+            }
+
+            @Override
+            public void deliverResult(Cursor data) {
+                mBBCData = data;
+                super.deliverResult(mBBCData);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.v(TAG, "On load finish");
+        mBBCContentAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mBBCContentAdapter.swapCursor(null);
+    }
+    /* Set Loader complete*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.content_list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_refresh) {
+            Log.v(TAG, "Refresh");
+            getLoaderManager().restartLoader(BBC_CONTENT_UPDATE_LOADER_ID, null, this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: Need to modify
+    private void updateDatabase(){
+        Log.v(TAG, "Update");
+        Elements contentList = BBCHtmlUtil.getContentsList();
+
+        for (int i = 0; i < MAX_NUMBER_OF_CONTENTS; i++) {
+            try {
+                Element content = contentList.get(i);
+                ContentValues newValues = setContentValues(content);
+                Cursor cursor = getContentResolver().query(
+                        BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                        null,
+                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " = "
+                                + BBCHtmlUtil.getTimeStamp(content),
+                        null, null);
+                if (cursor.getCount() > 0) {
+                    return;
+                }
+                getContentResolver().insert(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                        newValues);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+//        Cursor queryCursor = getContentResolver().query(
+//                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+//                null, null, null, null);
+//        int sub = queryCursor.getCount() - MAX_NUMBER_OF_CONTENTS;
+//        if (sub > 0) {
+//            getContentResolver().delete(
+//                    BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME ""
+//            )
+//        }
+    }
+
+    private ContentValues setContentValues(Element content) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
+                BBCHtmlUtil.getTitle(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
+                BBCHtmlUtil.getTime(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
+                BBCHtmlUtil.getDescription(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
+                BBCHtmlUtil.getArticleHref(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
+                BBCHtmlUtil.getTimeStamp(content));
+//        String imgHref = BBCHtmlUtil.getImageHref(content);
+//        Bitmap bitmap = getBitmapFromURL(imgHref);
+        return contentValues;
+    }
+
+//    public Bitmap getBitmapFromURL(String src) {
+//        try {
+//            URL url = new URL(src);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            connection.setDoInput(true);
+//            connection.connect();
+//            InputStream input = connection.getInputStream();
+//            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+//            return myBitmap;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
 }
