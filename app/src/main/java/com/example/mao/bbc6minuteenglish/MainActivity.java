@@ -10,8 +10,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,8 +35,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener {
+public class MainActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener{
 
     public static final String TAG = MainActivity.class.getName();
 
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
     private BBCContentAdapter mBBCContentAdapter;
     private RecyclerView mContentRecycleView;
-    private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeContainer;
 
     // Projection for Showing data
     public static final String[] PROJECTION = {
@@ -67,7 +70,9 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_content_list);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.pb_content_list);
+        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_content_container);
+        mSwipeContainer.setOnRefreshListener(this);
+        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
 
         /*Set the recycler view*/
         mContentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
@@ -171,12 +176,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
-        mProgressBar.setVisibility(View.INVISIBLE);
         mBBCContentAdapter.swapCursor(data);
+        mSwipeContainer.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeContainer.setRefreshing(false);
+            }
+        }, 500);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mBBCContentAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onRefresh() {
+        getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 }

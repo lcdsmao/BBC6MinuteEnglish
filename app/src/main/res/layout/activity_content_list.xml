@@ -6,18 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.example.mao.bbc6minuteenglish.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_content_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_content_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/pb_content_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"/>
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
