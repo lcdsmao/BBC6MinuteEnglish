@@ -1,7 +1,10 @@
 package com.example.mao.bbc6minuteenglish.utilities;
 
 import android.content.ContentValues;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
+
+import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -132,18 +135,37 @@ public class BBCHtmlUtility {
         return mp3Href.attr("href");
     }
 
-    public static String getTimeStamp(Element content) {
+    public static long getTimeStamp(Element content) {
         String time = getTime(content);
         //Timestamp timestamp = null;
-        String timestamp = "";
+        long timestamp = -1;
         try {
             time = time.split("/")[1].trim();
             DateFormat format = new SimpleDateFormat("dd MMM yyyy");
             //timestamp = new Timestamp(format.parse(time).getTime());
-            timestamp = String.valueOf(format.parse(time).getTime());
+            timestamp = format.parse(time).getTime();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return timestamp;
+    }
+
+    public ContentValues setContentValues(Element content) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
+                BBCHtmlUtility.getTitle(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
+                BBCHtmlUtility.getTime(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
+                BBCHtmlUtility.getDescription(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
+                BBCHtmlUtility.getArticleHref(content));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
+                BBCHtmlUtility.getTimeStamp(content));
+        String imgHref = BBCHtmlUtility.getImageHref(content);
+        Bitmap bitmap = DbBitmapUtility.getBitmapFromURL(imgHref);
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL,
+                DbBitmapUtility.getBytes(bitmap));
+        return contentValues;
     }
 }

@@ -3,6 +3,7 @@ package com.example.mao.bbc6minuteenglish;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.support.v7.view.menu.MenuAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ public class BBCContentAdapter extends
     }
 
     public interface OnListItemClickListener{
-        void onClickItem(int id);
+        void onClickItem(long timeStamp);
     }
 
     @Override
@@ -46,27 +47,21 @@ public class BBCContentAdapter extends
     @Override
     public void onBindViewHolder(BBCContentAdapterViewHolder holder, int position) {
 
-        int titleIndex = mCursor.getColumnIndex(BBC6MinuteEnglishEntry.COLUMN_TITLE);
-        int timeIndex = mCursor.getColumnIndex(BBC6MinuteEnglishEntry.COLUMN_TIME);
-        int desIndex = mCursor.getColumnIndex(BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION);
-        int imgIndex = mCursor.getColumnIndex(BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL);
-        int id = mCursor.getColumnIndex(BBC6MinuteEnglishEntry._ID);
-
         // Set cursor to position
         mCursor.moveToPosition(position);
 
         // Title set
-        holder.mTitleTextView.setText(mCursor.getString(titleIndex));
+        holder.mTitleTextView.setText(mCursor.getString(MainActivity.TITLE_INDEX));
 
         // Time set
-        holder.mTimeTextView.setText(mCursor.getString(timeIndex));
+        holder.mTimeTextView.setText(mCursor.getString(MainActivity.TIME_INDEX));
 
         // Description set
-        holder.mDescriptionTextView.setText(mCursor.getString(desIndex));
+        holder.mDescriptionTextView.setText(mCursor.getString(MainActivity.DESCRIPTION_INDEX));
 
         // TODO: Thumbnail Set
         // For test, use local img
-        Bitmap thumbnail = DbBitmapUtility.getImage(mCursor.getBlob(imgIndex));
+        Bitmap thumbnail = DbBitmapUtility.getImage(mCursor.getBlob(MainActivity.THUMBNAIL_INDEX));
         holder.mThumbnailImageView.setImageBitmap(thumbnail);
     }
 
@@ -117,9 +112,7 @@ public class BBCContentAdapter extends
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-            int columnId = mCursor.getColumnIndex(BBC6MinuteEnglishEntry._ID);
-            int idIndex = mCursor.getInt(columnId);
-            mOnClickListener.onClickItem(idIndex);
+            mOnClickListener.onClickItem(mCursor.getLong(MainActivity.TIMESTAMP_INDEX));
         }
     }
 }

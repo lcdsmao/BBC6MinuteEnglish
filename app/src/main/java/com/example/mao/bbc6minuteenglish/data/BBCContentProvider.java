@@ -19,7 +19,7 @@ public class BBCContentProvider extends ContentProvider {
 
     // Match code for uri matcher
     private static final int CONTENT_CODE = 100;
-    private static final int CONTENT_WITH_ID_CODE = 101;
+    private static final int CONTENT_WITH_TIMESTAMP_CODE = 101;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -30,7 +30,8 @@ public class BBCContentProvider extends ContentProvider {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         uriMatcher.addURI(BBCContentContract.AUTHORITY, BBCContentContract.PATH_BBC, CONTENT_CODE);
-        uriMatcher.addURI(BBCContentContract.AUTHORITY, BBCContentContract.PATH_BBC + "/#", CONTENT_WITH_ID_CODE);
+        uriMatcher.addURI(BBCContentContract.AUTHORITY,
+                BBCContentContract.PATH_BBC + "/#", CONTENT_WITH_TIMESTAMP_CODE);
         return uriMatcher;
     }
 
@@ -57,12 +58,12 @@ public class BBCContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            case CONTENT_WITH_ID_CODE :
-                long id = ContentUris.parseId(uri);
+            case CONTENT_WITH_TIMESTAMP_CODE:
+                long timeStamp = ContentUris.parseId(uri);
                 cursor = sqLiteDatabase.query(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
                         projection,
-                        BBCContentContract.BBC6MinuteEnglishEntry._ID + "=?",
-                        new String[]{String.valueOf(id)},
+                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + "=?",
+                        new String[]{String.valueOf(timeStamp)},
                         null,
                         null,
                         null);
@@ -108,6 +109,32 @@ public class BBCContentProvider extends ContentProvider {
     }
 
     @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
+        int code = sUriMatcher.match(uri);
+        int n = 0;
+        if (values.length == 0) {
+            return n;
+        }
+        switch (code) {
+            case CONTENT_CODE :
+                for (ContentValues contentValues : values) {
+                    long id = sqLiteDatabase.insert(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+                            null,
+                            contentValues);
+                    if (id > 0) {
+                       n++;
+                    }
+                }
+                break;
+            default:
+                throw new SQLException("Bulk insert failed");
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return n;
+    }
+
+    @Override
     public int delete(@NonNull Uri uri, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
@@ -119,11 +146,11 @@ public class BBCContentProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 break;
-            case CONTENT_WITH_ID_CODE :
-                long id = ContentUris.parseId(uri);
+            case CONTENT_WITH_TIMESTAMP_CODE:
+                long timeStamp = ContentUris.parseId(uri);
                 n = sqLiteDatabase.delete(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
-                        BBCContentContract.BBC6MinuteEnglishEntry._ID + "=?",
-                        new String[]{String.valueOf(id)});
+                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + "=?",
+                        new String[]{String.valueOf(timeStamp)});
                 break;
             default:
                 throw new SQLException("Delete failed!");
@@ -145,12 +172,12 @@ public class BBCContentProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 break;
-            case CONTENT_WITH_ID_CODE :
-                long id = ContentUris.parseId(uri);
+            case CONTENT_WITH_TIMESTAMP_CODE:
+                long timeStamp = ContentUris.parseId(uri);
                 n = sqLiteDatabase.update(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
                         values,
-                        BBCContentContract.BBC6MinuteEnglishEntry._ID + "=?",
-                        new String[]{String.valueOf(id)});
+                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + "=?",
+                        new String[]{String.valueOf(timeStamp)});
                 break;
             default:
                 throw new SQLException("Update failed!");

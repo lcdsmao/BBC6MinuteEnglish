@@ -7,11 +7,14 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
 public class ArticleActivity extends AppCompatActivity {
+
+    private static final String TAG = ArticleActivity.class.getName();
 
     private TextView mArticleTextView;
 
@@ -23,6 +26,7 @@ public class ArticleActivity extends AppCompatActivity {
         mArticleTextView = (TextView) findViewById(R.id.tv_article);
 
         Uri uri = getIntent().getData();
+        Log.v(TAG, uri.toString());
         Cursor cursor = getContentResolver().query(
                 uri,
                 null,

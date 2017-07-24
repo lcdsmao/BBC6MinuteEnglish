@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -40,11 +41,25 @@ public class MainActivity extends AppCompatActivity
     private static final int MAX_NUMBER_OF_CONTENTS = 20;
 
     private static final int BBC_CONTENT_LOADER_ID = 1;
-    private static final int BBC_CONTENT_UPDATE_LOADER_ID = 2;
 
     private BBCContentAdapter mBBCContentAdapter;
     private RecyclerView mContentRecycleView;
     private ProgressBar mProgressBar;
+
+    // Projection for Showing data
+    public static final String[] PROJECTION = {
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL,
+    };
+
+    public static final int TITLE_INDEX = 0;
+    public static final int TIME_INDEX = 1;
+    public static final int DESCRIPTION_INDEX = 2;
+    public static final int TIMESTAMP_INDEX = 3;
+    public static final int THUMBNAIL_INDEX = 4;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,61 +88,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(TAG, "On create loader");
-        return new AsyncTaskLoader<Cursor>(this) {
-            Cursor mBBCData;
-
-//            final String[] projections = {
-//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL
-//            };
-
-            @Override
-            protected void onStartLoading() {
-                mProgressBar.setVisibility(View.VISIBLE);
-                if (mBBCData != null) {
-                    deliverResult(mBBCData);
-                } else {
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public Cursor loadInBackground() {
-
-                Cursor cursor = getContentResolver().query(
-                        BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                        null,
-                        null,
-                        null,
-                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " DESC");
-
-                if (getId() == BBC_CONTENT_UPDATE_LOADER_ID || cursor.getCount() == 0) {
-                    updateDatabase();
-                    cursor = getContentResolver().query(
-                            BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " DESC");
-                }
-                return cursor;
-            }
-
-            @Override
-            public void deliverResult(Cursor data) {
-                mBBCData = data;
-                super.deliverResult(mBBCData);
-            }
-        };
+        String sortOrder = BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
+                + " DESC";
+        return new CursorLoader(
+                this,
+                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                PROJECTION,
+                null,
+                null,
+                sortOrder
+        );
     }
 
     @Override
@@ -153,37 +125,36 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
             Log.v(TAG, "Refresh");
-            getLoaderManager().restartLoader(BBC_CONTENT_UPDATE_LOADER_ID, null, this);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     // TODO: Need to modify
-    private void updateDatabase(){
-        Log.v(TAG, "Update");
-        Elements contentList = BBCHtmlUtility.getContentsList();
-
-        for (int i = 0; i < MAX_NUMBER_OF_CONTENTS; i++) {
-            try {
-                Element content = contentList.get(i);
-                ContentValues newValues = setContentValues(content);
-                Cursor cursor = getContentResolver().query(
-                        BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                        null,
-                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " = "
-                                + BBCHtmlUtility.getTimeStamp(content),
-                        null, null);
-                if (cursor.getCount() > 0) {
-                    return;
-                }
-                getContentResolver().insert(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                        newValues);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        }
+//    private void updateDatabase(){
+//        Log.v(TAG, "Update");
+//        Elements contentList = BBCHtmlUtility.getContentsList();
+//
+//        for (int i = 0; i < MAX_NUMBER_OF_CONTENTS; i++) {
+//            try {
+//                Element content = contentList.get(i);
+//                ContentValues newValues = setContentValues(content);
+//                Cursor cursor = getContentResolver().query(
+//                        BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+//                        null,
+//                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " = "
+//                                + BBCHtmlUtility.getTimeStamp(content),
+//                        null, null);
+//                if (cursor.getCount() > 0) {
+//                    return;
+//                }
+//                getContentResolver().insert(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+//                        newValues);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return;
+//            }
+//        }
 //        Cursor queryCursor = getContentResolver().query(
 //                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
 //                null, null, null, null);
@@ -194,36 +165,16 @@ public class MainActivity extends AppCompatActivity
 //                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME ""
 //            )
 //        }
-    }
-
-    private ContentValues setContentValues(Element content) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-                BBCHtmlUtility.getTitle(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-                BBCHtmlUtility.getTime(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-                BBCHtmlUtility.getDescription(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
-                BBCHtmlUtility.getArticleHref(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
-                BBCHtmlUtility.getTimeStamp(content));
-        String imgHref = BBCHtmlUtility.getImageHref(content);
-        Bitmap bitmap = DbBitmapUtility.getBitmapFromURL(imgHref);
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL,
-                DbBitmapUtility.getBytes(bitmap));
-        return contentValues;
-    }
-
+//    }
 
     @Override
-    public void onClickItem(int id) {
-        Log.v(TAG, "ID = " + id);
+    public void onClickItem(long timeStamp) {
+        Log.v(TAG, "Timestamp = " + timeStamp);
         Intent intent = new Intent(this, ArticleActivity.class);
-        Uri uriWithId = ContentUris.withAppendedId(
+        Uri uriWithTimeStamp = ContentUris.withAppendedId(
                 BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                id);
-        intent.setData(uriWithId);
+                timeStamp);
+        intent.setData(uriWithTimeStamp);
         startActivity(intent);
     }
 }
