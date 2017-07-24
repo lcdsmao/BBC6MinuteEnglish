@@ -4,6 +4,9 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -13,9 +16,12 @@ import android.widget.TextView;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
-public class ArticleActivity extends AppCompatActivity {
+public class ArticleActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = ArticleActivity.class.getName();
+
+    private static final int ARTICLE_LOADER_ID = 123;
 
     private TextView mArticleTextView;
 
@@ -28,18 +34,7 @@ public class ArticleActivity extends AppCompatActivity {
 
         mArticleTextView = (TextView) findViewById(R.id.tv_article);
 
-        Uri uri = getIntent().getData();
-        Log.v(TAG, uri.toString());
-        Cursor cursor = getContentResolver().query(
-                uri,
-                null,
-                null,
-                null,
-                null);
-        cursor.moveToFirst();
-        int indexArticleHref = cursor.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF);
-        String article = cursor.getString(indexArticleHref);
-        mArticleTextView.setText(Html.fromHtml(article));
+        getSupportLoaderManager().initLoader(ARTICLE_LOADER_ID, null, this);
     }
 
     @Override
@@ -49,5 +44,32 @@ public class ArticleActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = getIntent().getData();
+        Log.v(TAG, uri.toString());
+        return new CursorLoader(
+                this,
+                uri,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        data.moveToFirst();
+        int indexArticleHref = data.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF);
+        String article = data.getString(indexArticleHref);
+        mArticleTextView.setText(Html.fromHtml(article));
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

@@ -1,17 +1,17 @@
 package com.example.mao.bbc6minuteenglish;
 
-import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -77,42 +77,17 @@ public class MainActivity extends AppCompatActivity
         mContentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
-        getLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
     /* Set Loader */
     @Override
     protected void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
+        getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(TAG, "On create loader");
-        String sortOrder = BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
-                + " DESC";
-        return new CursorLoader(
-                this,
-                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                PROJECTION,
-                null,
-                null,
-                sortOrder
-        );
-    }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(TAG, "On load finish");
-        mProgressBar.setVisibility(View.INVISIBLE);
-        mBBCContentAdapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mBBCContentAdapter.swapCursor(null);
-    }
     /* Set Loader complete*/
 
     @Override
@@ -176,5 +151,32 @@ public class MainActivity extends AppCompatActivity
                 timeStamp);
         intent.setData(uriWithTimeStamp);
         startActivity(intent);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.v(TAG, "On create loader");
+        String sortOrder = BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
+                + " DESC";
+        return new CursorLoader(
+                this,
+                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                PROJECTION,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.v(TAG, "On load finish");
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mBBCContentAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mBBCContentAdapter.swapCursor(null);
     }
 }
