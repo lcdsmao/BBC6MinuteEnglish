@@ -25,7 +25,13 @@
             android:authorities="com.example.mao.bbc6minuteenglish"
             android:exported="false" />
 
-        <activity android:name=".ArticleActivity"></activity>
+        <activity android:name=".ArticleActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+
+        </activity>
     </application>
 
 </manifest>

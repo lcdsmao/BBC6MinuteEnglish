@@ -2,11 +2,14 @@ package com.example.mao.bbc6minuteenglish;
 
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,7 +33,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener {
 
     public static final String TAG = MainActivity.class.getName();
 
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         /*Set the recycler view*/
         mContentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
 
-        mBBCContentAdapter = new BBCContentAdapter(this);
+        mBBCContentAdapter = new BBCContentAdapter(this, this);
         mContentRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mContentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
@@ -80,12 +83,12 @@ public class MainActivity extends AppCompatActivity
         return new AsyncTaskLoader<Cursor>(this) {
             Cursor mBBCData;
 
-            final String[] projections = {
-                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL
-            };
+//            final String[] projections = {
+//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
+//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
+//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
+//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL
+//            };
 
             @Override
             protected void onStartLoading() {
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity
 
                 Cursor cursor = getContentResolver().query(
                         BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                        projections,
+                        null,
                         null,
                         null,
                         BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " DESC");
@@ -111,7 +114,7 @@ public class MainActivity extends AppCompatActivity
                     updateDatabase();
                     cursor = getContentResolver().query(
                             BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                            projections,
+                            null,
                             null,
                             null,
                             BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME + " DESC");
@@ -213,5 +216,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
+    @Override
+    public void onClickItem(int id) {
+        Log.v(TAG, "ID = " + id);
+        Intent intent = new Intent(this, ArticleActivity.class);
+        Uri uriWithId = ContentUris.withAppendedId(
+                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                id);
+        intent.setData(uriWithId);
+        startActivity(intent);
+    }
 }

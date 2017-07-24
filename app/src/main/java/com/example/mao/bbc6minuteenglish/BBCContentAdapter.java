@@ -23,9 +23,15 @@ public class BBCContentAdapter extends
 
     private Cursor mCursor;
     private Context mContext;
+    private OnListItemClickListener mOnClickListener;
 
-    public BBCContentAdapter(Context context) {
+    public BBCContentAdapter(Context context, OnListItemClickListener listener) {
         mContext = context;
+        mOnClickListener = listener;
+    }
+
+    public interface OnListItemClickListener{
+        void onClickItem(int id);
     }
 
     @Override
@@ -44,6 +50,7 @@ public class BBCContentAdapter extends
         int timeIndex = mCursor.getColumnIndex(BBC6MinuteEnglishEntry.COLUMN_TIME);
         int desIndex = mCursor.getColumnIndex(BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION);
         int imgIndex = mCursor.getColumnIndex(BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL);
+        int id = mCursor.getColumnIndex(BBC6MinuteEnglishEntry._ID);
 
         // Set cursor to position
         mCursor.moveToPosition(position);
@@ -89,7 +96,8 @@ public class BBCContentAdapter extends
     /**
      * ViewHolder for BBC content adapter
      */
-    public class BBCContentAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class BBCContentAdapterViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener{
 
         ImageView mThumbnailImageView;
         TextView mTitleTextView;
@@ -102,6 +110,16 @@ public class BBCContentAdapter extends
             mTitleTextView = (TextView) view.findViewById(R.id.tv_title);
             mTimeTextView = (TextView) view.findViewById(R.id.tv_time);
             mDescriptionTextView = (TextView) view.findViewById(R.id.tv_description);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mCursor.moveToPosition(position);
+            int columnId = mCursor.getColumnIndex(BBC6MinuteEnglishEntry._ID);
+            int idIndex = mCursor.getInt(columnId);
+            mOnClickListener.onClickItem(idIndex);
         }
     }
 }
