@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
@@ -23,6 +24,8 @@ public class ArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mArticleTextView = (TextView) findViewById(R.id.tv_article);
 
         Uri uri = getIntent().getData();
@@ -37,5 +40,14 @@ public class ArticleActivity extends AppCompatActivity {
         int indexArticleHref = cursor.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF);
         String article = cursor.getString(indexArticleHref);
         mArticleTextView.setText(Html.fromHtml(article));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -10,6 +10,7 @@
         android:id="@+id/ll_item"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_height="@dimen/list_item_height">
 
         <ImageView
@@ -63,13 +64,13 @@
                 android:maxLines="3"
                 tool:text="How do lost cats and dogs find their way home?" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_alignParentBottom="true"
-                android:layerType="software"
-                android:tintMode="src_in"
-                android:src="@drawable/dotted_line"/>
+            <!--<ImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="2dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layerType="software"-->
+                <!--android:tintMode="src_in"-->
+                <!--android:src="@drawable/dotted_line"/>-->
 
         </RelativeLayout>
     </LinearLayout>
