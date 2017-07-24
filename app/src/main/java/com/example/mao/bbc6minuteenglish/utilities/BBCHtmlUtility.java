@@ -150,7 +150,7 @@ public class BBCHtmlUtility {
         return timestamp;
     }
 
-    public ContentValues setContentValues(Element content) {
+    public ContentValues getContentValues(Element content) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
                 BBCHtmlUtility.getTitle(content));

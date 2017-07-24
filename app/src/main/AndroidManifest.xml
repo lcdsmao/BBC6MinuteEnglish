@@ -30,8 +30,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
-
         </activity>
+
+        <service android:name=".sync.BBCSyncIntentService"
+            android:exported="false"/>
     </application>
 
 </manifest>

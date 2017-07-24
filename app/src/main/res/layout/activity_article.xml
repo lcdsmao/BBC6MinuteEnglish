@@ -6,13 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.example.mao.bbc6minuteenglish.ArticleActivity">
 
-    <TextView
-        android:id="@+id/tv_article"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"/>
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_article"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+    </ScrollView>
+
 
 </LinearLayout>
