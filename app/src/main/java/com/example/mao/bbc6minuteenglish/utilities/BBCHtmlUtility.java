@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -150,22 +151,13 @@ public class BBCHtmlUtility {
         return timestamp;
     }
 
-    public ContentValues getContentValues(Element content) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-                BBCHtmlUtility.getTitle(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-                BBCHtmlUtility.getTime(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-                BBCHtmlUtility.getDescription(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
-                BBCHtmlUtility.getArticleHref(content));
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
-                BBCHtmlUtility.getTimeStamp(content));
-        String imgHref = BBCHtmlUtility.getImageHref(content);
-        Bitmap bitmap = DbBitmapUtility.getBitmapFromURL(imgHref);
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL,
-                DbBitmapUtility.getBytes(bitmap));
-        return contentValues;
+    public static Document getArticleDocument(String articleHref) {
+        Document document = null;
+        try {
+            document = Jsoup.connect(articleHref).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return document;
     }
 }
