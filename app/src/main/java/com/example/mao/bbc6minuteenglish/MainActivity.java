@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_content_container);
         mSwipeContainer.setOnRefreshListener(this);
-        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
+        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent));
 
         /*Set the recycler view*/
         mContentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
