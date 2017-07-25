@@ -110,43 +110,6 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: Need to modify
-//    private void updateDatabase(){
-//        Log.v(TAG, "Update");
-//        Elements contentList = BBCHtmlUtility.getContentsList();
-//
-//        for (int i = 0; i < MAX_NUMBER_OF_CONTENTS; i++) {
-//            try {
-//                Element content = contentList.get(i);
-//                ContentValues newValues = setContentValues(content);
-//                Cursor cursor = getContentResolver().query(
-//                        BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-//                        null,
-//                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " = "
-//                                + BBCHtmlUtility.getTimeStamp(content),
-//                        null, null);
-//                if (cursor.getCount() > 0) {
-//                    return;
-//                }
-//                getContentResolver().insert(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-//                        newValues);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return;
-//            }
-//        }
-//        Cursor queryCursor = getContentResolver().query(
-//                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-//                null, null, null, null);
-//        int sub = queryCursor.getCount() - MAX_NUMBER_OF_CONTENTS;
-//        if (sub > 0) {
-//            getContentResolver().delete(
-//                    BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-//                    BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME ""
-//            )
-//        }
-//    }
-
     @Override
     public void onClickItem(long timeStamp) {
         Log.v(TAG, "Timestamp = " + timeStamp);
@@ -177,12 +140,15 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
         mBBCContentAdapter.swapCursor(data);
-        mSwipeContainer.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeContainer.setRefreshing(false);
-            }
-        }, 500);
+        if (data != null && data.getCount() > 0) {
+            mSwipeContainer.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeContainer.setRefreshing(false);
+                }
+            }, 1000);
+        }
+
     }
 
     @Override

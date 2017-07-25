@@ -15,6 +15,8 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
@@ -28,6 +30,7 @@ public class ArticleActivity extends AppCompatActivity implements
     private static final int ARTICLE_LOADER_ID = 123;
 
     private TextView mArticleTextView;
+    private ProgressBar mArticleLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,12 @@ public class ArticleActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mArticleTextView = (TextView) findViewById(R.id.tv_article);
+        mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
 
+        // Show progress bar and hide article
+        showLoading();
+
+        // Check database if the article is null or not
         Uri uriWithTimeStamp = getIntent().getData();
         BBCSyncUtility.articleInitialize(this, uriWithTimeStamp);
 
@@ -81,12 +89,23 @@ public class ArticleActivity extends AppCompatActivity implements
 
         if (!TextUtils.isEmpty(article)) {
             mArticleTextView.setText(Html.fromHtml(article));
+            showArticle();
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private void showLoading() {
+        mArticleTextView.setVisibility(View.INVISIBLE);
+        mArticleLoading.setVisibility(View.VISIBLE);
+    }
+
+    private void showArticle() {
+        mArticleLoading.setVisibility(View.INVISIBLE);
+        mArticleTextView.setVisibility(View.VISIBLE);
     }
 
 }
