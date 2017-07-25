@@ -21,13 +21,12 @@ import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 
 public class ArticleActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener{
+        LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = ArticleActivity.class.getName();
 
     private static final int ARTICLE_LOADER_ID = 123;
 
-    public SwipeRefreshLayout mSwipeContainer;
     private TextView mArticleTextView;
 
     @Override
@@ -38,10 +37,6 @@ public class ArticleActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mArticleTextView = (TextView) findViewById(R.id.tv_article);
-        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_article_container);
-
-        mSwipeContainer.setOnRefreshListener(this);
-        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
 
         Uri uriWithTimeStamp = getIntent().getData();
         BBCSyncUtility.articleInitialize(this, uriWithTimeStamp);
@@ -60,7 +55,6 @@ public class ArticleActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mSwipeContainer.setRefreshing(true);
         Uri uriWithTimeStamp = getIntent().getData();
         Log.v(TAG, "Create Loader");
         return new CursorLoader(
@@ -75,19 +69,19 @@ public class ArticleActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        data.moveToFirst();
-        int indexArticle = data.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE);
-        String article = data.getString(indexArticle);
         Log.v(TAG, "Load finished");
+
+        if(!data.moveToFirst()) return;
+
+        int indexArticle = data.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE);
+        int indexTitle = data.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE);
+        String article = data.getString(indexArticle);
+        String title = data.getString(indexTitle);
+        getSupportActionBar().setTitle(title);
+
         if (!TextUtils.isEmpty(article)) {
             mArticleTextView.setText(Html.fromHtml(article));
         }
-        mSwipeContainer.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeContainer.setRefreshing(false);
-            }
-        }, 500);
     }
 
     @Override
@@ -95,8 +89,4 @@ public class ArticleActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    public void onRefresh() {
-        getSupportLoaderManager().restartLoader(ARTICLE_LOADER_ID, null, this);
-    }
 }

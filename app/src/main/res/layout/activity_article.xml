@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.mao.bbc6minuteenglish.ArticleActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_article_container"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ScrollView
+        <TextView
+            android:id="@+id/tv_article"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/tv_article"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"/>
-        </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textIsSelectable="true"
+            tools:text="@string/app_name"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"/>
+    </ScrollView>
 
+    <ProgressBar
+        android:id="@+id/pb_article_load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_centerInParent="true"/>
 
-
-</LinearLayout>
+</RelativeLayout>
