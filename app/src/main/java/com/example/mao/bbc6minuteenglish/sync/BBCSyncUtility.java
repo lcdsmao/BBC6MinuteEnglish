@@ -50,14 +50,23 @@ public class BBCSyncUtility {
 
     }
 
+    synchronized public static void contentListUpdate(final Context context){
+        startContentLisSync(context);
+    }
+
     private static void startArticleSync(@NonNull final Context context,
                                         final Uri uriWithTimeStamp,
                                         final String articleHref) {
         Log.v(uriWithTimeStamp.toString(), "Start article sync");
-        Intent intentToSyncImmediately = new Intent(context, BBCSyncIntentService.class);
+        Intent intentToSyncImmediately = new Intent(context, BBCSyncArticleIntentService.class);
         intentToSyncImmediately.setData(uriWithTimeStamp);
         intentToSyncImmediately.putExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
                 articleHref);
+        context.startService(intentToSyncImmediately);
+    }
+
+    private static void startContentLisSync(@NonNull final Context context) {
+        Intent intentToSyncImmediately = new Intent(context, BBCSyncContentListIntentService.class);
         context.startService(intentToSyncImmediately);
     }
 }

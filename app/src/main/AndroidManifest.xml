@@ -32,7 +32,10 @@
                 android:value=".MainActivity"/>
         </activity>
 
-        <service android:name=".sync.BBCSyncIntentService"
+        <service android:name=".sync.BBCSyncArticleIntentService"
+            android:exported="false"/>
+
+        <service android:name=".sync.BBCSyncContentListIntentService"
             android:exported="false"/>
     </application>
 

@@ -29,7 +29,9 @@ public class BBCContentContract {
         public static final String COLUMN_MP3_HREF = "mp3";
         public static final String COLUMN_HREF = "href";
         public static final String COLUMN_ARTICLE = "article";
-        public static final String COLUMN_THUMBNAIL = "thumbnail";
+        public static final String COLUMN_THUMBNAIL_HREF = "thumbnail";
 
+        public static final String SORT_ORDER =
+                BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " DESC";
     }
 }

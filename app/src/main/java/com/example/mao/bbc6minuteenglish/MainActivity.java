@@ -1,12 +1,8 @@
 package com.example.mao.bbc6minuteenglish;
 
-import android.content.AsyncTaskLoader;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -21,19 +17,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
-import com.example.mao.bbc6minuteenglish.utilities.DbBitmapUtility;
-
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
@@ -55,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements
             BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
             BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
             BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL,
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL_HREF
     };
 
     public static final int TITLE_INDEX = 0;
@@ -124,15 +110,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(TAG, "On create loader");
-        String sortOrder = BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
-                + " DESC";
         return new CursorLoader(
                 this,
                 BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
                 PROJECTION,
                 null,
                 null,
-                sortOrder
+                BBCContentContract.BBC6MinuteEnglishEntry.SORT_ORDER
         );
     }
 
@@ -140,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
         mBBCContentAdapter.swapCursor(data);
+        mContentRecycleView.smoothScrollToPosition(0);
         if (data != null && data.getCount() > 0) {
             mSwipeContainer.postDelayed(new Runnable() {
                 @Override
@@ -148,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }, 1000);
         }
-
     }
 
     @Override
@@ -158,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
+        BBCSyncUtility.contentListUpdate(this);
         getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 }

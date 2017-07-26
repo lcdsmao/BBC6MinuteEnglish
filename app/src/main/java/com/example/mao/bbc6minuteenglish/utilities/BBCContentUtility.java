@@ -1,7 +1,6 @@
 package com.example.mao.bbc6minuteenglish.utilities;
 
 import android.content.ContentValues;
-import android.graphics.Bitmap;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
@@ -26,10 +25,8 @@ public class BBCContentUtility {
                 BBCHtmlUtility.getArticleHref(content));
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
                 BBCHtmlUtility.getTimeStamp(content));
-        String imgHref = BBCHtmlUtility.getImageHref(content);
-        Bitmap bitmap = DbBitmapUtility.getBitmapFromURL(imgHref);
-        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL,
-                DbBitmapUtility.getBytes(bitmap));
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL_HREF,
+                BBCHtmlUtility.getImageHref(content));
         return contentValues;
     }
 

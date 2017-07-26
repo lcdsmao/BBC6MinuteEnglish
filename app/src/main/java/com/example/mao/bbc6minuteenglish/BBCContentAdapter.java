@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract.BBC6MinuteEnglishEntry;
 import com.example.mao.bbc6minuteenglish.utilities.DbBitmapUtility;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by MAO on 7/17/2017.
@@ -61,8 +62,11 @@ public class BBCContentAdapter extends
 
         // TODO: Thumbnail Set
         // For test, use local img
-        Bitmap thumbnail = DbBitmapUtility.getImage(mCursor.getBlob(MainActivity.THUMBNAIL_INDEX));
-        holder.mThumbnailImageView.setImageBitmap(thumbnail);
+        Picasso.with(mContext)
+                .load(mCursor.getString(MainActivity.THUMBNAIL_INDEX))
+                .resizeDimen(R.dimen.list_item_img_width, R.dimen.list_item_height)
+                .centerCrop()
+                .into(holder.mThumbnailImageView);
     }
 
     @Override
