@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
         mBBCContentAdapter.swapCursor(data);
-        mContentRecycleView.smoothScrollToPosition(0);
         if (data != null && data.getCount() > 0) {
             mSwipeContainer.postDelayed(new Runnable() {
                 @Override
