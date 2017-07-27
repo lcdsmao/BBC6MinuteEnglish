@@ -1,7 +1,11 @@
 package com.example.mao.bbc6minuteenglish;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.IBinder;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -14,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
@@ -25,6 +30,23 @@ public class ArticleActivity extends AppCompatActivity implements
 
     private static final int ARTICLE_LOADER_ID = 123;
 
+    private static final String SERVICE_STATE_KEY = "service_state";
+
+    private static final String[] PROJECTION = {
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE,
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF
+    };
+
+    private static final int TITLE_INDEX = 0;
+    private static final int ARTICLE_INDEX = 1;
+    private static final int AUDIO_HREF_INDEX = 2;
+
+    private AudioPlayService mService;
+    private boolean mBond = false;
+
+    private Uri mUriWithTimeStamp;
+
     private TextView mArticleTextView;
     private ProgressBar mArticleLoading;
 
@@ -33,8 +55,6 @@ public class ArticleActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mArticleTextView = (TextView) findViewById(R.id.tv_article);
         mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
 
@@ -42,8 +62,8 @@ public class ArticleActivity extends AppCompatActivity implements
         showLoading();
 
         // Check database if the article is null or not
-        Uri uriWithTimeStamp = getIntent().getData();
-        BBCSyncUtility.articleInitialize(this, uriWithTimeStamp);
+        mUriWithTimeStamp = getIntent().getData();
+        BBCSyncUtility.articleInitialize(this, mUriWithTimeStamp);
 
         getSupportLoaderManager().initLoader(ARTICLE_LOADER_ID, null, this);
     }
@@ -64,7 +84,7 @@ public class ArticleActivity extends AppCompatActivity implements
         return new CursorLoader(
                 this,
                 uriWithTimeStamp,
-                null,
+                PROJECTION,
                 null,
                 null,
                 null
@@ -77,15 +97,18 @@ public class ArticleActivity extends AppCompatActivity implements
 
         if(!data.moveToFirst()) return;
 
-        int indexArticle = data.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE);
-        int indexTitle = data.getColumnIndex(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE);
-        String article = data.getString(indexArticle);
-        String title = data.getString(indexTitle);
+        String article = data.getString(ARTICLE_INDEX);
+        String title = data.getString(TITLE_INDEX);
+        String audioHref = data.getString(AUDIO_HREF_INDEX);
         getSupportActionBar().setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
             mArticleTextView.setText(Html.fromHtml(article));
             showArticle();
+        }
+
+        if (!TextUtils.isEmpty(audioHref)) {
+            playAudio(audioHref);
         }
     }
 
@@ -104,4 +127,58 @@ public class ArticleActivity extends AppCompatActivity implements
         mArticleTextView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(SERVICE_STATE_KEY, mBond);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mBond = savedInstanceState.getBoolean(SERVICE_STATE_KEY);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBond) {
+            unbindService(mConnection);
+            mService.stopSelf();
+        }
+    }
+
+    private void playAudio(String audioHref) {
+        //Check is service is active
+        if (!mBond) {
+            Intent playerIntent = new Intent(this, AudioPlayService.class);
+            playerIntent.setData(mUriWithTimeStamp);
+            playerIntent.putExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF,
+                    audioHref);
+            startService(playerIntent);
+            bindService(playerIntent, mConnection, BIND_AUTO_CREATE);
+        } else {
+            //Service is active
+            //Send media with BroadcastReceiver
+        }
+    }
+
+    //Binding this Client to the AudioPlayer Service
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            AudioPlayService.LocalBinder binder = (AudioPlayService.LocalBinder) service;
+            mService = binder.getService();
+            mBond = true;
+
+            Toast.makeText(ArticleActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBond = false;
+        }
+    };
 }

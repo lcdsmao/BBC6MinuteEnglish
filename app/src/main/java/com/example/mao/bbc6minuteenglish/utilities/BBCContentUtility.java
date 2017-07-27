@@ -32,9 +32,12 @@ public class BBCContentUtility {
 
     public static ContentValues getContentValuesArticle(Document document){
         String article = BBCHtmlUtility.getArticleHtml(document);
+        String audioHref = BBCHtmlUtility.getMp3Href(document);
         ContentValues contentValues = new ContentValues();
         contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE,
                 article);
+        contentValues.put(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF,
+                audioHref);
         return contentValues;
     }
 

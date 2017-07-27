@@ -28,10 +28,6 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " INTEGER NOT NULL UNIQUE,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF + " TEXT NOT NULL,"
-
-
-                // For test, not null disable
-                // TODO: set type to not null
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF + " TEXT,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE + " TEXT,"
                 + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL_HREF + " TEXT NOT NULL"

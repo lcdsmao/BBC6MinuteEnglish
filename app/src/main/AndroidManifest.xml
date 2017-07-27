@@ -25,18 +25,24 @@
             android:authorities="com.example.mao.bbc6minuteenglish"
             android:exported="false" />
 
-        <activity android:name=".ArticleActivity"
+        <activity
+            android:name=".ArticleActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
 
-        <service android:name=".sync.BBCSyncArticleIntentService"
-            android:exported="false"/>
-
-        <service android:name=".sync.BBCSyncContentListIntentService"
-            android:exported="false"/>
+        <service
+            android:name=".sync.BBCSyncArticleIntentService"
+            android:exported="false" />
+        <service
+            android:name=".sync.BBCSyncContentListIntentService"
+            android:exported="false" />
+        <service
+            android:name=".AudioPlayService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>
