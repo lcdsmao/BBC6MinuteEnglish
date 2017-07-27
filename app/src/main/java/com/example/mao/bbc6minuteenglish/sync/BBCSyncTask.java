@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -26,6 +27,8 @@ import java.io.IOException;
 
 public class BBCSyncTask {
 
+    private final static String TAG = BBCSyncTask.class.getName();
+
     synchronized public static void syncArticle(Context context,
                                                 @NonNull Uri uriWithTimeStamp,
                                                 @NonNull String articleHref) {
@@ -44,45 +47,29 @@ public class BBCSyncTask {
 
         for (int i = 0; i < maxLength; i++) {
             Element content = contentList.get(i);
-            long timeStamp = BBCHtmlUtility.getTimeStamp(content);
-            Uri uriWithTimStamp = ContentUris.withAppendedId(
-                    BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                    timeStamp);
-            Cursor queryCursor = contentResolver.query(
-                    uriWithTimStamp,
-                    null,
-                    null,
-                    null,
-                    null);
-            if (queryCursor == null || queryCursor.moveToFirst()) continue;
             ContentValues contentValues = BBCContentUtility.getContentValues(content);
-            contentResolver.insert(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                    contentValues);
-            queryCursor.close();
+            try {
+                contentResolver.insert(
+                        BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                        contentValues);
+            } catch (SQLException e) {
+                Log.e(TAG, e.getMessage());
+            }
         }
 
-        Cursor cursor = contentResolver.query(
-                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP);
-        if (cursor != null && cursor.getCount() > maxLength) {
-            final String where = BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
-                    + " NOT IN "
-                    + " (SELECT "
-                    + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
-                    + " FROM "
-                    + BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME
-                    + " ORDER BY "
-                    + BBCContentContract.BBC6MinuteEnglishEntry.SORT_ORDER
-                    + " LIMIT "
-                    + maxLength
-                    + ")";
-            contentResolver.delete(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                    where,
-                    null);
-        }
-        cursor.close();
+        final String where = BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
+                + " NOT IN "
+                + " (SELECT "
+                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
+                + " FROM "
+                + BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME
+                + " ORDER BY "
+                + BBCContentContract.BBC6MinuteEnglishEntry.SORT_ORDER
+                + " LIMIT "
+                + maxLength
+                + ")";
+        contentResolver.delete(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                where,
+                null);
     }
 }
