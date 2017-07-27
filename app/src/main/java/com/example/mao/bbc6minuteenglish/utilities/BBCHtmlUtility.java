@@ -1,10 +1,6 @@
 package com.example.mao.bbc6minuteenglish.utilities;
 
-import android.content.ContentValues;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
-
-import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,9 +8,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URI;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -104,18 +97,6 @@ public class BBCHtmlUtility {
         return details.select("p").text();
     }
 
-    @Nullable
-    public static Document getSpecificContent(String url) {
-        Document document;
-        try {
-            document = Jsoup.connect(url).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return document;
-    }
-
     /**
      * Parse the article form specific content document
      * @param document
@@ -138,12 +119,10 @@ public class BBCHtmlUtility {
 
     public static long getTimeStamp(Element content) {
         String time = getTime(content);
-        //Timestamp timestamp = null;
         long timestamp = -1;
         try {
             time = time.split("/")[1].trim();
             DateFormat format = new SimpleDateFormat("dd MMM yyyy");
-            //timestamp = new Timestamp(format.parse(time).getTime());
             timestamp = format.parse(time).getTime();
         } catch (Exception e) {
             e.printStackTrace();

@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final String TAG = MainActivity.class.getName();
 
-    private static final int MAX_NUMBER_OF_CONTENTS = 20;
-
     private static final int BBC_CONTENT_LOADER_ID = 1;
 
     private BBCContentAdapter mBBCContentAdapter;

@@ -1,14 +1,10 @@
 package com.example.mao.bbc6minuteenglish;
 
-import android.content.ContentUris;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;

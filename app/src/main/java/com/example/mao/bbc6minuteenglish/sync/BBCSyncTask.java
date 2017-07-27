@@ -1,10 +1,8 @@
 package com.example.mao.bbc6minuteenglish.sync;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -14,12 +12,9 @@ import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.utilities.BBCContentUtility;
 import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.io.IOException;
 
 /**
  * Created by MAO on 7/24/2017.
