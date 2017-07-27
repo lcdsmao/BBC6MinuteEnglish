@@ -69,15 +69,11 @@ public class MainActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
-    /* Set Loader */
     @Override
     protected void onResume() {
         super.onResume();
         getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
-
-
-    /* Set Loader complete*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,7 +84,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
-            Log.v(TAG, "Refresh");
+            mSwipeContainer.setRefreshing(true);
+            BBCSyncUtility.contentListSync(this);
+            getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -108,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(TAG, "On create loader");
+        mSwipeContainer.setRefreshing(true);
         return new CursorLoader(
                 this,
                 BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
@@ -122,13 +121,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
         mBBCContentAdapter.swapCursor(data);
-        if (data != null && data.getCount() > 0) {
-            mSwipeContainer.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeContainer.setRefreshing(false);
-                }
-            }, 1000);
+        if (BBCSyncUtility.sIsContentListSyncComplete) {
+            mSwipeContainer.setRefreshing(false);
         }
     }
 
@@ -139,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-        BBCSyncUtility.contentListUpdate(this);
+        BBCSyncUtility.contentListSync(this);
         getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 }

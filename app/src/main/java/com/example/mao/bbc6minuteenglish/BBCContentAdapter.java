@@ -55,11 +55,10 @@ public class BBCContentAdapter extends
         // Description set
         holder.mDescriptionTextView.setText(mCursor.getString(MainActivity.DESCRIPTION_INDEX));
 
-        // TODO: Thumbnail Set
-        // For test, use local img
+        // Use picasso to load image
         Picasso.with(mContext)
                 .load(mCursor.getString(MainActivity.THUMBNAIL_INDEX))
-                .resizeDimen(R.dimen.list_item_img_width, R.dimen.list_item_height)
+                .resizeDimen(R.dimen.list_item_img_width, R.dimen.list_item_img_height)
                 .centerCrop()
                 .into(holder.mThumbnailImageView);
     }

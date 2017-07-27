@@ -15,6 +15,8 @@ import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
 public class BBCSyncUtility {
 
+    public static boolean sIsContentListSyncComplete = true;
+
     synchronized public static void articleInitialize(final Context context,
                                                       @NonNull final Uri uriWithTimeStamp) {
 
@@ -50,7 +52,8 @@ public class BBCSyncUtility {
 
     }
 
-    synchronized public static void contentListUpdate(final Context context){
+    synchronized public static void contentListSync(final Context context){
+        sIsContentListSyncComplete = false;
         startContentLisSync(context);
     }
 
@@ -69,4 +72,5 @@ public class BBCSyncUtility {
         Intent intentToSyncImmediately = new Intent(context, BBCSyncContentListIntentService.class);
         context.startService(intentToSyncImmediately);
     }
+
 }

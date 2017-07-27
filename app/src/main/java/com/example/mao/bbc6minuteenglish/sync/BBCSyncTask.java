@@ -66,5 +66,6 @@ public class BBCSyncTask {
         contentResolver.delete(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
                 where,
                 null);
+        BBCSyncUtility.sIsContentListSyncComplete = true;
     }
 }
