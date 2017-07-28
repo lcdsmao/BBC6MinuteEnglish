@@ -1,5 +1,6 @@
 package com.example.mao.bbc6minuteenglish;
 
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
+import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
 public class ArticleActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener,

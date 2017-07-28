@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
+import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
 import java.io.IOException;
 
@@ -20,6 +22,8 @@ public class AudioPlayService extends Service implements
         MediaPlayer.OnPreparedListener, AudioManager.OnAudioFocusChangeListener{
 
     public final IBinder mBinder = new LocalBinder();
+
+    private static final int AUDIO_SERVICE_NOTIFICATION_ID = R.string.audio_service_notification;
 
     public static final String ACTION_PLAY = "com.example.mao.bbc6minuteenglish.action_play";
     public static final String ACTION_PAUSE = "com.example.mao.bbc6minuteenglish.action_pause";
@@ -41,11 +45,14 @@ public class AudioPlayService extends Service implements
         }
         mAudioHref = intent
                 .getStringExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF);
+        Uri uriWithTimeStamp = intent.getData();
 
         if (!TextUtils.isEmpty(mAudioHref)) {
             initMediaPlayer();
         }
 
+        startForeground(AUDIO_SERVICE_NOTIFICATION_ID,
+                NotificationUtility.buildAudioServiceNotification(this, uriWithTimeStamp));
         return super.onStartCommand(intent, flags, startId);
     }
 

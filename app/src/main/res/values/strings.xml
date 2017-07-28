@@ -3,4 +3,9 @@
 
     <string name="refresh">Refresh</string>
     <string name="setting">Setting</string>
+    <string name="notification_title">BBC 6 Minute English</string>
+    <string name="audio_service_notification">Audio Service Notification</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+
 </resources>
