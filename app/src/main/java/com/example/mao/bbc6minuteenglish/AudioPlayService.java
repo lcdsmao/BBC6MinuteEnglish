@@ -43,6 +43,7 @@ public class AudioPlayService extends Service implements
     private AudioManager mAudioManager;
     private int mResumePosition;
     private String mAudioHref;
+    private boolean mIsPrepared;
 
 
     @Override
@@ -105,6 +106,7 @@ public class AudioPlayService extends Service implements
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        mIsPrepared = true;
         playMedia();
     }
 
@@ -222,15 +224,16 @@ public class AudioPlayService extends Service implements
         }
     }
 
-    // FOR test
-    public boolean playButtonReceiver() {
-        if (!mMediaPlayer.isPlaying()) {
-            resumeMedia();
-            return true;
-        } else {
+    public void controlPlayStatus() {
+        if (mMediaPlayer.isPlaying()) {
             pauseMedia();
-            return false;
+        } else {
+            resumeMedia();
         }
+    }
+
+    public boolean isPlaying() {
+        return mMediaPlayer.isPlaying();
     }
 
     public int getDuration() {
@@ -239,5 +242,9 @@ public class AudioPlayService extends Service implements
 
     public int getCurrentPosition() {
         return mMediaPlayer.getCurrentPosition();
+    }
+
+    public boolean isPrepared() {
+        return mIsPrepared;
     }
 }

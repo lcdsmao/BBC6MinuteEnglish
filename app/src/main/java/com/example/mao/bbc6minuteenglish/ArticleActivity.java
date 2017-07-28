@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.LoaderManager;
@@ -27,7 +28,7 @@ import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 
 public class ArticleActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     private static final String TAG = ArticleActivity.class.getName();
 
@@ -54,16 +55,18 @@ public class ArticleActivity extends AppCompatActivity implements
     private ProgressBar mArticleLoading;
     private ImageView mPlayButton;
     private SeekBar mAudioSeekBar;
+    private ProgressBar mAudioLoading;
 
     private Handler mPlayerHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             if (mBond) {
-                mAudioSeekBar.setMax(mAudioService.getDuration());
-                mAudioSeekBar.setProgress(mAudioService.getCurrentPosition());
+                showAudioLoading();
+                updateSeekBar();
+                updatePlayButton();
             }
-            mPlayerHandler.postDelayed(this, 1000);
+            mPlayerHandler.postDelayed(this, 500);
         }
     };
 
@@ -72,19 +75,25 @@ public class ArticleActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
 
-        mArticleTextView = (TextView) findViewById(R.id.tv_article);
-        mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
-        mPlayButton = (ImageView) findViewById(R.id.iv_play_control);
-        mAudioSeekBar = (SeekBar) findViewById(R.id.sb_play_bar);
+        viewBind();
 
         // Show progress bar and hide article
-        showLoading();
+        showArticleLoading();
 
         // Check database if the article is null or not
         mUriWithTimeStamp = getIntent().getData();
         BBCSyncUtility.articleInitialize(this, mUriWithTimeStamp);
 
         getSupportLoaderManager().initLoader(ARTICLE_LOADER_ID, null, this);
+    }
+
+    private void viewBind() {
+        mArticleTextView = (TextView) findViewById(R.id.tv_article);
+        mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
+        mPlayButton = (ImageView) findViewById(R.id.iv_play_control);
+        mPlayButton.setOnClickListener(this);
+        mAudioSeekBar = (SeekBar) findViewById(R.id.sb_play_bar);
+        mAudioLoading = (ProgressBar) findViewById(R.id.pb_audio_load);
     }
 
     @Override
@@ -136,7 +145,7 @@ public class ArticleActivity extends AppCompatActivity implements
 
     }
 
-    private void showLoading() {
+    private void showArticleLoading() {
         mArticleTextView.setVisibility(View.INVISIBLE);
         mArticleLoading.setVisibility(View.VISIBLE);
     }
@@ -161,7 +170,7 @@ public class ArticleActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mPlayerHandler.postDelayed(mRunnable, 1000);
+        mPlayerHandler.postDelayed(mRunnable, 500);
     }
 
     @Override
@@ -194,6 +203,35 @@ public class ArticleActivity extends AppCompatActivity implements
         }
     }
 
+    private void updateSeekBar(){
+        int duration = mAudioService.getDuration();
+        int progress = mAudioService.getCurrentPosition();
+        mAudioSeekBar.setMax(duration);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            mAudioSeekBar.setProgress(progress, true);
+        } else {
+            mAudioSeekBar.setProgress(duration);
+        }
+    }
+
+    private void updatePlayButton() {
+        if (mAudioService.isPlaying()) {
+            mPlayButton.setImageResource(R.drawable.ic_pause);
+        } else {
+            mPlayButton.setImageResource(R.drawable.ic_play_arrow);
+        }
+    }
+
+    private void showAudioLoading() {
+        if (mAudioService.isPrepared()) {
+            mAudioLoading.setVisibility(View.INVISIBLE);
+            mPlayButton.setVisibility(View.VISIBLE);
+        } else {
+            mAudioLoading.setVisibility(View.VISIBLE);
+            mPlayButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
     //Binding this Client to the AudioPlayer Service
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -212,4 +250,16 @@ public class ArticleActivity extends AppCompatActivity implements
             mBond = false;
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.iv_play_control:
+                if (mBond && mAudioService.isPrepared()) {
+                    mAudioService.controlPlayStatus();
+                }
+                break;
+        }
+    }
 }

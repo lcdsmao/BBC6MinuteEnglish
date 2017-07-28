@@ -42,12 +42,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-            <ImageView
-                android:id="@+id/iv_play_control"
+
+
+            <FrameLayout
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_play_arrow"/>
+                android:layout_marginStart="8dp"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_play_control"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible"
+                    android:src="@drawable/ic_play_arrow"/>
+
+                <ProgressBar
+                    android:id="@+id/pb_audio_load"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"/>
+            </FrameLayout>
 
             <SeekBar
                 android:id="@+id/sb_play_bar"
