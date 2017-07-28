@@ -1,18 +1,12 @@
 package com.example.mao.bbc6minuteenglish;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.session.MediaSessionManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -27,17 +21,9 @@ public class AudioPlayService extends Service implements
 
     public final IBinder mBinder = new LocalBinder();
 
-    public static final String ACTION_PLAY = "action_play";
-    public static final String ACTION_PAUSE = "action_pause";
-    public static final String ACTION_STOP = "action_stop";
-
-    //AudioPlayer notification ID
-    private static final int NOTIFICATION_ID = 101;
-
-    //MediaSession
-    private MediaSessionManager mediaSessionManager;
-    private MediaSessionCompat mediaSession;
-    private MediaControllerCompat.TransportControls transportControls;
+    public static final String ACTION_PLAY = "com.example.mao.bbc6minuteenglish.action_play";
+    public static final String ACTION_PAUSE = "com.example.mao.bbc6minuteenglish.action_pause";
+    public static final String ACTION_STOP = "com.example.mao.bbc6minuteenglish.action_stop";
 
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
@@ -64,7 +50,6 @@ public class AudioPlayService extends Service implements
     }
 
 
-
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
@@ -76,15 +61,9 @@ public class AudioPlayService extends Service implements
     }
 
     @Override
-    public void onCompletion(MediaPlayer mp) {
-        stopMedia();
-        removeAudioFocus();
-        stopSelf();
-    }
-
-    @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         //Invoked when there has been an error during an asynchronous operation
+        mIsPrepared = false;
         switch (what) {
             case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
                 Log.d("MediaPlayer Error", "MEDIA ERROR NOT VALID FOR PROGRESSIVE PLAYBACK " + extra);
@@ -97,6 +76,13 @@ public class AudioPlayService extends Service implements
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        stopMedia();
+        removeAudioFocus();
+        stopSelf();
     }
 
     @Override
@@ -224,11 +210,24 @@ public class AudioPlayService extends Service implements
         }
     }
 
+    private void seekMedia(int position) {
+        if (!mMediaPlayer.isPlaying()) {
+            mResumePosition = position;
+        }
+        mMediaPlayer.seekTo(position);
+    }
+
     public void controlPlayStatus() {
         if (mMediaPlayer.isPlaying()) {
             pauseMedia();
         } else {
             resumeMedia();
+        }
+    }
+
+    public void controlSeekPosition(int position) {
+        if (position >= 0 && position <= mMediaPlayer.getDuration()) {
+            seekMedia(position);
         }
     }
 

@@ -28,7 +28,8 @@ import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 
 public class ArticleActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
+        LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener,
+        SeekBar.OnSeekBarChangeListener{
 
     private static final String TAG = ArticleActivity.class.getName();
 
@@ -45,6 +46,8 @@ public class ArticleActivity extends AppCompatActivity implements
     private static final int TITLE_INDEX = 0;
     private static final int ARTICLE_INDEX = 1;
     private static final int AUDIO_HREF_INDEX = 2;
+
+    private final static int REFRESH_TIME_INTERVAL = 500;
 
     private AudioPlayService mAudioService;
     private boolean mBond = false;
@@ -66,7 +69,7 @@ public class ArticleActivity extends AppCompatActivity implements
                 updateSeekBar();
                 updatePlayButton();
             }
-            mPlayerHandler.postDelayed(this, 500);
+            mPlayerHandler.postDelayed(this, REFRESH_TIME_INTERVAL);
         }
     };
 
@@ -93,6 +96,7 @@ public class ArticleActivity extends AppCompatActivity implements
         mPlayButton = (ImageView) findViewById(R.id.iv_play_control);
         mPlayButton.setOnClickListener(this);
         mAudioSeekBar = (SeekBar) findViewById(R.id.sb_play_bar);
+        mAudioSeekBar.setOnSeekBarChangeListener(this);
         mAudioLoading = (ProgressBar) findViewById(R.id.pb_audio_load);
     }
 
@@ -170,7 +174,7 @@ public class ArticleActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mPlayerHandler.postDelayed(mRunnable, 500);
+        mPlayerHandler.postDelayed(mRunnable, REFRESH_TIME_INTERVAL);
     }
 
     @Override
@@ -261,5 +265,23 @@ public class ArticleActivity extends AppCompatActivity implements
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        // Here to update the time of audio
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        mPlayerHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if (mBond && mAudioService.isPrepared()) {
+            mAudioService.controlSeekPosition(seekBar.getProgress());
+        }
+        mPlayerHandler.postDelayed(mRunnable, REFRESH_TIME_INTERVAL);
     }
 }
