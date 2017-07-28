@@ -8,8 +8,11 @@ import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.session.MediaSessionManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,26 +27,23 @@ public class AudioPlayService extends Service implements
 
     public final IBinder mBinder = new LocalBinder();
 
+    public static final String ACTION_PLAY = "action_play";
+    public static final String ACTION_PAUSE = "action_pause";
+    public static final String ACTION_STOP = "action_stop";
+
+    //AudioPlayer notification ID
+    private static final int NOTIFICATION_ID = 101;
+
+    //MediaSession
+    private MediaSessionManager mediaSessionManager;
+    private MediaSessionCompat mediaSession;
+    private MediaControllerCompat.TransportControls transportControls;
+
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
     private int mResumePosition;
     private String mAudioHref;
 
-//    //Becoming noisy
-//    private BroadcastReceiver mBecomingNoiseReceive = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            //pause audio on ACTION_AUDIO_BECOMING_NOISY
-//            pauseMedia();
-//            buildNotification(PlaybackStatus.PAUSED);
-//        }
-//    };
-//
-//    private void registerBecomingNoisyReceiver() {
-//        //register after getting audio focus
-//        IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-//        registerReceiver(mBecomingNoiseReceive, intentFilter);
-//    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -55,12 +55,14 @@ public class AudioPlayService extends Service implements
         mAudioHref = intent
                 .getStringExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF);
 
-        if (TextUtils.isEmpty(mAudioHref)) {
+        if (!TextUtils.isEmpty(mAudioHref)) {
             initMediaPlayer();
         }
 
         return super.onStartCommand(intent, flags, startId);
     }
+
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -218,5 +220,24 @@ public class AudioPlayService extends Service implements
             mMediaPlayer.seekTo(mResumePosition);
             mMediaPlayer.start();
         }
+    }
+
+    // FOR test
+    public boolean playButtonReceiver() {
+        if (!mMediaPlayer.isPlaying()) {
+            resumeMedia();
+            return true;
+        } else {
+            pauseMedia();
+            return false;
+        }
+    }
+
+    public int getDuration() {
+        return mMediaPlayer.getDuration();
+    }
+
+    public int getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
     }
 }

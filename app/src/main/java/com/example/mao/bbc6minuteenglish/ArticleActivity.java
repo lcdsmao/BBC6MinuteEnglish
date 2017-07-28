@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -16,7 +17,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,13 +45,27 @@ public class ArticleActivity extends AppCompatActivity implements
     private static final int ARTICLE_INDEX = 1;
     private static final int AUDIO_HREF_INDEX = 2;
 
-    private AudioPlayService mService;
+    private AudioPlayService mAudioService;
     private boolean mBond = false;
 
     private Uri mUriWithTimeStamp;
 
     private TextView mArticleTextView;
     private ProgressBar mArticleLoading;
+    private ImageView mPlayButton;
+    private SeekBar mAudioSeekBar;
+
+    private Handler mPlayerHandler = new Handler();
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mBond) {
+                mAudioSeekBar.setMax(mAudioService.getDuration());
+                mAudioSeekBar.setProgress(mAudioService.getCurrentPosition());
+            }
+            mPlayerHandler.postDelayed(this, 1000);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +74,8 @@ public class ArticleActivity extends AppCompatActivity implements
 
         mArticleTextView = (TextView) findViewById(R.id.tv_article);
         mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
+        mPlayButton = (ImageView) findViewById(R.id.iv_play_control);
+        mAudioSeekBar = (SeekBar) findViewById(R.id.sb_play_bar);
 
         // Show progress bar and hide article
         showLoading();
@@ -140,11 +159,23 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mPlayerHandler.postDelayed(mRunnable, 1000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPlayerHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mBond) {
             unbindService(mConnection);
-            mService.stopSelf();
+            mAudioService.stopSelf();
         }
     }
 
@@ -170,7 +201,7 @@ public class ArticleActivity extends AppCompatActivity implements
         public void onServiceConnected(ComponentName name, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             AudioPlayService.LocalBinder binder = (AudioPlayService.LocalBinder) service;
-            mService = binder.getService();
+            mAudioService = binder.getService();
             mBond = true;
 
             Toast.makeText(ArticleActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
