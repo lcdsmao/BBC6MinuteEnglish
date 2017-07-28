@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.example.mao.bbc6minuteenglish.ArticleActivity;
 import com.example.mao.bbc6minuteenglish.AudioPlayService;
@@ -22,14 +23,16 @@ public class NotificationUtility {
 
     private static final String[] PROJECTION = {
             BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME
+            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION
     };
 
     private static final int TITLE_INDEX = 0;
-    private static final int TIME_INDEX = 1;
+    private static final int DESCRIPTION_INDEX = 1;
 
     @Nullable
-    public static Notification buildAudioServiceNotification(Context context, Uri uriWithTimeStamp) {
+    public static Notification buildAudioServiceNotification(Context context,
+                                                             Uri uriWithTimeStamp,
+                                                             String action) {
 
         Cursor queryCursor = context.getContentResolver().query(uriWithTimeStamp,
                 PROJECTION,
@@ -38,40 +41,49 @@ public class NotificationUtility {
                 null);
         if (queryCursor == null || !queryCursor.moveToFirst()) return null;
         String title = queryCursor.getString(TITLE_INDEX);
-        String time = queryCursor.getString(TIME_INDEX);
+        String description = queryCursor.getString(DESCRIPTION_INDEX);
         queryCursor.close();
 
-        Intent intent = new Intent(context, ArticleActivity.class)
+        Intent intentActivity = new Intent(context, ArticleActivity.class)
                 .setData(uriWithTimeStamp);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntentActivity =
+                PendingIntent.getActivity(context, 0, intentActivity, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent intentService = new Intent(context, AudioPlayService.class)
+                .setAction(action);
+        PendingIntent pendingIntentService = PendingIntent.getService(context, 0, intentService, 0);
+
         Notification notification = new NotificationCompat.Builder(context)
+                .setColor(ContextCompat.getColor(context, R.color.primary))
+                .setShowWhen(false)
                 .setContentTitle(title)
-                .setContentText(time)
-                .setContentIntent(pendingIntent)
+                .setContentText(description)
+                .setContentIntent(pendingIntentActivity)
+                .addAction(getDrawable(action), getActionName(context, action), pendingIntentService)
                 .setSmallIcon(R.drawable.ic_headset)
                 .build();
         return notification;
     }
 
-    private static NotificationCompat.Action createPlayAction(Context context) {
-        Intent intent = new Intent(context, AudioPlayService.class)
-                .setAction(AudioPlayService.ACTION_PLAY);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-        NotificationCompat.Action action = new NotificationCompat.Action(
-                R.drawable.ic_play_arrow,
-                context.getString(R.string.play),
-                pendingIntent);
-        return action;
+    private static int getDrawable(String action) {
+        switch (action) {
+            case AudioPlayService.ACTION_PLAY:
+                return R.drawable.ic_play_arrow;
+            case AudioPlayService.ACTION_PAUSE:
+                return R.drawable.ic_pause;
+            default:
+                return R.drawable.ic_play_arrow;
+        }
     }
 
-    private static NotificationCompat.Action createPauseAction(Context context) {
-        Intent intent = new Intent(context, AudioPlayService.class)
-                .setAction(AudioPlayService.ACTION_PAUSE);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-        NotificationCompat.Action action = new NotificationCompat.Action(
-                R.drawable.ic_pause,
-                context.getString(R.string.pause),
-                pendingIntent);
-        return action;
+    private static String getActionName(Context context, String action){
+        switch (action) {
+            case AudioPlayService.ACTION_PLAY:
+                return context.getString(R.string.play);
+            case AudioPlayService.ACTION_PAUSE:
+                return context.getString(R.string.pause);
+            default:
+                return context.getString(R.string.play);
+        }
     }
 }

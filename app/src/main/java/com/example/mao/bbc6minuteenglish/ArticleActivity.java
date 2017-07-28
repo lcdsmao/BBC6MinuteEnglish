@@ -197,15 +197,12 @@ public class ArticleActivity extends AppCompatActivity implements
     private void playAudio(String audioHref) {
         //Check is service is active
         if (!mBond) {
-            Intent playerIntent = new Intent(this, AudioPlayService.class);
-            playerIntent.setData(mUriWithTimeStamp);
-            playerIntent.putExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF,
-                    audioHref);
+            Intent playerIntent = new Intent(this, AudioPlayService.class)
+                    .setData(mUriWithTimeStamp)
+                    .setAction(AudioPlayService.ACTION_INITIALIZE)
+                    .putExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF, audioHref);
             startService(playerIntent);
             bindService(playerIntent, mConnection, BIND_AUTO_CREATE);
-        } else {
-            //Service is active
-            //Send media with BroadcastReceiver
         }
     }
 

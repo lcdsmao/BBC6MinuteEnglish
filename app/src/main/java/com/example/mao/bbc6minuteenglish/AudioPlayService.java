@@ -1,5 +1,6 @@
 package com.example.mao.bbc6minuteenglish;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioAttributes;
@@ -21,41 +22,71 @@ public class AudioPlayService extends Service implements
         MediaPlayer.OnErrorListener, MediaPlayer.OnSeekCompleteListener,
         MediaPlayer.OnPreparedListener, AudioManager.OnAudioFocusChangeListener{
 
+    private static final String TAG = AudioPlayService.class.getName();
+
     public final IBinder mBinder = new LocalBinder();
 
     private static final int AUDIO_SERVICE_NOTIFICATION_ID = R.string.audio_service_notification;
 
+    public static final String ACTION_INITIALIZE = "com.example.mao.bbc6minuteenglish.action_initialize";
     public static final String ACTION_PLAY = "com.example.mao.bbc6minuteenglish.action_play";
     public static final String ACTION_PAUSE = "com.example.mao.bbc6minuteenglish.action_pause";
-    public static final String ACTION_STOP = "com.example.mao.bbc6minuteenglish.action_stop";
 
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
     private int mResumePosition;
     private String mAudioHref;
     private boolean mIsPrepared;
+    private Uri mUriWithTimeStamp;
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        handleIntent(intent);
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void handleIntent(Intent intent) {
+        String action = intent.getAction();
+        switch (action) {
+            case ACTION_INITIALIZE:
+                initialize(intent);
+            case ACTION_PLAY:
+                resumeMedia();
+                break;
+            case ACTION_PAUSE:
+                pauseMedia();
+                break;
+
+        }
+    }
+
+    private void initialize(Intent intent) {
         //Request audio focus
         if (!requestAudioFocus()) {
             //Could not gain focus
             stopSelf();
         }
+
         mAudioHref = intent
                 .getStringExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF);
-        Uri uriWithTimeStamp = intent.getData();
+
+        mUriWithTimeStamp = intent.getData();
 
         if (!TextUtils.isEmpty(mAudioHref)) {
             initMediaPlayer();
         }
 
-        startForeground(AUDIO_SERVICE_NOTIFICATION_ID,
-                NotificationUtility.buildAudioServiceNotification(this, uriWithTimeStamp));
-        return super.onStartCommand(intent, flags, startId);
+        updateNotification(ACTION_INITIALIZE);
     }
 
+    private void updateNotification(String action) {
+        Notification notification =
+                NotificationUtility.buildAudioServiceNotification(this, mUriWithTimeStamp, action);
+        startForeground(AUDIO_SERVICE_NOTIFICATION_ID, notification);
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -64,7 +95,7 @@ public class AudioPlayService extends Service implements
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-
+        Log.v(TAG, "" + percent);
     }
 
     @Override
@@ -93,14 +124,14 @@ public class AudioPlayService extends Service implements
     }
 
     @Override
-    public void onSeekComplete(MediaPlayer mp) {
-
-    }
-
-    @Override
     public void onPrepared(MediaPlayer mp) {
         mIsPrepared = true;
         playMedia();
+    }
+
+    @Override
+    public void onSeekComplete(MediaPlayer mediaPlayer) {
+        Log.v(TAG, "On seek complete");
     }
 
     @Override
@@ -171,9 +202,9 @@ public class AudioPlayService extends Service implements
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
-        mMediaPlayer.setOnSeekCompleteListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setOnSeekCompleteListener(this);
         mMediaPlayer.reset();
 
         mMediaPlayer.setAudioAttributes(
@@ -193,6 +224,7 @@ public class AudioPlayService extends Service implements
     private void playMedia() {
         if (!mMediaPlayer.isPlaying()) {
             mMediaPlayer.start();
+            updateNotification(ACTION_PAUSE);
         }
     }
 
@@ -200,6 +232,7 @@ public class AudioPlayService extends Service implements
         if (mMediaPlayer == null) return;
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
+            updateNotification(ACTION_PLAY);
         }
     }
 
@@ -207,6 +240,7 @@ public class AudioPlayService extends Service implements
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             mResumePosition = mMediaPlayer.getCurrentPosition();
+            updateNotification(ACTION_PLAY);
         }
     }
 
@@ -214,6 +248,7 @@ public class AudioPlayService extends Service implements
         if (!mMediaPlayer.isPlaying()) {
             mMediaPlayer.seekTo(mResumePosition);
             mMediaPlayer.start();
+            updateNotification(ACTION_PAUSE);
         }
     }
 
@@ -243,11 +278,19 @@ public class AudioPlayService extends Service implements
     }
 
     public int getDuration() {
-        return mMediaPlayer.getDuration();
+        if (isPrepared()){
+            return mMediaPlayer.getDuration();
+        } else {
+            return 0;
+        }
     }
 
     public int getCurrentPosition() {
-        return mMediaPlayer.getCurrentPosition();
+        if (isPrepared()) {
+            return mMediaPlayer.getCurrentPosition();
+        } else {
+            return -1;
+        }
     }
 
     public boolean isPrepared() {
