@@ -9,16 +9,26 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -56,11 +66,15 @@ public class ArticleActivity extends AppCompatActivity implements
 
     private Uri mUriWithTimeStamp;
 
-    private TextView mArticleTextView;
+    private ArticlePagerAdapter mArticleAdapter;
+
     private ProgressBar mArticleLoading;
     private ImageView mPlayButton;
     private SeekBar mAudioSeekBar;
     private ProgressBar mAudioLoading;
+    private ViewPager mArticleViewPager;
+    private TabLayout mTabLayout;
+    private Toolbar mToolbar;
 
     private Handler mPlayerHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
@@ -80,7 +94,13 @@ public class ArticleActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
 
+        // Bind bew by id
         viewBind();
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mArticleAdapter = new ArticlePagerAdapter(getSupportFragmentManager(), this);
 
         // Show progress bar and hide article
         showArticleLoading();
@@ -93,13 +113,16 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void viewBind() {
-        mArticleTextView = (TextView) findViewById(R.id.tv_article);
+        //mArticleTextView = (TextView) findViewById(R.id.tv_article);
         mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
         mPlayButton = (ImageView) findViewById(R.id.iv_play_control);
         mPlayButton.setOnClickListener(this);
         mAudioSeekBar = (SeekBar) findViewById(R.id.sb_play_bar);
         mAudioSeekBar.setOnSeekBarChangeListener(this);
         mAudioLoading = (ProgressBar) findViewById(R.id.pb_audio_load);
+        mTabLayout = (TabLayout) findViewById(R.id.tabbar);
+        mArticleViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
     }
 
     @Override
@@ -137,7 +160,10 @@ public class ArticleActivity extends AppCompatActivity implements
         getSupportActionBar().setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
-            mArticleTextView.setText(Html.fromHtml(article));
+            //mArticleTextView.setText(Html.fromHtml(article));
+            mArticleAdapter.setArticleContents(new String[]{article, article, article});
+            mArticleViewPager.setAdapter(mArticleAdapter);
+            mTabLayout.setupWithViewPager(mArticleViewPager);
             showArticle();
         }
 
@@ -152,13 +178,13 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void showArticleLoading() {
-        mArticleTextView.setVisibility(View.INVISIBLE);
+        mArticleViewPager.setVisibility(View.INVISIBLE);
         mArticleLoading.setVisibility(View.VISIBLE);
     }
 
     private void showArticle() {
         mArticleLoading.setVisibility(View.INVISIBLE);
-        mArticleTextView.setVisibility(View.VISIBLE);
+        mArticleViewPager.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -283,4 +309,5 @@ public class ArticleActivity extends AppCompatActivity implements
         }
         mPlayerHandler.postDelayed(mRunnable, REFRESH_TIME_INTERVAL);
     }
+
 }

@@ -8,4 +8,8 @@
     <string name="play">Play</string>
     <string name="pause">Pause</string>
 
+    <string name="article_question">Question</string>
+    <string name="article_vocabulary">Vocabulary</string>
+    <string name="article_transcript">Transcript</string>
+
 </resources>

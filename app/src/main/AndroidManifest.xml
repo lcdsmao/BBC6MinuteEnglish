@@ -21,19 +21,20 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name=".data.BBCContentProvider"
-            android:authorities="com.example.mao.bbc6minuteenglish"
-            android:exported="false" />
-
         <activity
             android:name=".ArticleActivity"
             android:parentActivityName=".MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <provider
+            android:name=".data.BBCContentProvider"
+            android:authorities="com.example.mao.bbc6minuteenglish"
+            android:exported="false" />
 
         <service
             android:name=".sync.BBCSyncArticleIntentService"
