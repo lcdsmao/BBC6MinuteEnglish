@@ -268,6 +268,10 @@ public class AudioPlayService extends Service implements
     public void controlSeekPosition(int position) {
         if (position >= 0 && position <= mMediaPlayer.getDuration()) {
             seekMedia(position);
+        } else if (position < 0) {
+            seekMedia(0);
+        } else {
+            seekMedia(mMediaPlayer.getDuration());
         }
     }
 

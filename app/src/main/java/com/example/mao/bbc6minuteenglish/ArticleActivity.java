@@ -76,6 +76,8 @@ public class ArticleActivity extends AppCompatActivity implements
     private ViewPager mArticleViewPager;
     private TabLayout mTabLayout;
     private Toolbar mToolbar;
+    private ImageView mForwardButton;
+    private ImageView mReplayButton;
 
     private Handler mPlayerHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
@@ -115,7 +117,7 @@ public class ArticleActivity extends AppCompatActivity implements
 
     private void viewBind() {
         mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
-        mPlayButton = (ImageView) findViewById(R.id.iv_play_control);
+        mPlayButton = (ImageView) findViewById(R.id.iv_play_pause);
         mPlayButton.setOnClickListener(this);
         mAudioSeekBar = (SeekBar) findViewById(R.id.sb_play_bar);
         mAudioSeekBar.setOnSeekBarChangeListener(this);
@@ -123,6 +125,10 @@ public class ArticleActivity extends AppCompatActivity implements
         mTabLayout = (TabLayout) findViewById(R.id.tabbar);
         mArticleViewPager = (ViewPager) findViewById(R.id.view_pager);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mForwardButton = (ImageView) findViewById(R.id.iv_forward);
+        mForwardButton.setOnClickListener(this);
+        mReplayButton = (ImageView) findViewById(R.id.iv_replay);
+        mReplayButton.setOnClickListener(this);
     }
 
     @Override
@@ -167,7 +173,7 @@ public class ArticleActivity extends AppCompatActivity implements
         }
 
         if (!TextUtils.isEmpty(audioHref)) {
-            //playAudio(audioHref);
+            playAudio(audioHref);
         }
     }
 
@@ -281,9 +287,21 @@ public class ArticleActivity extends AppCompatActivity implements
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.iv_play_control:
+            case R.id.iv_play_pause:
                 if (mBond && mAudioService.isPrepared()) {
                     mAudioService.controlPlayStatus();
+                }
+                break;
+            case R.id.iv_forward:
+                if (mBond && mAudioService.isPrepared()) {
+                    int newPosition = mAudioService.getCurrentPosition() + 5000;
+                    mAudioService.controlSeekPosition(newPosition);
+                }
+                break;
+            case R.id.iv_replay:
+                if (mBond && mAudioService.isPrepared()) {
+                    int newPosition = mAudioService.getCurrentPosition() - 5000;
+                    mAudioService.controlSeekPosition(newPosition);
                 }
                 break;
         }

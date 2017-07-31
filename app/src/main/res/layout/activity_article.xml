@@ -52,8 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:src="@drawable/ic_replay_5"
-                android:background="?attr/selectableItemBackground"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_gravity="center_vertical"
                 android:layout_height="@dimen/control_play_button_height" />
 
@@ -78,15 +78,15 @@
             <FrameLayout
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:background="?attr/selectableItemBackground"
-                android:layout_height="@dimen/control_play_button_height"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical">
 
                 <ImageView
-                    android:id="@+id/iv_play_control"
+                    android:id="@+id/iv_play_pause"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="invisible"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_play_arrow"/>
 
                 <ProgressBar
@@ -101,7 +101,7 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:src="@drawable/ic_forward_5"
-                android:background="?attr/selectableItemBackground"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_gravity="center_vertical"
                 android:layout_height="@dimen/control_play_button_height" />
 
