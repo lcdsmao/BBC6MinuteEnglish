@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
+import com.example.mao.bbc6minuteenglish.utilities.AudioTimeUtility;
 import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
 import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
@@ -78,6 +79,8 @@ public class ArticleActivity extends AppCompatActivity implements
     private Toolbar mToolbar;
     private ImageView mForwardButton;
     private ImageView mReplayButton;
+    private TextView mCurrentTextView;
+    private TextView mDurationTextView;
 
     private Handler mPlayerHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
@@ -129,6 +132,8 @@ public class ArticleActivity extends AppCompatActivity implements
         mForwardButton.setOnClickListener(this);
         mReplayButton = (ImageView) findViewById(R.id.iv_replay);
         mReplayButton.setOnClickListener(this);
+        mCurrentTextView = (TextView) findViewById(R.id.tv_current);
+        mDurationTextView = (TextView) findViewById(R.id.tv_duration);
     }
 
     @Override
@@ -238,13 +243,16 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void updateSeekBar(){
-        int duration = mAudioService.getDuration();
-        int progress = mAudioService.getCurrentPosition();
-        mAudioSeekBar.setMax(duration);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
-            mAudioSeekBar.setProgress(progress, true);
+        if (mAudioService.isPrepared()) {
+            mAudioSeekBar.setEnabled(true);
+            mAudioSeekBar.setMax(mAudioService.getDuration());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                mAudioSeekBar.setProgress(mAudioService.getCurrentPosition(), true);
+            } else {
+                mAudioSeekBar.setProgress(mAudioService.getCurrentPosition());
+            }
         } else {
-            mAudioSeekBar.setProgress(duration);
+            mAudioSeekBar.setEnabled(false);
         }
     }
 
@@ -257,7 +265,8 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void showAudioLoading() {
-        if (mAudioService.isPrepared()) {
+        if (mAudioService.isPrepared()
+                && mAudioService.getCachedProgress() > mAudioService.getCurrentPosition()) {
             mAudioLoading.setVisibility(View.INVISIBLE);
             mPlayButton.setVisibility(View.VISIBLE);
         } else {
@@ -310,6 +319,10 @@ public class ArticleActivity extends AppCompatActivity implements
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Here to update the time of audio
+        if (mBond) {
+            mCurrentTextView.setText(AudioTimeUtility.getDisplayTime(progress));
+            mDurationTextView.setText(AudioTimeUtility.getDisplayTime(mAudioService.getDuration()));
+        }
     }
 
     @Override

@@ -38,6 +38,7 @@ public class AudioPlayService extends Service implements
     private String mAudioHref;
     private boolean mIsPrepared;
     private Uri mUriWithTimeStamp;
+    private int mCachedProgress;
 
 
     @Override
@@ -96,7 +97,8 @@ public class AudioPlayService extends Service implements
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        Log.v(TAG, "" + percent);
+        mCachedProgress = percent * getDuration() / 100;
+        Log.v(TAG, "" + mCachedProgress + "; " + getCurrentPosition());
     }
 
     @Override
@@ -297,5 +299,9 @@ public class AudioPlayService extends Service implements
 
     public boolean isPrepared() {
         return mIsPrepared;
+    }
+
+    public int getCachedProgress() {
+        return mCachedProgress;
     }
 }
