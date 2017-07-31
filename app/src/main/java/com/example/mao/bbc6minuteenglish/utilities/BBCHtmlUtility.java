@@ -24,8 +24,6 @@ public class BBCHtmlUtility {
     private static final String BBC_6_MINUTE_ENGLISH_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/6-minute-english";
 
-    private BBCHtmlUtility(){}
-
     /**
      * Connect to bbc 6 minute English to get the newest document html.
      * Use Jsoup to parse the html to Elements which contains all contents.
@@ -104,7 +102,7 @@ public class BBCHtmlUtility {
      */
     public static String getArticleHtml(Document document) {
         Elements article = document.select(".widget.widget-richtext.6 .text").first().children();
-        return article.toString().replaceAll("h3", "h1");
+        return article.toString();
     }
 
     /**
@@ -138,5 +136,16 @@ public class BBCHtmlUtility {
             e.printStackTrace();
         }
         return document;
+    }
+
+    public static String[] getArticleSections(String articleHtml) {
+        String[] sections = articleHtml.split("</?h3>");
+        String[] articleSections = new String[3];
+        if (sections.length == 7) {
+            articleSections[0] = sections[2];
+            articleSections[1] = sections[4];
+            articleSections[2] = sections[6];
+        }
+        return articleSections;
     }
 }

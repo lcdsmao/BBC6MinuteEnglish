@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
+import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
 import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
 public class ArticleActivity extends AppCompatActivity implements
@@ -113,7 +114,6 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void viewBind() {
-        //mArticleTextView = (TextView) findViewById(R.id.tv_article);
         mArticleLoading = (ProgressBar) findViewById(R.id.pb_article_load);
         mPlayButton = (ImageView) findViewById(R.id.iv_play_control);
         mPlayButton.setOnClickListener(this);
@@ -160,15 +160,14 @@ public class ArticleActivity extends AppCompatActivity implements
         getSupportActionBar().setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
-            //mArticleTextView.setText(Html.fromHtml(article));
-            mArticleAdapter.setArticleContents(new String[]{article, article, article});
+            mArticleAdapter.setArticleContents(BBCHtmlUtility.getArticleSections(article));
             mArticleViewPager.setAdapter(mArticleAdapter);
             mTabLayout.setupWithViewPager(mArticleViewPager);
             showArticle();
         }
 
         if (!TextUtils.isEmpty(audioHref)) {
-            playAudio(audioHref);
+            //playAudio(audioHref);
         }
     }
 
