@@ -270,8 +270,6 @@ public class ArticleActivity extends AppCompatActivity implements
             AudioPlayService.LocalBinder binder = (AudioPlayService.LocalBinder) service;
             mAudioService = binder.getService();
             mBond = true;
-
-            Toast.makeText(ArticleActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
         }
 
         @Override

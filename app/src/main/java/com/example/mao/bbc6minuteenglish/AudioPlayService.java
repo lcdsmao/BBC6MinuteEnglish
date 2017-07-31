@@ -59,7 +59,8 @@ public class AudioPlayService extends Service implements
             case ACTION_PAUSE:
                 pauseMedia();
                 break;
-
+            default:
+                break;
         }
     }
 
@@ -112,6 +113,8 @@ public class AudioPlayService extends Service implements
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
                 Log.d("MediaPlayer Error", "MEDIA ERROR UNKNOWN " + extra);
                 break;
+            default:
+                Log.d("MediaPlayer Error", "UNKNOWN" + extra);
         }
         return false;
     }
@@ -167,12 +170,7 @@ public class AudioPlayService extends Service implements
     private boolean requestAudioFocus() {
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            //Focus gained
-            return true;
-        }
-        //Could not gain focus
-        return false;
+        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
     private boolean removeAudioFocus() {
