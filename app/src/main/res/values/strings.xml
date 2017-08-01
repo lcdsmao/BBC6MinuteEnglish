@@ -7,6 +7,8 @@
     <string name="audio_service_notification">Audio Service Notification</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="forward">Forward</string>
+    <string name="replay">Replay</string>
 
     <string name="article_question">Question</string>
     <string name="article_vocabulary">Vocabulary</string>

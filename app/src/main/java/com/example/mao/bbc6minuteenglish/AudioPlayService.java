@@ -31,6 +31,8 @@ public class AudioPlayService extends Service implements
     public static final String ACTION_INITIALIZE = "com.example.mao.bbc6minuteenglish.action_initialize";
     public static final String ACTION_PLAY = "com.example.mao.bbc6minuteenglish.action_play";
     public static final String ACTION_PAUSE = "com.example.mao.bbc6minuteenglish.action_pause";
+    public static final String ACTION_FORWARD = "com.example.mao.bbc6minuteenglish.action_forward";
+    public static final String ACTION_REPLAY = "com.example.mao.bbc6minuteenglish.action_replay";
 
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
@@ -59,6 +61,12 @@ public class AudioPlayService extends Service implements
                 break;
             case ACTION_PAUSE:
                 pauseMedia();
+                break;
+            case ACTION_FORWARD:
+                controlSeekPosition(getCurrentPosition() + 5000);
+                break;
+            case ACTION_REPLAY:
+                controlSeekPosition(getCurrentPosition() - 5000);
                 break;
             default:
                 break;
