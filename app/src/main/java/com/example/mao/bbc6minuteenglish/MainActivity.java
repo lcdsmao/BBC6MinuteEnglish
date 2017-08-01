@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
+import com.example.mao.bbc6minuteenglish.data.PreferenceUtility;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 
 public class MainActivity extends AppCompatActivity implements
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         mContentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
+        initializeRefresh();
         getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
@@ -141,5 +143,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onRefresh() {
         BBCSyncUtility.contentListSync(this);
         getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
+    }
+
+    private void initializeRefresh() {
+        if (PreferenceUtility.isUpdateNeed(this)) {
+            mSwipeContainer.setRefreshing(true);
+            BBCSyncUtility.contentListSync(this);
+        }
     }
 }
