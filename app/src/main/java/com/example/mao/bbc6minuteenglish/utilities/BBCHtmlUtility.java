@@ -1,5 +1,6 @@
 package com.example.mao.bbc6minuteenglish.utilities;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.jsoup.Jsoup;
@@ -80,9 +81,11 @@ public class BBCHtmlUtility {
      * @param content the Element inside getContentsList()
      * @return time
      */
+    @NonNull
     public static String getTime(Element content){
         Elements details = content.select(".details");
-        return details.select("h3").text();
+        String time = details.select("h3").text();
+        return time.split("/")[1].trim();
     }
 
     /**
@@ -119,7 +122,6 @@ public class BBCHtmlUtility {
         String time = getTime(content);
         long timestamp = -1;
         try {
-            time = time.split("/")[1].trim();
             DateFormat format = new SimpleDateFormat("dd MMM yyyy");
             timestamp = format.parse(time).getTime();
         } catch (Exception e) {

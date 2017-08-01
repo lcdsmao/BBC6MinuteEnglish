@@ -124,6 +124,7 @@ public class ArticleActivity extends AppCompatActivity implements
         mPlayButton.setOnClickListener(this);
         mAudioSeekBar = (SeekBar) findViewById(R.id.sb_play_bar);
         mAudioSeekBar.setOnSeekBarChangeListener(this);
+        mAudioSeekBar.setEnabled(false);
         mAudioLoading = (ProgressBar) findViewById(R.id.pb_audio_load);
         mTabLayout = (TabLayout) findViewById(R.id.tabbar);
         mArticleViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -266,7 +267,7 @@ public class ArticleActivity extends AppCompatActivity implements
 
     private void showAudioLoading() {
         if (mAudioService.isPrepared()
-                && mAudioService.getCachedProgress() > mAudioService.getCurrentPosition()) {
+                && mAudioService.getCachedProgress() >= mAudioService.getCurrentPosition()) {
             mAudioLoading.setVisibility(View.INVISIBLE);
             mPlayButton.setVisibility(View.VISIBLE);
         } else {

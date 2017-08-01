@@ -60,6 +60,7 @@ public class BBCContentAdapter extends
                 .load(mCursor.getString(MainActivity.THUMBNAIL_INDEX))
                 .resizeDimen(R.dimen.list_item_img_width, R.dimen.list_item_img_height)
                 .centerCrop()
+                .placeholder(R.drawable.image_place_holder)
                 .into(holder.mThumbnailImageView);
     }
 

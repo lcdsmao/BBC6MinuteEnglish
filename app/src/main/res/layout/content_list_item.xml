@@ -61,7 +61,8 @@
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
             android:textSize="12sp"
             android:fontFamily="sans-serif-regular"
             android:textColor="@android:color/darker_gray"
