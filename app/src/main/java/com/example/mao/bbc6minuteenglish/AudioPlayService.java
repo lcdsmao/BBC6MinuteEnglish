@@ -11,18 +11,25 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.danikula.videocache.CacheListener;
+import com.danikula.videocache.HttpProxyCacheServer;
+import com.example.mao.bbc6minuteenglish.cache.App;
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
+import java.io.File;
 import java.io.IOException;
 
 public class AudioPlayService extends Service implements
         MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener,
-        MediaPlayer.OnErrorListener, MediaPlayer.OnSeekCompleteListener,
-        MediaPlayer.OnPreparedListener, AudioManager.OnAudioFocusChangeListener{
+        MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
+        AudioManager.OnAudioFocusChangeListener, CacheListener{
 
     private static final String TAG = AudioPlayService.class.getName();
+
+    private HttpProxyCacheServer mAudioProxy;
 
     public final IBinder mBinder = new LocalBinder();
 
@@ -105,8 +112,7 @@ public class AudioPlayService extends Service implements
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        mCachedProgress = percent * getDuration() / 100;
-        Log.v(TAG, "" + mCachedProgress + "; " + getCurrentPosition());
+        mCachedProgress = percent;
     }
 
     @Override
@@ -140,11 +146,6 @@ public class AudioPlayService extends Service implements
     public void onPrepared(MediaPlayer mp) {
         mIsPrepared = true;
         playMedia();
-    }
-
-    @Override
-    public void onSeekComplete(MediaPlayer mediaPlayer) {
-        Log.v(TAG, "On seek complete");
     }
 
     @Override
@@ -197,6 +198,21 @@ public class AudioPlayService extends Service implements
         }
         // remove audio focus
         removeAudioFocus();
+        mAudioProxy.unregisterCacheListener(this);
+    }
+
+    @Override
+    public void onCacheAvailable(File cacheFile, String url, int percentsAvailable) {
+        if (percentsAvailable == 100) {
+            Toast.makeText(this, getString(R.string.cache_complete), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void checkCachedState() {
+        HttpProxyCacheServer proxy = App.getProxy(this);
+        if (proxy.isCached(mAudioHref)) {
+            mCachedProgress = 100;
+        }
     }
 
     public class LocalBinder extends Binder{
@@ -212,7 +228,6 @@ public class AudioPlayService extends Service implements
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
-        mMediaPlayer.setOnSeekCompleteListener(this);
         mMediaPlayer.reset();
 
         mMediaPlayer.setAudioAttributes(
@@ -220,8 +235,12 @@ public class AudioPlayService extends Service implements
                         .build()
         );
 
+        mAudioProxy = App.getProxy(this);
+        String proxyUrl = mAudioProxy.getProxyUrl(mAudioHref);
+        checkCachedState();
+        mAudioProxy.registerCacheListener(this, mAudioHref);
         try {
-            mMediaPlayer.setDataSource(mAudioHref);
+            mMediaPlayer.setDataSource(proxyUrl);
         } catch (IOException e) {
             e.printStackTrace();
             stopSelf();
@@ -240,6 +259,7 @@ public class AudioPlayService extends Service implements
         if (mMediaPlayer == null) return;
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
+            mResumePosition = 0;
             updateNotification(ACTION_PLAY);
         }
     }
@@ -310,6 +330,6 @@ public class AudioPlayService extends Service implements
     }
 
     public int getCachedProgress() {
-        return mCachedProgress;
+        return mCachedProgress  * getDuration() / 100;
     }
 }

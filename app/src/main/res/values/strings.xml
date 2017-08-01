@@ -14,4 +14,6 @@
     <string name="article_vocabulary">Vocabulary</string>
     <string name="article_transcript">Transcript</string>
 
+    <string name="cache_complete">Audio cached completed</string>
+
 </resources>

@@ -266,8 +266,10 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void showAudioLoading() {
+        boolean isCached =
+                (mAudioService.getCurrentPosition() - mAudioService.getCachedProgress()) < 1000;
         if (mAudioService.isPrepared()
-                && mAudioService.getCachedProgress() >= mAudioService.getCurrentPosition()) {
+                && isCached) {
             mAudioLoading.setVisibility(View.INVISIBLE);
             mPlayButton.setVisibility(View.VISIBLE);
         } else {
