@@ -22,10 +22,12 @@
         android:title="@string/setting_about">
 
         <Preference
-            android:title="@string/version"
+            android:title="@string/setting_version_title"
+            android:key="@string/setting_version_key"
             android:summary="Beta 0.5"/>
         <Preference
-            android:title="@string/licenses"/>
+            android:title="@string/setting_licenses_title"
+            android:key="@string/setting_licenses_key"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -28,8 +28,12 @@
 
     <string name="setting_about">About</string>
 
-    <string name="version">Version</string>
-    <string name="licenses">Licenses</string>
+    <string name="setting_version_title">Version</string>
+    <string name="setting_version_key">version_key</string>
+
+    <string name="open_source_license">Open Source Licenses</string>
+    <string name="setting_licenses_title">Licenses</string>
+    <string name="setting_licenses_key">licenses_key</string>
 
     <string name="pref_last_update_time_key">last_update_key</string>
 
