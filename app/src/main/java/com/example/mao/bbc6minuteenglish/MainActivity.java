@@ -83,13 +83,19 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_refresh) {
-            mSwipeContainer.setRefreshing(true);
-            BBCSyncUtility.contentListSync(this);
-            getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
-            return true;
+        switch (item.getItemId()){
+            case R.id.menu_refresh:
+                mSwipeContainer.setRefreshing(true);
+                BBCSyncUtility.contentListSync(this);
+                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
+                return true;
+            case R.id.menu_setting:
+                Intent intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

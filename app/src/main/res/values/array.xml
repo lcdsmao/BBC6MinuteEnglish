@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="setting_history_entries">
+        <item>@string/setting_history_less</item>
+        <item>@string/setting_history_normal</item>
+        <item>@string/setting_history_more</item>
+    </array>
+
+    <array name="setting_history_values">
+        <item>@string/setting_history_less</item>
+        <item>@string/setting_history_normal</item>
+        <item>@string/setting_history_more</item>
+    </array>
+</resources>

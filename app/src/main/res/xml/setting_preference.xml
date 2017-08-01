@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/setting_general">
+
+        <ListPreference
+            android:title="@string/setting_history_title"
+            android:key="@string/setting_history_key"
+            android:entries="@array/setting_history_entries"
+            android:entryValues="@array/setting_history_values"
+            android:defaultValue="@string/setting_history_less"
+            android:summary="Max history is 20"/>
+
+        <CheckBoxPreference
+            android:title="@string/setting_notification_title"
+            android:key="@string/setting_notification_key"/>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/setting_about">
+
+        <Preference
+            android:title="@string/version"
+            android:summary="Beta 0.5"/>
+        <Preference
+            android:title="@string/licenses"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
