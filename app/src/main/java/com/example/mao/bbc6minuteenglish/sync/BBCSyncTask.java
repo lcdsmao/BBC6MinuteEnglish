@@ -37,7 +37,7 @@ public class BBCSyncTask {
     synchronized public static void syncContentList(Context context) {
         Elements contentList = BBCHtmlUtility.getContentsList();
         if (contentList == null) return;
-        final int max = PreferenceUtility.getPreferenceMaxHistory(context);
+        int max = PreferenceUtility.getPreferenceMaxHistory(context);
         int maxLength = Math.min(max, contentList.size());
         ContentResolver contentResolver = context.getContentResolver();
 

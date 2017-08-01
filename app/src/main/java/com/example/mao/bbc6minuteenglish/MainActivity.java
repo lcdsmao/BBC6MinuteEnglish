@@ -2,8 +2,10 @@ package com.example.mao.bbc6minuteenglish;
 
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -24,7 +26,7 @@ import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener{
 
     public static final String TAG = MainActivity.class.getName();
 
@@ -67,14 +69,32 @@ public class MainActivity extends AppCompatActivity implements
         mContentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
-        initializeRefresh();
-        getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
+        if (PreferenceUtility.isUpdateNeed(this)) {
+            pullLatestContent();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (!BBCSyncUtility.sIsContentListSyncComplete) {
+            mSwipeContainer.setRefreshing(true);
+        }
         getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -87,9 +107,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_refresh:
-                mSwipeContainer.setRefreshing(true);
-                BBCSyncUtility.contentListSync(this);
-                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
+                pullLatestContent();
                 return true;
             case R.id.menu_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
@@ -141,14 +159,18 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
+        pullLatestContent();
+    }
+
+    private void pullLatestContent() {
+        mSwipeContainer.setRefreshing(true);
         BBCSyncUtility.contentListSync(this);
         getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
-    private void initializeRefresh() {
-        if (PreferenceUtility.isUpdateNeed(this)) {
-            mSwipeContainer.setRefreshing(true);
-            BBCSyncUtility.contentListSync(this);
-        }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // For future use
+        Log.v(TAG, key);
     }
 }

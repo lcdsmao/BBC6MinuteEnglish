@@ -17,7 +17,7 @@
 
     <string name="setting_general">General</string>
 
-    <string name="setting_history_title">Max history</string>
+    <string name="setting_history_title">Max History</string>
     <string name="setting_history_key">history_key</string>
     <string name="setting_history_less">20</string>
     <string name="setting_history_normal">50</string>

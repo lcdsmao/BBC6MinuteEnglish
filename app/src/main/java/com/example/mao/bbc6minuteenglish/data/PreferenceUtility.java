@@ -16,8 +16,9 @@ public class PreferenceUtility {
 
     public static int getPreferenceMaxHistory(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String maxHistoryKey = context.getString(R.string.setting_notification_key);
-        return sharedPreferences.getInt(maxHistoryKey, 20);
+        String maxHistoryKey = context.getString(R.string.setting_history_key);
+        return Integer.parseInt(sharedPreferences.getString(maxHistoryKey,
+                context.getString(R.string.setting_history_less)));
     }
 
     public static boolean getNotificationSwitch(Context context) {
