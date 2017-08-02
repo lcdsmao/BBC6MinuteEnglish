@@ -32,6 +32,8 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity android:name=".SettingActivity"/>
+
         <provider
             android:name=".data.BBCContentProvider"
             android:authorities="com.example.mao.bbc6minuteenglish"
@@ -48,7 +50,13 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".SettingActivity"></activity>
+        <service android:name=".sync.ScheduleSyncJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

@@ -13,7 +13,8 @@
 
         <CheckBoxPreference
             android:title="@string/setting_notification_title"
-            android:key="@string/setting_notification_key"/>
+            android:key="@string/setting_notification_key"
+            android:defaultValue="true"/>
 
 
     </PreferenceCategory>

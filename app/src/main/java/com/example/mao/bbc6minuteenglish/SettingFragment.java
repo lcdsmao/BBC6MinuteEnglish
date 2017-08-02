@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.webkit.WebView;
 
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
+import com.example.mao.bbc6minuteenglish.sync.JobDispatcher;
 
 
 public class SettingFragment extends PreferenceFragment
@@ -31,6 +32,8 @@ public class SettingFragment extends PreferenceFragment
         if (getString(R.string.setting_history_key).equals(key)) {
             BBCSyncUtility.contentListSync(getActivity());
             setMaxHistorySummary();
+        } else if (getString(R.string.setting_notification_key).equals(key)) {
+            JobDispatcher.dispatcherScheduleSync(getActivity());
         }
     }
 

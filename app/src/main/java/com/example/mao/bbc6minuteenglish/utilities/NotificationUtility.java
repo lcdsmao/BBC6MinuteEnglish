@@ -1,6 +1,7 @@
 package com.example.mao.bbc6minuteenglish.utilities;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.example.mao.bbc6minuteenglish.ArticleActivity;
 import com.example.mao.bbc6minuteenglish.AudioPlayService;
+import com.example.mao.bbc6minuteenglish.MainActivity;
 import com.example.mao.bbc6minuteenglish.R;
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
@@ -102,5 +104,23 @@ public class NotificationUtility {
         PendingIntent pendingIntentService = PendingIntent.getService(context, 0, intentService, 0);
         return new NotificationCompat.Action(
                 getDrawable(action), getActionName(context, action), pendingIntentService);
+    }
+
+    public static void showNewContentNotification(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification = new NotificationCompat.Builder(context)
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_headset)
+                .setContentTitle("New Content")
+                .setContentText("Let's start")
+                .setColor(ContextCompat.getColor(context, R.color.primary))
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(12345, notification);
     }
 }

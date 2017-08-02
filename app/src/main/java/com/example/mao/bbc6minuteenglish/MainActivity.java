@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.data.PreferenceUtility;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
+import com.example.mao.bbc6minuteenglish.sync.JobDispatcher;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements
         mContentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
+        JobDispatcher.dispatcherScheduleSync(this);
         if (PreferenceUtility.isUpdateNeed(this)) {
             mSwipeContainer.setRefreshing(true);
             BBCSyncUtility.contentListSync(this);

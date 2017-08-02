@@ -34,9 +34,10 @@ public class BBCSyncTask {
         context.getContentResolver().update(uriWithTimeStamp, contentValuesArticle, null, null);
     }
 
-    synchronized public static void syncContentList(Context context) {
+    synchronized public static boolean syncContentList(Context context) {
+        boolean isNewContent = true;
         Elements contentList = BBCHtmlUtility.getContentsList();
-        if (contentList == null) return;
+        if (contentList == null) return false;
         int max = PreferenceUtility.getPreferenceMaxHistory(context);
         int maxHistory = Math.min(max, contentList.size());
         ContentResolver contentResolver = context.getContentResolver();
@@ -49,6 +50,7 @@ public class BBCSyncTask {
                         BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
                         contentValues);
             } catch (SQLException e) {
+                if (i == 0) isNewContent = false;
                 Log.e(TAG, e.getMessage());
             }
         }
@@ -58,5 +60,6 @@ public class BBCSyncTask {
                 null);
         BBCSyncUtility.sIsContentListSyncComplete = true;
         PreferenceUtility.setLastUpdateTime(context, System.currentTimeMillis());
+        return isNewContent;
     }
 }
