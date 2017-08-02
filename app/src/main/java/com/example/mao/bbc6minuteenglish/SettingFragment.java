@@ -1,6 +1,5 @@
 package com.example.mao.bbc6minuteenglish;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -54,7 +53,6 @@ public class SettingFragment extends PreferenceFragment
     }
 
     private void setPreferenceClickListener() {
-        Context context = getActivity();
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         Preference licensesPreference =
                 preferenceScreen.findPreference(getString(R.string.setting_licenses_key));

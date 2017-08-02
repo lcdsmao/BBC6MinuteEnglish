@@ -38,10 +38,10 @@ public class BBCSyncTask {
         Elements contentList = BBCHtmlUtility.getContentsList();
         if (contentList == null) return;
         int max = PreferenceUtility.getPreferenceMaxHistory(context);
-        int maxLength = Math.min(max, contentList.size());
+        int maxHistory = Math.min(max, contentList.size());
         ContentResolver contentResolver = context.getContentResolver();
 
-        for (int i = 0; i < maxLength; i++) {
+        for (int i = 0; i < maxHistory; i++) {
             Element content = contentList.get(i);
             ContentValues contentValues = BBCContentUtility.getContentValues(content);
             try {
@@ -53,19 +53,8 @@ public class BBCSyncTask {
             }
         }
 
-        final String where = BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
-                + " NOT IN "
-                + " (SELECT "
-                + BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP
-                + " FROM "
-                + BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME
-                + " ORDER BY "
-                + BBCContentContract.BBC6MinuteEnglishEntry.SORT_ORDER
-                + " LIMIT "
-                + maxLength
-                + ")";
         contentResolver.delete(BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
-                where,
+                BBCContentContract.BBC6MinuteEnglishEntry.getMaxHistoryWhere(maxHistory),
                 null);
         BBCSyncUtility.sIsContentListSyncComplete = true;
         PreferenceUtility.setLastUpdateTime(context, System.currentTimeMillis());

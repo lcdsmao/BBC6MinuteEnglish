@@ -120,14 +120,7 @@ public class BBCHtmlUtility {
 
     public static long getTimeStamp(Element content) {
         String time = getTime(content);
-        long timestamp = -1;
-        try {
-            DateFormat format = new SimpleDateFormat("dd MMM yyyy");
-            timestamp = format.parse(time).getTime();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return timestamp;
+        return TimeUtility.getTimeStamp(time);
     }
 
     public static Document getArticleDocument(String articleHref) {

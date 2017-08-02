@@ -33,5 +33,19 @@ public class BBCContentContract {
 
         public static final String SORT_ORDER =
                 BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + " DESC";
+
+        public static String getMaxHistoryWhere(int maxHistory) {
+            return COLUMN_TIMESTAMP
+                    + " NOT IN "
+                    + " (SELECT "
+                    + COLUMN_TIMESTAMP
+                    + " FROM "
+                    + TABLE_NAME
+                    + " ORDER BY "
+                    + SORT_ORDER
+                    + " LIMIT "
+                    + maxHistory
+                    + ")";
+        }
     }
 }

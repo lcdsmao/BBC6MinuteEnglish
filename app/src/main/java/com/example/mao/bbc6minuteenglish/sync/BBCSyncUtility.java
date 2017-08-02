@@ -15,7 +15,7 @@ import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
 public class BBCSyncUtility {
 
-    public static boolean sIsContentListSyncComplete = true;
+    protected static boolean sIsContentListSyncComplete = true;
 
     synchronized public static void articleInitialize(final Context context,
                                                       @NonNull final Uri uriWithTimeStamp) {
@@ -50,6 +50,10 @@ public class BBCSyncUtility {
 
         checkForEmpty.start();
 
+    }
+
+    public static boolean isIsContentListSyncComplete() {
+        return sIsContentListSyncComplete;
     }
 
     synchronized public static void contentListSync(final Context context){

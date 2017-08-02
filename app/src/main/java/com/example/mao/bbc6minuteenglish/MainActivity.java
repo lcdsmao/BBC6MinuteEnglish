@@ -70,13 +70,17 @@ public class MainActivity extends AppCompatActivity implements
         /*Set the recycler view complete*/
 
         if (PreferenceUtility.isUpdateNeed(this)) {
-            pullLatestContent();
+            mSwipeContainer.setRefreshing(true);
+            BBCSyncUtility.contentListSync(this);
         }
+        Log.v(TAG, "On create");
+        getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.v(TAG, "On start");
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
     }
@@ -84,15 +88,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (!BBCSyncUtility.sIsContentListSyncComplete) {
+        Log.v(TAG, "On resume");
+        if (!BBCSyncUtility.isIsContentListSyncComplete()) {
             mSwipeContainer.setRefreshing(true);
         }
-        getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.v(TAG, "On stop");
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
@@ -107,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_refresh:
-                pullLatestContent();
+                mSwipeContainer.setRefreshing(true);
+                BBCSyncUtility.contentListSync(this);
                 return true;
             case R.id.menu_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
         mBBCContentAdapter.swapCursor(data);
-        if (BBCSyncUtility.sIsContentListSyncComplete) {
+        if (BBCSyncUtility.isIsContentListSyncComplete()) {
             mSwipeContainer.setRefreshing(false);
         }
     }
@@ -159,13 +165,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-        pullLatestContent();
-    }
-
-    private void pullLatestContent() {
-        mSwipeContainer.setRefreshing(true);
         BBCSyncUtility.contentListSync(this);
-        getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
     }
 
     @Override

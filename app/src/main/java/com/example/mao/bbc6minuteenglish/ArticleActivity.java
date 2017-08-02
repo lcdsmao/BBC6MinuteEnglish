@@ -1,6 +1,5 @@
 package com.example.mao.bbc6minuteenglish;
 
-import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -9,12 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -22,24 +16,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
-import com.example.mao.bbc6minuteenglish.utilities.AudioTimeUtility;
+import com.example.mao.bbc6minuteenglish.utilities.TimeUtility;
 import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
-import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
 public class ArticleActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener,
@@ -323,8 +312,8 @@ public class ArticleActivity extends AppCompatActivity implements
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Here to update the time of audio
         if (mBond) {
-            mCurrentTextView.setText(AudioTimeUtility.getDisplayTime(progress));
-            mDurationTextView.setText(AudioTimeUtility.getDisplayTime(mAudioService.getDuration()));
+            mCurrentTextView.setText(TimeUtility.getDisplayTime(progress));
+            mDurationTextView.setText(TimeUtility.getDisplayTime(mAudioService.getDuration()));
         }
     }
 
