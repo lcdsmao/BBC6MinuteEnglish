@@ -2,13 +2,18 @@ package com.example.mao.bbc6minuteenglish;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +26,16 @@ import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
 import java.io.File;
 import java.io.IOException;
+
+/**
+ * Create by mao 2017.7
+ *
+ * Thanks for the guide
+ * A Step by Step Guide to Building an Android Audio Player App
+ * By Valdio Veliu  August 19, 2016
+ * https://www.sitepoint.com/a-step-by-step-guide-to-building-an-android-audio-player-app/
+ */
+
 
 public class AudioPlayService extends Service implements
         MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener,
@@ -49,6 +64,10 @@ public class AudioPlayService extends Service implements
     private Uri mUriWithTimeStamp;
     private int mCachedProgress;
 
+    //Handle incoming phone calls
+    private boolean mOngoingCall = false;
+    private PhoneStateListener mPhoneStateListener;
+    private TelephonyManager mTelephonyManager;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -190,14 +209,25 @@ public class AudioPlayService extends Service implements
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        callStateListener();
+        registerBecomingNoisyReceiver();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mMediaPlayer != null) {
             stopMedia();
             mMediaPlayer.release();
         }
+        if (mTelephonyManager != null) {
+            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
         // remove audio focus
         removeAudioFocus();
+        unRegisterBecomingNoisyReceiver();
         mAudioProxy.unregisterCacheListener(this);
     }
 
@@ -206,6 +236,63 @@ public class AudioPlayService extends Service implements
         if (percentsAvailable == 100) {
             Toast.makeText(this, getString(R.string.cache_complete), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //Handle incoming phone calls
+    private void callStateListener() {
+        // Get the telephony manager
+        mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        //Starting listening for PhoneState changes
+        mPhoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                switch (state) {
+                    //if at least one call exists or the phone is ringing
+                    //pause the MediaPlayer
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        if (mMediaPlayer != null) {
+                            pauseMedia();
+                            mOngoingCall = true;
+                        }
+                        break;
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        // Phone idle. Start playing.
+                        if (mMediaPlayer != null) {
+                            if (mOngoingCall) {
+                                mOngoingCall = false;
+                                resumeMedia();
+                            }
+                        }
+                        break;
+                }
+            }
+        };
+        // Register the listener with the telephony manager
+        // Listen for changes to the device call state.
+        mTelephonyManager.listen(mPhoneStateListener,
+                PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
+    //Becoming noisy
+    private BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //pause audio on ACTION_AUDIO_BECOMING_NOISY
+            pauseMedia();
+            NotificationUtility.buildAudioServiceNotification(
+                    AudioPlayService.this, mUriWithTimeStamp, ACTION_PAUSE);
+        }
+    };
+
+    private void registerBecomingNoisyReceiver() {
+        //register after getting audio focus
+        IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        registerReceiver(becomingNoisyReceiver, intentFilter);
+    }
+
+    private void unRegisterBecomingNoisyReceiver() {
+        unregisterReceiver(becomingNoisyReceiver);
     }
 
     private void checkCachedState() {
