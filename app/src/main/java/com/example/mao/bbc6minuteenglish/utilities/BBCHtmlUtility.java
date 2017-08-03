@@ -9,8 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by MAO on 7/17/2017.
@@ -22,8 +20,23 @@ public class BBCHtmlUtility {
     private static final String BBC_URL = "http://www.bbc.co.uk";
 
     // Url of 6 minute English home page
-    private static final String BBC_6_MINUTE_ENGLISH_URL =
+    public static final String BBC_6_MINUTE_ENGLISH_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/6-minute-english";
+
+    public static final String BBC_NEWS_REPORT_URL =
+            "http://www.bbc.co.uk/learningenglish/english/features/news-report";
+
+    public static final String BBC_THE_ENGLISH_WE_SPEAK_URL =
+            "http://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak";
+
+    public static final String BBC_ENGLISH_AT_WORK =
+            "http://www.bbc.co.uk/learningenglish/english/features/english-at-work";
+
+    public static final String BBC_ENGLISH_AT_UNIVERSITY =
+            "http://www.bbc.co.uk/learningenglish/english/features/english-at-university";
+
+    public static final String BBC_LINGO_HACK =
+            "http://www.bbc.co.uk/learningenglish/english/features/lingohack";
 
     /**
      * Connect to bbc 6 minute English to get the newest document html.
