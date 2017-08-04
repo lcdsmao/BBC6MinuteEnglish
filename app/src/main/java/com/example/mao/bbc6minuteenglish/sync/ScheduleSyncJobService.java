@@ -1,6 +1,6 @@
 package com.example.mao.bbc6minuteenglish.sync;
 
-import com.example.mao.bbc6minuteenglish.data.PreferenceUtility;
+import com.example.mao.bbc6minuteenglish.data.BBCPreference;
 import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -15,7 +15,7 @@ public class ScheduleSyncJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        if (PreferenceUtility.isUpdateNeed(this)) {
+        if (BBCPreference.isUpdateNeed(this)) {
             boolean isNewContent = BBCSyncTask.syncContentList(this);
             if (isNewContent) {
                 NotificationUtility.showNewContentNotification(this);

@@ -13,6 +13,7 @@ import android.webkit.WebView;
 
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 import com.example.mao.bbc6minuteenglish.sync.JobDispatcher;
+import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
 
 
 public class SettingFragment extends PreferenceFragment
@@ -34,6 +35,7 @@ public class SettingFragment extends PreferenceFragment
             setMaxHistorySummary();
         } else if (getString(R.string.setting_notification_key).equals(key)) {
             JobDispatcher.dispatcherScheduleSync(getActivity());
+            NotificationUtility.showNewContentNotification(getActivity());
         }
     }
 
@@ -48,7 +50,7 @@ public class SettingFragment extends PreferenceFragment
         WebView view = (WebView) LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_licenses, null);
         view.loadUrl("file:///android_asset/Licenses.html");
-        new AlertDialog.Builder(getActivity(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+        new AlertDialog.Builder(getActivity(), R.style.AppTheme_Dialog)
                 .setTitle(getString(R.string.open_source_license))
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)

@@ -2,7 +2,7 @@ package com.example.mao.bbc6minuteenglish.sync;
 
 import android.content.Context;
 
-import com.example.mao.bbc6minuteenglish.data.PreferenceUtility;
+import com.example.mao.bbc6minuteenglish.data.BBCPreference;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -45,7 +45,7 @@ public class JobDispatcher {
     }
 
     public static void dispatcherScheduleSync(Context context) {
-        if (PreferenceUtility.getNotificationSwitch(context)) {
+        if (BBCPreference.getNotificationSwitch(context)) {
             buildScheduleSync(context);
         } else {
             cancelScheduleSync(context);

@@ -21,7 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.data.PreferenceUtility;
+import com.example.mao.bbc6minuteenglish.data.BBCPreference;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 import com.example.mao.bbc6minuteenglish.sync.JobDispatcher;
 
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final int BBC_CONTENT_LOADER_ID = 1;
 
     private BBCContentAdapter mBBCContentAdapter;
-    private RecyclerView mContentRecycleView;
     private SwipeRefreshLayout mSwipeContainer;
 
     // Projection for Showing data
@@ -63,15 +62,14 @@ public class MainActivity extends AppCompatActivity implements
         mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent));
 
         /*Set the recycler view*/
-        mContentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
-
         mBBCContentAdapter = new BBCContentAdapter(this, this);
-        mContentRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mContentRecycleView.setAdapter(mBBCContentAdapter);
+        RecyclerView contentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
+        contentRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        contentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
         JobDispatcher.dispatcherScheduleSync(this);
-        if (PreferenceUtility.isUpdateNeed(this)) {
+        if (BBCPreference.isUpdateNeed(this)) {
             mSwipeContainer.setRefreshing(true);
             BBCSyncUtility.contentListSync(this);
         }

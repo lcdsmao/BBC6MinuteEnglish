@@ -29,13 +29,13 @@ public class BBCHtmlUtility {
     public static final String BBC_THE_ENGLISH_WE_SPEAK_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak";
 
-    public static final String BBC_ENGLISH_AT_WORK =
+    public static final String BBC_ENGLISH_AT_WORK_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/english-at-work";
 
-    public static final String BBC_ENGLISH_AT_UNIVERSITY =
+    public static final String BBC_ENGLISH_AT_UNIVERSITY_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/english-at-university";
 
-    public static final String BBC_LINGO_HACK =
+    public static final String BBC_LINGO_HACK_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/lingohack";
 
     /**

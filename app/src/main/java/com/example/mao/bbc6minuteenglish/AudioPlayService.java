@@ -82,6 +82,7 @@ public class AudioPlayService extends Service implements
         switch (action) {
             case ACTION_INITIALIZE:
                 initialize(intent);
+                break;
             case ACTION_PLAY:
                 resumeMedia();
                 break;
@@ -150,6 +151,7 @@ public class AudioPlayService extends Service implements
                 break;
             default:
                 Log.d("MediaPlayer Error", "UNKNOWN" + extra);
+                break;
         }
         return false;
     }
@@ -193,6 +195,8 @@ public class AudioPlayService extends Service implements
                 // Lost focus for a short time, but it's ok to keep playing
                 // at an attenuated level
                 if (mMediaPlayer.isPlaying()) mMediaPlayer.setVolume(0.1f, 0.1f);
+                break;
+            default:
                 break;
         }
     }
@@ -258,12 +262,12 @@ public class AudioPlayService extends Service implements
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
                         // Phone idle. Start playing.
-                        if (mMediaPlayer != null) {
-                            if (mOngoingCall) {
-                                mOngoingCall = false;
-                                resumeMedia();
-                            }
+                        if (mMediaPlayer != null && mOngoingCall) {
+                            mOngoingCall = false;
+                            resumeMedia();
                         }
+                        break;
+                    default:
                         break;
                 }
             }
@@ -299,6 +303,8 @@ public class AudioPlayService extends Service implements
         HttpProxyCacheServer proxy = App.getProxy(this);
         if (proxy.isCached(mAudioHref)) {
             mCachedProgress = 100;
+        } else {
+            Toast.makeText(this, getString(R.string.cache_start), Toast.LENGTH_SHORT).show();
         }
     }
 

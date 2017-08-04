@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.data.PreferenceUtility;
+import com.example.mao.bbc6minuteenglish.data.BBCPreference;
 import com.example.mao.bbc6minuteenglish.utilities.BBCContentUtility;
 import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
 
@@ -38,7 +38,7 @@ public class BBCSyncTask {
         boolean isNewContent = true;
         Elements contentList = BBCHtmlUtility.getContentsList();
         if (contentList == null) return false;
-        int max = PreferenceUtility.getPreferenceMaxHistory(context);
+        int max = BBCPreference.getPreferenceMaxHistory(context);
         int maxHistory = Math.min(max, contentList.size());
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -59,7 +59,7 @@ public class BBCSyncTask {
                 BBCContentContract.BBC6MinuteEnglishEntry.getMaxHistoryWhere(maxHistory),
                 null);
         BBCSyncUtility.sIsContentListSyncComplete = true;
-        PreferenceUtility.setLastUpdateTime(context, System.currentTimeMillis());
+        BBCPreference.setLastUpdateTime(context, System.currentTimeMillis());
         return isNewContent;
     }
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Created by MAO on 8/1/2017.
  */
 
-public class PreferenceUtility {
+public class BBCPreference {
 
     public static int getPreferenceMaxHistory(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

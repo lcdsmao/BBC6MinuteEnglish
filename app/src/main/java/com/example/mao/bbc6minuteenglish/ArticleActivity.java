@@ -66,10 +66,8 @@ public class ArticleActivity extends AppCompatActivity implements
     private ViewPager mArticleViewPager;
     private TabLayout mTabLayout;
     private Toolbar mToolbar;
-    private ImageView mForwardButton;
-    private ImageView mReplayButton;
-    private TextView mCurrentTextView;
-    private TextView mDurationTextView;
+    private TextView mCurrentTimeText;
+    private TextView mDurationTimeText;
 
     private Handler mPlayerHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
@@ -118,12 +116,12 @@ public class ArticleActivity extends AppCompatActivity implements
         mTabLayout = (TabLayout) findViewById(R.id.tabbar);
         mArticleViewPager = (ViewPager) findViewById(R.id.view_pager);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mForwardButton = (ImageView) findViewById(R.id.iv_forward);
-        mForwardButton.setOnClickListener(this);
-        mReplayButton = (ImageView) findViewById(R.id.iv_replay);
-        mReplayButton.setOnClickListener(this);
-        mCurrentTextView = (TextView) findViewById(R.id.tv_current);
-        mDurationTextView = (TextView) findViewById(R.id.tv_duration);
+        ImageView ForwardButton = (ImageView) findViewById(R.id.iv_forward);
+        ForwardButton.setOnClickListener(this);
+        ImageView ReplayButton = (ImageView) findViewById(R.id.iv_replay);
+        ReplayButton.setOnClickListener(this);
+        mCurrentTimeText = (TextView) findViewById(R.id.tv_current);
+        mDurationTimeText = (TextView) findViewById(R.id.tv_duration);
     }
 
     @Override
@@ -168,7 +166,7 @@ public class ArticleActivity extends AppCompatActivity implements
         }
 
         if (!TextUtils.isEmpty(audioHref)) {
-            playAudio(audioHref);
+            prepareAudioService(audioHref);
         }
     }
 
@@ -220,7 +218,7 @@ public class ArticleActivity extends AppCompatActivity implements
         }
     }
 
-    private void playAudio(String audioHref) {
+    private void prepareAudioService(String audioHref) {
         //Check is service is active
         if (!mBond) {
             Intent playerIntent = new Intent(this, AudioPlayService.class)
@@ -233,7 +231,7 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void updateSeekBar(){
-        if (mAudioService.isPrepared()) {
+        if (mBond && mAudioService.isPrepared()) {
             mAudioSeekBar.setEnabled(true);
             mAudioSeekBar.setMax(mAudioService.getDuration());
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
@@ -247,7 +245,7 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void updatePlayButton() {
-        if (mAudioService.isPlaying()) {
+        if (mBond && mAudioService.isPlaying()) {
             mPlayButton.setImageResource(R.drawable.ic_pause);
         } else {
             mPlayButton.setImageResource(R.drawable.ic_play_arrow);
@@ -255,6 +253,7 @@ public class ArticleActivity extends AppCompatActivity implements
     }
 
     private void showAudioLoading() {
+        if (!mBond) return;
         boolean isCached =
                 (mAudioService.getCurrentPosition() - mAudioService.getCachedProgress()) < 1000;
         if (mAudioService.isPrepared()
@@ -312,8 +311,8 @@ public class ArticleActivity extends AppCompatActivity implements
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Here to update the time of audio
         if (mBond) {
-            mCurrentTextView.setText(TimeUtility.getDisplayTime(progress));
-            mDurationTextView.setText(TimeUtility.getDisplayTime(mAudioService.getDuration()));
+            mCurrentTimeText.setText(TimeUtility.getDisplayTime(progress));
+            mDurationTimeText.setText(TimeUtility.getDisplayTime(mAudioService.getDuration()));
         }
     }
 
@@ -324,7 +323,7 @@ public class ArticleActivity extends AppCompatActivity implements
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        if (mBond && mAudioService.isPrepared()) {
+        if (mBond) {
             mAudioService.controlSeekPosition(seekBar.getProgress());
         }
         mPlayerHandler.postDelayed(mRunnable, REFRESH_TIME_INTERVAL);

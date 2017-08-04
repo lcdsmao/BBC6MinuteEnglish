@@ -83,10 +83,10 @@ public class BBCContentAdapter extends
     public class BBCContentAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener{
 
-        ImageView mThumbnailImageView;
-        TextView mTitleTextView;
-        TextView mTimeTextView;
-        TextView mDescriptionTextView;
+        private ImageView mThumbnailImageView;
+        private TextView mTitleTextView;
+        private TextView mTimeTextView;
+        private TextView mDescriptionTextView;
 
         public BBCContentAdapterViewHolder (View view) {
             super(view);

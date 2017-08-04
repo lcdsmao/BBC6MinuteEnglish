@@ -13,28 +13,30 @@
     <string name="article_vocabulary">Vocabulary</string>
     <string name="article_transcript">Transcript</string>
 
-    <string name="cache_complete">Audio cached completed</string>
+    <string name="cache_start">Start downloading audio</string>
+    <string name="cache_complete">Audio download is complete</string>
 
     <string name="setting_general">General</string>
 
-    <string name="setting_history_title">Max History</string>
-    <string name="setting_history_key">history_key</string>
-    <string name="setting_history_less">20</string>
-    <string name="setting_history_normal">50</string>
-    <string name="setting_history_more">100</string>
+    <string name="setting_history_title">Max history</string>
+    <string name="setting_history_key" translatable="false">history_key</string>
+    <string name="setting_history_less" translatable="false">20</string>
+    <string name="setting_history_normal" translatable="false">50</string>
+    <string name="setting_history_more" translatable="false">100</string>
 
     <string name="setting_notification_title">Notification</string>
-    <string name="setting_notification_key">notification_key</string>
+    <string name="setting_notification_summary">Enable it to receive new content notification</string>
+    <string name="setting_notification_key" translatable="false">notification_key</string>
 
     <string name="setting_about">About</string>
 
     <string name="setting_version_title">Version</string>
-    <string name="setting_version_key">version_key</string>
+    <string name="setting_version_key" translatable="false">version_key</string>
 
     <string name="open_source_license">Open Source Licenses</string>
     <string name="setting_licenses_title">Licenses</string>
-    <string name="setting_licenses_key">licenses_key</string>
+    <string name="setting_licenses_key" translatable="false">licenses_key</string>
 
-    <string name="pref_last_update_time_key">last_update_key</string>
+    <string name="pref_last_update_time_key" translatable="false">last_update_key</string>
 
 </resources>
