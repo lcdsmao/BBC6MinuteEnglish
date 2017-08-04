@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ContentListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,16 +24,16 @@
         </activity>
         <activity
             android:name=".ArticleActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:parentActivityName=".ContentListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ContentListActivity" />
         </activity>
-
-        <activity android:name=".SettingActivity"/>
+        <activity android:name=".SettingActivity"
+            android:label="@string/setting"/>
 
         <provider
             android:name=".data.BBCContentProvider"
@@ -49,14 +50,13 @@
             android:name=".AudioPlayService"
             android:enabled="true"
             android:exported="false" />
-
-        <service android:name=".sync.ScheduleSyncJobService"
+        <service
+            android:name=".sync.ScheduleSyncJobService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

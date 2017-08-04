@@ -47,17 +47,17 @@ public class BBCContentAdapter extends
         mCursor.moveToPosition(position);
 
         // Title set
-        holder.mTitleTextView.setText(mCursor.getString(MainActivity.TITLE_INDEX));
+        holder.mTitleTextView.setText(mCursor.getString(ContentListActivity.TITLE_INDEX));
 
         // Time set
-        holder.mTimeTextView.setText(mCursor.getString(MainActivity.TIME_INDEX));
+        holder.mTimeTextView.setText(mCursor.getString(ContentListActivity.TIME_INDEX));
 
         // Description set
-        holder.mDescriptionTextView.setText(mCursor.getString(MainActivity.DESCRIPTION_INDEX));
+        holder.mDescriptionTextView.setText(mCursor.getString(ContentListActivity.DESCRIPTION_INDEX));
 
         // Use picasso to load image
         Picasso.with(mContext)
-                .load(mCursor.getString(MainActivity.THUMBNAIL_INDEX))
+                .load(mCursor.getString(ContentListActivity.THUMBNAIL_INDEX))
                 .resizeDimen(R.dimen.list_item_img_width, R.dimen.list_item_img_height)
                 .centerCrop()
                 .placeholder(R.drawable.image_place_holder)
@@ -101,7 +101,7 @@ public class BBCContentAdapter extends
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-            mOnClickListener.onClickItem(mCursor.getLong(MainActivity.TIMESTAMP_INDEX));
+            mOnClickListener.onClickItem(mCursor.getLong(ContentListActivity.TIMESTAMP_INDEX));
         }
     }
 }

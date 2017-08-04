@@ -1,8 +1,15 @@
 <resources>
-    <string name="app_name">BBC 6 Minute English</string>
+    <string name="app_name">BBC Learning English</string>
+
+    <string name="class_6_minute_english">6 Minute English</string>
+    <string name="class_english_at_university">English at University</string>
+    <string name="class_english_at_work">English at Work</string>
+    <string name="class_news_report">News Report</string>
+    <string name="class_the_english_we_speak">The English We Speak</string>
+    <string name="class_lingo_hack">LingoHack</string>
 
     <string name="refresh">Refresh</string>
-    <string name="setting">Setting</string>
+    <string name="setting">Settings</string>
     <string name="audio_service_notification">Audio Service Notification</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
@@ -38,5 +45,11 @@
     <string name="setting_licenses_key" translatable="false">licenses_key</string>
 
     <string name="pref_last_update_time_key" translatable="false">last_update_key</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>

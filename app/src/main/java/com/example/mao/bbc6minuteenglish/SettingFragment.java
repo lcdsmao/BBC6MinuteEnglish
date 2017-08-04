@@ -35,7 +35,8 @@ public class SettingFragment extends PreferenceFragment
             setMaxHistorySummary();
         } else if (getString(R.string.setting_notification_key).equals(key)) {
             JobDispatcher.dispatcherScheduleSync(getActivity());
-            NotificationUtility.showNewContentNotification(getActivity());
+            //Test notification
+            //NotificationUtility.showNewContentNotification(getActivity());
         }
     }
 

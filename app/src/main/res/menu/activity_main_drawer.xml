@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/group_class"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/class_six"
+            android:title="@string/class_6_minute_english" />
+        <item
+            android:id="@+id/class_we_speak"
+            android:title="@string/class_the_english_we_speak" />
+        <item
+            android:id="@+id/class_news_report"
+            android:title="@string/class_news_report" />
+        <item
+            android:id="@+id/class_work"
+            android:title="@string/class_english_at_work" />
+        <item
+            android:id="@+id/class_university"
+            android:title="@string/class_english_at_university"/>
+        <item
+            android:id="@+id/class_lingo_hack"
+            android:title="@string/class_lingo_hack"/>
+    </group>
+
+    <group
+        android:id="@+id/group_other">
+        <item
+            android:id="@+id/drawer_rating"
+            android:title="Rate this App"/>
+        <item
+            android:id="@+id/drawer_setting"
+            android:title="@string/setting"/>
+    </group>
+
+</menu>

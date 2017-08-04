@@ -6,16 +6,23 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +32,12 @@ import com.example.mao.bbc6minuteenglish.data.BBCPreference;
 import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
 import com.example.mao.bbc6minuteenglish.sync.JobDispatcher;
 
-public class MainActivity extends AppCompatActivity implements
+public class ContentListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener{
+        SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener,
+        NavigationView.OnNavigationItemSelectedListener{
 
-    public static final String TAG = MainActivity.class.getName();
+    public static final String TAG = ContentListActivity.class.getName();
 
     private static final int BBC_CONTENT_LOADER_ID = 1;
 
@@ -55,7 +63,21 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_content_list);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.class_6_minute_english);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_content_container);
         mSwipeContainer.setOnRefreshListener(this);
@@ -125,6 +147,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public void onClickItem(long timeStamp) {
         Log.v(TAG, "Timestamp = " + timeStamp);
         Intent intent = new Intent(this, ArticleActivity.class);
@@ -172,5 +204,43 @@ public class MainActivity extends AppCompatActivity implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // For future use
         Log.v(TAG, key);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        ActionBar actionBar = getSupportActionBar();
+        switch (id) {
+            case R.id.class_six:
+                actionBar.setTitle(R.string.class_6_minute_english);
+                break;
+            case R.id.class_we_speak:
+                actionBar.setTitle(R.string.class_the_english_we_speak);
+                break;
+            case R.id.class_news_report:
+                actionBar.setTitle(R.string.class_news_report);
+                break;
+            case R.id.class_lingo_hack:
+                actionBar.setTitle(R.string.class_lingo_hack);
+                break;
+            case R.id.class_work:
+                actionBar.setTitle(R.string.class_english_at_work);
+                break;
+            case R.id.class_university:
+                actionBar.setTitle(R.string.class_english_at_university);
+                break;
+            case R.id.drawer_rating:
+                break;
+            case R.id.drawer_setting:
+                Intent intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                return false;
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

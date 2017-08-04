@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.example.mao.bbc6minuteenglish.ArticleActivity;
 import com.example.mao.bbc6minuteenglish.AudioPlayService;
-import com.example.mao.bbc6minuteenglish.MainActivity;
+import com.example.mao.bbc6minuteenglish.ContentListActivity;
 import com.example.mao.bbc6minuteenglish.R;
 import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 
@@ -107,7 +107,7 @@ public class NotificationUtility {
     }
 
     public static void showNewContentNotification(Context context) {
-        Intent intent = new Intent(context, MainActivity.class)
+        Intent intent = new Intent(context, ContentListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
