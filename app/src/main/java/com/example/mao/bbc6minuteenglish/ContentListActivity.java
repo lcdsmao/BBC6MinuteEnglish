@@ -37,7 +37,7 @@ public class ContentListActivity extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener,
         NavigationView.OnNavigationItemSelectedListener{
 
-    public static final String TAG = ContentListActivity.class.getName();
+    public static final String TAG = ContentListActivity.class.getSimpleName();
 
     private static final int BBC_CONTENT_LOADER_ID = 1;
 

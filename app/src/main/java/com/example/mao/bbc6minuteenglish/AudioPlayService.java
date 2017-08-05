@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Binder;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
@@ -42,7 +44,7 @@ public class AudioPlayService extends Service implements
         MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
         AudioManager.OnAudioFocusChangeListener, CacheListener{
 
-    private static final String TAG = AudioPlayService.class.getName();
+    private static final String TAG = AudioPlayService.class.getSimpleName();
 
     private HttpProxyCacheServer mAudioProxy;
 
@@ -58,7 +60,7 @@ public class AudioPlayService extends Service implements
 
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
-    private int mResumePosition;
+    private int mResumePosition = 0;
     private String mAudioHref;
     private boolean mIsPrepared;
     private Uri mUriWithTimeStamp;
@@ -101,11 +103,6 @@ public class AudioPlayService extends Service implements
     }
 
     private void initialize(Intent intent) {
-        //Request audio focus
-        if (!requestAudioFocus()) {
-            //Could not gain focus
-            stopSelf();
-        }
 
         mAudioHref = intent
                 .getStringExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF);
@@ -149,6 +146,18 @@ public class AudioPlayService extends Service implements
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
                 Log.d("MediaPlayer Error", "MEDIA ERROR UNKNOWN " + extra);
                 break;
+            case MediaPlayer.MEDIA_ERROR_IO:
+                Log.d("MediaPlayer Error", "MEDIA ERROR IO " + extra);
+                break;
+            case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
+                Log.d("MediaPlayer Error", "MEDIA ERROR TIMED OUT " + extra);
+                break;
+            case MediaPlayer.MEDIA_ERROR_MALFORMED:
+                Log.d("MediaPlayer Error", "MEDIA ERROR MALFORMED " + extra);
+                break;
+            case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
+                Log.d("MediaPlayer Error", "MEDIA ERROR UNSUPPORTED " + extra);
+                break;
             default:
                 Log.d("MediaPlayer Error", "UNKNOWN" + extra);
                 break;
@@ -158,6 +167,7 @@ public class AudioPlayService extends Service implements
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        Log.v(TAG, "audio on complete");
         stopMedia();
         removeAudioFocus();
         stopSelf();
@@ -167,6 +177,7 @@ public class AudioPlayService extends Service implements
     public void onPrepared(MediaPlayer mp) {
         mIsPrepared = true;
         playMedia();
+        mMediaPlayer.setOnCompletionListener(this);
     }
 
     @Override
@@ -175,25 +186,27 @@ public class AudioPlayService extends Service implements
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
                 // resume playback
+                Log.v(TAG, "audio focus gain");
                 if (mMediaPlayer == null) initMediaPlayer();
-                else if (!mMediaPlayer.isPlaying()) mMediaPlayer.start();
+                else playMedia();
                 mMediaPlayer.setVolume(1.0f, 1.0f);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
                 // Lost focus for an unbounded amount of time: stop playback and release media player
-                if (mMediaPlayer.isPlaying()) mMediaPlayer.stop();
-                mMediaPlayer.release();
-                mMediaPlayer = null;
+                Log.v(TAG, "audio_loss");
+                pauseMedia();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 // Lost focus for a short time, but we have to stop
                 // playback. We don't release the media player because playback
                 // is likely to resume
-                if (mMediaPlayer.isPlaying()) mMediaPlayer.pause();
+                Log.v(TAG, "Loss transient");
+                pauseMedia();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 // Lost focus for a short time, but it's ok to keep playing
                 // at an attenuated level
+                Log.v(TAG, "loss transient can duck");
                 if (mMediaPlayer.isPlaying()) mMediaPlayer.setVolume(0.1f, 0.1f);
                 break;
             default:
@@ -222,6 +235,7 @@ public class AudioPlayService extends Service implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.v(TAG, "on destroy");
         if (mMediaPlayer != null) {
             stopMedia();
             mMediaPlayer.release();
@@ -317,7 +331,8 @@ public class AudioPlayService extends Service implements
     private void initMediaPlayer() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnBufferingUpdateListener(this);
-        mMediaPlayer.setOnCompletionListener(this);
+        // On complete not work if set at here
+        //mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
@@ -342,7 +357,7 @@ public class AudioPlayService extends Service implements
     }
 
     private void playMedia() {
-        if (!mMediaPlayer.isPlaying()) {
+        if (!mMediaPlayer.isPlaying() && requestAudioFocus()) {
             mMediaPlayer.start();
             updateNotification(ACTION_PAUSE);
         }
@@ -352,9 +367,10 @@ public class AudioPlayService extends Service implements
         if (mMediaPlayer == null) return;
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
-            mResumePosition = 0;
-            updateNotification(ACTION_PLAY);
         }
+        mResumePosition = 0;
+        removeAudioFocus();
+        updateNotification(ACTION_PLAY);
     }
 
     private void pauseMedia() {
@@ -366,7 +382,7 @@ public class AudioPlayService extends Service implements
     }
 
     private void resumeMedia() {
-        if (!mMediaPlayer.isPlaying()) {
+        if (!mMediaPlayer.isPlaying() && requestAudioFocus()) {
             mMediaPlayer.seekTo(mResumePosition);
             mMediaPlayer.start();
             updateNotification(ACTION_PAUSE);
