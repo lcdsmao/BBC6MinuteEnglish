@@ -24,7 +24,7 @@
         </activity>
         <activity
             android:name="com.example.mao.BBCLearningEnglish.ArticleActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:launchMode="singleTask"
             android:parentActivityName="com.example.mao.BBCLearningEnglish.ContentListActivity"
             android:theme="@style/AppTheme.NoActionBar">

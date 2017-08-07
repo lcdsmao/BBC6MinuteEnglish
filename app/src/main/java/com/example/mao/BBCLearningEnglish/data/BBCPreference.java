@@ -27,23 +27,23 @@ public class BBCPreference {
         return sharedPreferences.getBoolean(notificationKey, true);
     }
 
-    public static void setLastUpdateTime(Context context, long time) {
+    public static void setLastUpdateTime(Context context, String category) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        String lastUpdateKey = context.getString(R.string.pref_last_update_time_key);
-        editor.putLong(lastUpdateKey, time);
+        String lastUpdateKey = category + context.getString(R.string.pref_last_update_time_key);
+        editor.putLong(lastUpdateKey, System.currentTimeMillis());
         editor.apply();
     }
 
-    private static long getLastUpdateTime(Context context) {
+    private static long getLastUpdateTime(Context context, String category) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String lastUpdateKey = context.getString(R.string.pref_last_update_time_key);
+        String lastUpdateKey = category + context.getString(R.string.pref_last_update_time_key);
         return sharedPreferences.getLong(lastUpdateKey, 0);
     }
 
-    public static boolean isUpdateNeed(Context context) {
+    public static boolean isUpdateNeed(Context context, String category) {
         long currentTime = System.currentTimeMillis();
-        long lastUpdateTime = getLastUpdateTime(context);
+        long lastUpdateTime = getLastUpdateTime(context, category);
         return  TimeUnit.MILLISECONDS.toDays(currentTime - lastUpdateTime) > 2;
     }
 

@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -45,27 +46,26 @@ public class BBCHtmlUtility {
     public static final String BBC_LINGO_HACK_URL =
             "http://www.bbc.co.uk/learningenglish/english/features/lingohack";
 
-    /**
-     * Connect to bbc 6 minute English to get the newest document html.
-     * Use Jsoup to parse the html to Elements which contains all contents.
-     * @return list of all contents
-     */
-//    @Nullable
-//    public static Elements getContentsList(String bbcContentListUrl) {
-//        Elements elements;
-//        try{
-//            Document document = Jsoup.connect(bbcContentListUrl).get();
-//            elements = document.select(".widget-progress-enabled");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//        Elements contents = new Elements();
-//        contents.add(elements.first());
-//        contents.addAll(elements.get(1).select("li"));
-//        return contents;
-//    }
+    public static final HashMap<String, String> sCategoryMap = createCategoryMap();
 
+    private static HashMap<String, String> createCategoryMap() {
+        final HashMap<String, String> map = new HashMap<>();
+        map.put(BBC_6_MINUTE_ENGLISH_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH);
+        map.put(BBC_ENGLISH_AT_UNIVERSITY_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY);
+        map.put(BBC_ENGLISH_AT_WORK_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK);
+        map.put(BBC_NEWS_REPORT_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT);
+        map.put(BBC_THE_ENGLISH_WE_SPEAK_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK);
+        map.put(BBC_LINGO_HACK_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK);
+
+        map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH, BBC_6_MINUTE_ENGLISH_URL);
+        map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY, BBC_ENGLISH_AT_UNIVERSITY_URL);
+        map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK, BBC_ENGLISH_AT_WORK_URL);
+        map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT, BBC_NEWS_REPORT_URL);
+        map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK, BBC_THE_ENGLISH_WE_SPEAK_URL);
+        map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK, BBC_LINGO_HACK_URL);
+
+        return map;
+    }
     /**
      * Connect to bbc 6 minute English to get the newest document html.
      * Use Jsoup to parse the html to Elements which contains all contents.
@@ -166,25 +166,6 @@ public class BBCHtmlUtility {
             e.printStackTrace();
         }
         return document;
-    }
-
-    public static String getCategory(String url) {
-        switch (url) {
-            case BBC_6_MINUTE_ENGLISH_URL:
-                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
-            case BBC_ENGLISH_AT_UNIVERSITY_URL:
-                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY;
-            case BBC_ENGLISH_AT_WORK_URL:
-                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK;
-            case BBC_LINGO_HACK_URL:
-                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK;
-            case BBC_THE_ENGLISH_WE_SPEAK_URL:
-                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK;
-            case BBC_NEWS_REPORT_URL:
-                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT;
-            default:
-                return "";
-        }
     }
 
     public static List<BBCArticleSection> getArticleSection(Context context,

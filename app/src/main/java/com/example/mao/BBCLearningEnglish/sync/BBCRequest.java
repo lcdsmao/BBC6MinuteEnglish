@@ -33,7 +33,7 @@ public class BBCRequest extends StringRequest {
     public BBCRequest(int method, String url, Response.Listener<String> listener,
                       Response.ErrorListener errorListener, Context context) {
         super(method, url, listener, errorListener);
-        mCategory = BBCHtmlUtility.getCategory(url);
+        mCategory = BBCHtmlUtility.sCategoryMap.get(url);
         mContext = context;
     }
 

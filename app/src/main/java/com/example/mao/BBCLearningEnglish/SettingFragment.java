@@ -30,7 +30,7 @@ public class SettingFragment extends PreferenceFragment
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (getString(R.string.setting_history_key).equals(key)) {
-            BBCSyncUtility.contentListSync(getActivity());
+            //BBCSyncUtility.contentListSync(getActivity());
             setMaxHistorySummary();
         } else if (getString(R.string.setting_notification_key).equals(key)) {
             JobDispatcher.dispatcherScheduleSync(getActivity());

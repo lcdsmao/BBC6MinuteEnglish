@@ -15,12 +15,12 @@ public class ScheduleSyncJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        if (BBCPreference.isUpdateNeed(this)) {
+//        if (BBCPreference.isUpdateNeed(this)) {
 //            boolean isNewContent = BBCSyncTask.syncContentList(this);
 //            if (isNewContent) {
 //                NotificationUtility.showNewContentNotification(this);
 //            }
-        }
+ //       }
         return true;
     }
 

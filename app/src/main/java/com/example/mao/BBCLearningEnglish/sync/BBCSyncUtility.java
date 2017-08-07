@@ -15,7 +15,7 @@ import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 
 public class BBCSyncUtility {
 
-    protected static boolean sIsContentListSyncComplete = true;
+    public static boolean sIsContentListSyncComplete = true;
 
     synchronized public static void articleInitialize(final Context context,
                                                       @NonNull final Uri uriWithTimeStamp) {
@@ -52,13 +52,9 @@ public class BBCSyncUtility {
 
     }
 
-    public static boolean isIsContentListSyncComplete() {
-        return sIsContentListSyncComplete;
-    }
-
-    synchronized public static void contentListSync(final Context context){
+    synchronized public static void contentListSync(final Context context, final String category){
         sIsContentListSyncComplete = false;
-        startContentLisSync(context);
+        startContentLisSyncByCategory(context, category);
     }
 
     private static void startArticleSync(@NonNull final Context context,
@@ -72,8 +68,9 @@ public class BBCSyncUtility {
         context.startService(intentToSyncImmediately);
     }
 
-    private static void startContentLisSync(@NonNull final Context context) {
-        Intent intentToSyncImmediately = new Intent(context, BBCSyncContentListIntentService.class);
+    private static void startContentLisSyncByCategory(@NonNull final Context context, final String category) {
+        Intent intentToSyncImmediately = new Intent(context, BBCSyncContentListIntentService.class)
+                .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         context.startService(intentToSyncImmediately);
     }
 

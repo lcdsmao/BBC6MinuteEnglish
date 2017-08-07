@@ -42,6 +42,8 @@ public class ContentListActivity extends AppCompatActivity implements
 
     private static final int BBC_CONTENT_LOADER_ID = 1;
 
+    private static final String TITLE_STATE_KEY = "title";
+
     private BBCContentAdapter mBBCContentAdapter;
     private SwipeRefreshLayout mSwipeContainer;
 
@@ -62,6 +64,8 @@ public class ContentListActivity extends AppCompatActivity implements
     public static final int THUMBNAIL_INDEX = 4;
     public static final int CATEGORY_INDEX = 5;
 
+    private String mCurrentCategory;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +85,7 @@ public class ContentListActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
+        mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
 
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_content_container);
         mSwipeContainer.setOnRefreshListener(this);
@@ -93,11 +98,6 @@ public class ContentListActivity extends AppCompatActivity implements
         contentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
-        //JobDispatcher.dispatcherScheduleSync(this);
-        if (BBCPreference.isUpdateNeed(this)) {
-            mSwipeContainer.setRefreshing(true);
-            BBCSyncUtility.contentListSync(this);
-        }
         Log.v(TAG, "On create");
         getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, new Bundle(), this);
     }
@@ -114,7 +114,7 @@ public class ContentListActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         Log.v(TAG, "On resume");
-        if (!BBCSyncUtility.isIsContentListSyncComplete()) {
+        if (!BBCSyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(true);
         }
     }
@@ -138,7 +138,7 @@ public class ContentListActivity extends AppCompatActivity implements
         switch (item.getItemId()){
             case R.id.menu_refresh:
                 mSwipeContainer.setRefreshing(true);
-                BBCSyncUtility.contentListSync(this);
+                BBCSyncUtility.contentListSync(this, mCurrentCategory);
                 return true;
             case R.id.menu_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
@@ -175,10 +175,11 @@ public class ContentListActivity extends AppCompatActivity implements
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(TAG, "On create loader");
         mSwipeContainer.setRefreshing(true);
-        String category = args.getString(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
-        if (category == null) category = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
         Uri uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
-                .appendPath(category).build();
+                .appendPath(mCurrentCategory).build();
+        if (BBCPreference.isUpdateNeed(this, mCurrentCategory)) {
+            BBCSyncUtility.contentListSync(this, mCurrentCategory);
+        }
         return new CursorLoader(
                 this,
                 uri,
@@ -193,7 +194,7 @@ public class ContentListActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "On load finish");
         mBBCContentAdapter.swapCursor(data);
-        if (BBCSyncUtility.isIsContentListSyncComplete()) {
+        if (BBCSyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(false);
         }
     }
@@ -205,7 +206,7 @@ public class ContentListActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-        BBCSyncUtility.contentListSync(this);
+        BBCSyncUtility.contentListSync(this, mCurrentCategory);
     }
 
     @Override
@@ -221,27 +222,33 @@ public class ContentListActivity extends AppCompatActivity implements
         switch (id) {
             case R.id.category_six:
                 actionBar.setTitle(R.string.category_6_minute_english);
-                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH);
+                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
+                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.category_we_speak:
                 actionBar.setTitle(R.string.category_the_english_we_speak);
-                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK);
+                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK;
+                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.category_news_report:
                 actionBar.setTitle(R.string.category_news_report);
-                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT);
+                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT;
+                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.category_lingo_hack:
                 actionBar.setTitle(R.string.category_lingo_hack);
-                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK);
+                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK;
+                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.category_work:
                 actionBar.setTitle(R.string.category_english_at_work);
-                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK);
+                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK;
+                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.category_university:
                 actionBar.setTitle(R.string.category_english_at_university);
-                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY);
+                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY;
+                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.drawer_rating:
                 break;
@@ -258,9 +265,16 @@ public class ContentListActivity extends AppCompatActivity implements
         return true;
     }
 
-    private void restartLoaderByCategory(String category) {
-        Bundle bundle = new Bundle();
-        bundle.putString(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
-        getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, bundle, this);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(TITLE_STATE_KEY, getSupportActionBar().getTitle().toString());
+        super.onSaveInstanceState(outState);
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        getSupportActionBar().setTitle(savedInstanceState.getString(TITLE_STATE_KEY));
+    }
+
 }
