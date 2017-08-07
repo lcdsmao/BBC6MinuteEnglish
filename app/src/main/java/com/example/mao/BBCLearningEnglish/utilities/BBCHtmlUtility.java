@@ -50,16 +50,31 @@ public class BBCHtmlUtility {
      * Use Jsoup to parse the html to Elements which contains all contents.
      * @return list of all contents
      */
+//    @Nullable
+//    public static Elements getContentsList(String bbcContentListUrl) {
+//        Elements elements;
+//        try{
+//            Document document = Jsoup.connect(bbcContentListUrl).get();
+//            elements = document.select(".widget-progress-enabled");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//        Elements contents = new Elements();
+//        contents.add(elements.first());
+//        contents.addAll(elements.get(1).select("li"));
+//        return contents;
+//    }
+
+    /**
+     * Connect to bbc 6 minute English to get the newest document html.
+     * Use Jsoup to parse the html to Elements which contains all contents.
+     * @return list of all contents
+     */
     @Nullable
-    public static Elements getContentsList(String bbcContentListUrl) {
-        Elements elements;
-        try{
-            Document document = Jsoup.connect(bbcContentListUrl).get();
-            elements = document.select(".widget-progress-enabled");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static Elements getContentsList(String contentHtml) {
+        Document document = Jsoup.parse(contentHtml);
+        Elements elements = document.select(".widget-progress-enabled");
         Elements contents = new Elements();
         contents.add(elements.first());
         contents.addAll(elements.get(1).select("li"));
