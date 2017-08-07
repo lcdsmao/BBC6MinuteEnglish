@@ -158,14 +158,8 @@ public class BBCHtmlUtility {
         return TimeUtility.getTimeStamp(time);
     }
 
-    public static Document getArticleDocument(String articleHref) {
-        Document document = null;
-        try {
-            document = Jsoup.connect(articleHref).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return document;
+    public static Document getArticleDocument(String articleHtml) {
+        return Jsoup.parse(articleHtml);
     }
 
     public static List<BBCArticleSection> getArticleSection(Context context,

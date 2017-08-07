@@ -29,10 +29,12 @@ public class BBCSyncTask {
     synchronized public static void syncArticle(Context context,
                                                 @NonNull Uri uriWithTimeStamp,
                                                 @NonNull String articleHref) {
+        BBCArticleRequest request = new BBCArticleRequest(Request.Method.GET, articleHref
+                , uriWithTimeStamp, context);
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        App.getRequestQueue(context).add(request);
 
-        Document document = BBCHtmlUtility.getArticleDocument(articleHref);
-        ContentValues contentValuesArticle = getContentValuesArticle(document);
-        context.getContentResolver().update(uriWithTimeStamp, contentValuesArticle, null, null);
     }
 
 //    synchronized public static void syncContentList(Context context, String category) {
@@ -41,7 +43,7 @@ public class BBCSyncTask {
 
     synchronized public static void syncCategoryList(Context context, String category) {
         String url = BBCHtmlUtility.sCategoryMap.get(category);
-        BBCRequest bbcRequest = new BBCRequest(Request.Method.GET, url,
+        BBCContentListRequest request = new BBCContentListRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -55,22 +57,11 @@ public class BBCSyncTask {
                         Log.v(TAG, "Volley Error");
                     }
                 }, context);
-        bbcRequest.setRetryPolicy(
-                new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        App.getRequestQueue(context).add(bbcRequest);
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        App.getRequestQueue(context).add(request);
         BBCPreference.setLastUpdateTime(context, category);
     }
 
 
-
-    private static ContentValues getContentValuesArticle(Document document){
-        String article = BBCHtmlUtility.getArticleHtml(document);
-        String audioHref = BBCHtmlUtility.getMp3Href(document);
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
-                article);
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
-                audioHref);
-        return contentValues;
-    }
 }

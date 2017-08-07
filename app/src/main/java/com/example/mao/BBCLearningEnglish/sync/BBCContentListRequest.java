@@ -23,15 +23,15 @@ import java.io.UnsupportedEncodingException;
  * Created by Paranoid on 17/8/7.
  */
 
-public class BBCRequest extends StringRequest {
+public class BBCContentListRequest extends StringRequest {
 
-    private static final String TAG = BBCRequest.class.getSimpleName();
+    private static final String TAG = BBCContentListRequest.class.getSimpleName();
 
     private String mCategory;
     private Context mContext;
 
-    public BBCRequest(int method, String url, Response.Listener<String> listener,
-                      Response.ErrorListener errorListener, Context context) {
+    public BBCContentListRequest(int method, String url, Response.Listener<String> listener,
+                                 Response.ErrorListener errorListener, Context context) {
         super(method, url, listener, errorListener);
         mCategory = BBCHtmlUtility.sCategoryMap.get(url);
         mContext = context;
@@ -39,8 +39,9 @@ public class BBCRequest extends StringRequest {
 
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
+        String htmlString;
         try {
-            String htmlString =
+            htmlString =
                     new String(response.data, "UTF-8");
             Elements contentList = BBCHtmlUtility.getContentsList(htmlString);
             if (contentList == null) return super.parseNetworkResponse(response);
@@ -63,7 +64,7 @@ public class BBCRequest extends StringRequest {
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         }
-        return super.parseNetworkResponse(response);
+        return Response.success(htmlString, HttpHeaderParser.parseCacheHeaders(response));
     }
 
     private static ContentValues getContentValues(Element content, String filter) {
