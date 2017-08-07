@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -21,7 +22,6 @@ public class BBCContentAdapter extends
     private Cursor mCursor;
     private Context mContext;
     private OnListItemClickListener mOnClickListener;
-    private int lastPosition = -1;
 
     public BBCContentAdapter(Context context, OnListItemClickListener listener) {
         mContext = context;
@@ -29,7 +29,7 @@ public class BBCContentAdapter extends
     }
 
     public interface OnListItemClickListener{
-        void onClickItem(long timeStamp);
+        void onClickItem(String path);
     }
 
     @Override
@@ -102,7 +102,12 @@ public class BBCContentAdapter extends
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-            mOnClickListener.onClickItem(mCursor.getLong(ContentListActivity.TIMESTAMP_INDEX));
+            String path = mCursor.getString(ContentListActivity.TIMESTAMP_INDEX)
+                    + "/"
+                    + BBCContentContract.PATH_CATEGORY
+                    + "/"
+                    + mCursor.getString(ContentListActivity.CATEGORY_INDEX);
+            mOnClickListener.onClickItem(path);
         }
     }
 }

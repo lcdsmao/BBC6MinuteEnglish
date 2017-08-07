@@ -43,12 +43,14 @@ public class ArticleActivity extends AppCompatActivity implements
     private static final String[] PROJECTION = {
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
     };
 
     private static final int TITLE_INDEX = 0;
     private static final int ARTICLE_INDEX = 1;
     private static final int AUDIO_HREF_INDEX = 2;
+    private static final int CATEGORY_INDEX = 3;
 
     private final static int REFRESH_TIME_INTERVAL = 500;
 
@@ -156,11 +158,11 @@ public class ArticleActivity extends AppCompatActivity implements
         String article = data.getString(ARTICLE_INDEX);
         String title = data.getString(TITLE_INDEX);
         String audioHref = data.getString(AUDIO_HREF_INDEX);
-        // TODO: Use class to create article section
+        String category = data.getString(CATEGORY_INDEX);
         getSupportActionBar().setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
-            // Todo: set article Section
+            mArticleAdapter.setArticleSections(BBCHtmlUtility.getArticleSection(this, article, category));
             mArticleViewPager.setAdapter(mArticleAdapter);
             mTabLayout.setupWithViewPager(mArticleViewPager);
             showArticle();

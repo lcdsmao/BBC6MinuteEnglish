@@ -19,6 +19,12 @@
     <string name="article_question">Question</string>
     <string name="article_vocabulary">Vocabulary</string>
     <string name="article_transcript">Transcript</string>
+    <string name="article_summary">Summary</string>
+    <string name="article_listen">Listen</string>
+    <string name="article_key_words">Key Words</string>
+    <string name="article_answer">Answer</string>
+    <string name="article_focus">Focus</string>
+    <string name="article_headlines">Headlines</string>
 
     <string name="cache_start">Start downloading audio</string>
     <string name="cache_complete">Audio download is complete</string>

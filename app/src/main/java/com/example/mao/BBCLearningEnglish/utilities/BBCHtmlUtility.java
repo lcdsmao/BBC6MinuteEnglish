@@ -1,8 +1,11 @@
 package com.example.mao.BBCLearningEnglish.utilities;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.example.mao.BBCLearningEnglish.R;
+import com.example.mao.BBCLearningEnglish.data.BBCArticleSection;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 
 import org.jsoup.Jsoup;
@@ -11,6 +14,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by MAO on 7/17/2017.
@@ -165,5 +170,106 @@ public class BBCHtmlUtility {
             default:
                 return "";
         }
+    }
+
+    public static List<BBCArticleSection> getArticleSection(Context context,
+                                                            String html,
+                                                            String category) {
+        List<BBCArticleSection> list = new ArrayList<>();
+        String[] splitResult = html.split("</?h3>");
+        switch (category){
+            case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH:
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_question))
+                        .setArticle(splitResult[2])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_vocabulary))
+                        .setArticle(splitResult[4])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_transcript))
+                        .setArticle(splitResult[6])
+                );
+                break;
+            case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK:
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_summary))
+                        .setArticle(splitResult[2])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_transcript))
+                        .setArticle(splitResult[4])
+                );
+                break;
+            case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT:
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_summary))
+                        .setArticle(splitResult[2])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_key_words))
+                        .setArticle(splitResult[4])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_transcript))
+                        .setArticle(splitResult[6])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_answer))
+                        .setArticle(splitResult[8])
+                );
+                break;
+            case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK:
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_summary))
+                        .setArticle(splitResult[2])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_transcript))
+                        .setArticle(splitResult[4])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_answer))
+                        .setArticle(splitResult[6])
+                );
+                break;
+            case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY:
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_summary))
+                        .setArticle(splitResult[2])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_focus))
+                        .setArticle(splitResult[4])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_vocabulary))
+                        .setArticle(splitResult[6])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_transcript))
+                        .setArticle(splitResult[8])
+                );
+                break;
+            case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK:
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_headlines))
+                        .setArticle(splitResult[2])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_transcript))
+                        .setArticle(splitResult[4])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_vocabulary))
+                        .setArticle(splitResult[6])
+                );
+                //more
+                break;
+            default:
+                break;
+        }
+        return list;
     }
 }

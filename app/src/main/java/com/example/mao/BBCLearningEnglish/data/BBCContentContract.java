@@ -12,6 +12,7 @@ public class BBCContentContract {
     // URI String
     public static final String AUTHORITY = "com.example.mao.BBCLearningEnglish";
     public static final String PATH_BBC = "bbc";
+    public static final String PATH_CATEGORY = "category";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -19,6 +20,11 @@ public class BBCContentContract {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_BBC).build();
+
+        public static final Uri CONTENT_CATEGORY_URI =
+                BASE_CONTENT_URI.buildUpon()
+                        .appendEncodedPath(PATH_BBC)
+                        .appendEncodedPath(PATH_CATEGORY).build();
 
         public static final String TABLE_NAME = "bbc";
 

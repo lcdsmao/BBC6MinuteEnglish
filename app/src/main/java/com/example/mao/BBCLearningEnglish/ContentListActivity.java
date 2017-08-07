@@ -51,7 +51,8 @@ public class ContentListActivity extends AppCompatActivity implements
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIME,
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION,
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
     };
 
     public static final int TITLE_INDEX = 0;
@@ -59,6 +60,7 @@ public class ContentListActivity extends AppCompatActivity implements
     public static final int DESCRIPTION_INDEX = 2;
     public static final int TIMESTAMP_INDEX = 3;
     public static final int THUMBNAIL_INDEX = 4;
+    public static final int CATEGORY_INDEX = 5;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -158,13 +160,14 @@ public class ContentListActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickItem(long timeStamp) {
-        Log.v(TAG, "Timestamp = " + timeStamp);
+    public void onClickItem(String path) {
+        Log.v(TAG, "Path = " + path);
         Intent intent = new Intent(this, ArticleActivity.class);
-        Uri uriWithTimeStamp = ContentUris.withAppendedId(
-                BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
-                timeStamp);
-        intent.setData(uriWithTimeStamp);
+        Uri uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI
+                .buildUpon()
+                .appendEncodedPath(path)
+                .build();
+        intent.setData(uri);
         startActivity(intent);
     }
 
@@ -174,7 +177,7 @@ public class ContentListActivity extends AppCompatActivity implements
         mSwipeContainer.setRefreshing(true);
         String category = args.getString(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
         if (category == null) category = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
-        Uri uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI.buildUpon()
+        Uri uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
                 .appendPath(category).build();
         return new CursorLoader(
                 this,

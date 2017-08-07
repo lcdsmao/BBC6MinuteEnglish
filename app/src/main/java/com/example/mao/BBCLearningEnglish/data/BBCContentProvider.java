@@ -35,9 +35,9 @@ public class BBCContentProvider extends ContentProvider {
 
         uriMatcher.addURI(BBCContentContract.AUTHORITY, BBCContentContract.PATH_BBC, BBC_CODE);
         uriMatcher.addURI(BBCContentContract.AUTHORITY,
-                BBCContentContract.PATH_BBC + "/*", BBC_FILTER_CODE);
+                BBCContentContract.PATH_BBC + "/" + BBCContentContract.PATH_CATEGORY + "/*", BBC_FILTER_CODE);
         uriMatcher.addURI(BBCContentContract.AUTHORITY,
-                BBCContentContract.PATH_BBC + "/*/#", BBC_FILTER_TIMESTAMP_CODE);
+                BBCContentContract.PATH_BBC + "/#/" + BBCContentContract.PATH_CATEGORY + "/*", BBC_FILTER_TIMESTAMP_CODE);
         return uriMatcher;
     }
 
@@ -81,8 +81,8 @@ public class BBCContentProvider extends ContentProvider {
                 break;
             case BBC_FILTER_TIMESTAMP_CODE:
                 List<String> pathSegments = uri.getPathSegments();
-                filter = pathSegments.get(1);
-                timeStamp = pathSegments.get(2);
+                filter = pathSegments.get(3);
+                timeStamp = pathSegments.get(1);
                 selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
                         + " AND "
                         + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
@@ -177,8 +177,8 @@ public class BBCContentProvider extends ContentProvider {
                 break;
             case BBC_FILTER_TIMESTAMP_CODE:
                 List<String> pathSegments = uri.getPathSegments();
-                filter = pathSegments.get(1);
-                timeStamp = pathSegments.get(2);
+                filter = pathSegments.get(3);
+                timeStamp = pathSegments.get(1);
                 selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
                         + " AND "
                         + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
@@ -218,8 +218,8 @@ public class BBCContentProvider extends ContentProvider {
                 break;
             case BBC_FILTER_TIMESTAMP_CODE:
                 List<String> pathSegments = uri.getPathSegments();
-                filter = pathSegments.get(1);
-                timeStamp = pathSegments.get(2);
+                filter = pathSegments.get(3);
+                timeStamp = pathSegments.get(1);
                 selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
                         + " AND "
                         + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";

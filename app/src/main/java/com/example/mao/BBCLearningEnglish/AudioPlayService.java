@@ -102,6 +102,10 @@ public class AudioPlayService extends Service implements
 
     private void initialize(Intent intent) {
 
+        if (!requestAudioFocus()) {
+            stopSelf();
+        }
+
         mAudioHref = intent
                 .getStringExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF);
 
@@ -365,9 +369,9 @@ public class AudioPlayService extends Service implements
         if (mMediaPlayer == null) return;
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
+            removeAudioFocus();
         }
         mResumePosition = 0;
-        removeAudioFocus();
         updateNotification(ACTION_PLAY);
     }
 

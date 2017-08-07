@@ -1,5 +1,7 @@
 package com.example.mao.BBCLearningEnglish.data;
 
+import java.util.List;
+
 /**
  * Created by Paranoid on 17/8/5.
  */
@@ -14,12 +16,14 @@ public class BBCArticleSection {
         this.article = "";
     }
 
-    public void setTitle(String title) {
+    public BBCArticleSection setTitle(String title) {
         this.title = title;
+        return this;
     }
 
-    public void setArticle(String article) {
+    public BBCArticleSection setArticle(String article) {
         this.article = article;
+        return this;
     }
 
     public String getTitle() {

@@ -49,7 +49,7 @@ public class BBCSyncTask {
     private static void syncCategoryList(Context context, String url) {
         Elements contentList = BBCHtmlUtility.getContentsList(url);
         String filter = BBCHtmlUtility.getCategory(url);
-
+        if (contentList == null) return;
         int max = BBCPreference.getPreferenceMaxHistory(context);
         int maxHistory = Math.min(max, contentList.size());
 
