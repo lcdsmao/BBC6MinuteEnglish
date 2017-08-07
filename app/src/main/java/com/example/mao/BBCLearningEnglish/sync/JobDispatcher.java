@@ -1,8 +1,8 @@
-package com.example.mao.bbc6minuteenglish.sync;
+package com.example.mao.BBCLearningEnglish.sync;
 
 import android.content.Context;
 
-import com.example.mao.bbc6minuteenglish.data.BBCPreference;
+import com.example.mao.BBCLearningEnglish.data.BBCPreference;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;

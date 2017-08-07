@@ -1,7 +1,9 @@
-package com.example.mao.bbc6minuteenglish.utilities;
+package com.example.mao.BBCLearningEnglish.utilities;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -44,10 +46,10 @@ public class BBCHtmlUtility {
      * @return list of all contents
      */
     @Nullable
-    public static Elements getContentsList() {
+    public static Elements getContentsList(String bbcContentListUrl) {
         Elements elements;
         try{
-            Document document = Jsoup.connect(BBC_6_MINUTE_ENGLISH_URL).get();
+            Document document = Jsoup.connect(bbcContentListUrl).get();
             elements = document.select(".widget-progress-enabled");
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,14 +148,22 @@ public class BBCHtmlUtility {
         return document;
     }
 
-    public static String[] getArticleSections(String articleHtml) {
-        String[] sections = articleHtml.split("</?h3>");
-        String[] articleSections = new String[3];
-        if (sections.length == 7) {
-            articleSections[0] = sections[2];
-            articleSections[1] = sections[4];
-            articleSections[2] = sections[6];
+    public static String getCategory(String url) {
+        switch (url) {
+            case BBC_6_MINUTE_ENGLISH_URL:
+                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
+            case BBC_ENGLISH_AT_UNIVERSITY_URL:
+                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY;
+            case BBC_ENGLISH_AT_WORK_URL:
+                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK;
+            case BBC_LINGO_HACK_URL:
+                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK;
+            case BBC_THE_ENGLISH_WE_SPEAK_URL:
+                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK;
+            case BBC_NEWS_REPORT_URL:
+                return BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT;
+            default:
+                return "";
         }
-        return articleSections;
     }
 }

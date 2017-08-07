@@ -1,10 +1,10 @@
-package com.example.mao.bbc6minuteenglish.data;
+package com.example.mao.BBCLearningEnglish.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.example.mao.bbc6minuteenglish.R;
+import com.example.mao.BBCLearningEnglish.R;
 
 import java.util.concurrent.TimeUnit;
 

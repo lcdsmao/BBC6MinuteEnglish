@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish;
+package com.example.mao.BBCLearningEnglish;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -21,6 +21,7 @@ public class BBCContentAdapter extends
     private Cursor mCursor;
     private Context mContext;
     private OnListItemClickListener mOnClickListener;
+    private int lastPosition = -1;
 
     public BBCContentAdapter(Context context, OnListItemClickListener listener) {
         mContext = context;

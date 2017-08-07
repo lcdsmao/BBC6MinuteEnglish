@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish;
+package com.example.mao.BBCLearningEnglish;
 
 import android.content.ContentUris;
 import android.content.Intent;
@@ -27,10 +27,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.data.BBCPreference;
-import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
-import com.example.mao.bbc6minuteenglish.sync.JobDispatcher;
+import com.example.mao.BBCLearningEnglish.data.BBCArticleSection;
+import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
+import com.example.mao.BBCLearningEnglish.data.BBCPreference;
+import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
+import com.example.mao.BBCLearningEnglish.sync.JobDispatcher;
 
 public class ContentListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
@@ -46,11 +47,11 @@ public class ContentListActivity extends AppCompatActivity implements
 
     // Projection for Showing data
     public static final String[] PROJECTION = {
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIME,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_THUMBNAIL_HREF
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIME,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF
     };
 
     public static final int TITLE_INDEX = 0;
@@ -67,7 +68,7 @@ public class ContentListActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.class_6_minute_english);
+        getSupportActionBar().setTitle(R.string.category_6_minute_english);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -85,18 +86,18 @@ public class ContentListActivity extends AppCompatActivity implements
 
         /*Set the recycler view*/
         mBBCContentAdapter = new BBCContentAdapter(this, this);
-        RecyclerView contentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
+        final RecyclerView contentRecycleView = (RecyclerView) findViewById(R.id.rv_content_list);
         contentRecycleView.setLayoutManager(new LinearLayoutManager(this));
         contentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
-        JobDispatcher.dispatcherScheduleSync(this);
+        //JobDispatcher.dispatcherScheduleSync(this);
         if (BBCPreference.isUpdateNeed(this)) {
             mSwipeContainer.setRefreshing(true);
             BBCSyncUtility.contentListSync(this);
         }
         Log.v(TAG, "On create");
-        getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, new Bundle(), this);
     }
 
     @Override
@@ -161,7 +162,7 @@ public class ContentListActivity extends AppCompatActivity implements
         Log.v(TAG, "Timestamp = " + timeStamp);
         Intent intent = new Intent(this, ArticleActivity.class);
         Uri uriWithTimeStamp = ContentUris.withAppendedId(
-                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
                 timeStamp);
         intent.setData(uriWithTimeStamp);
         startActivity(intent);
@@ -171,13 +172,17 @@ public class ContentListActivity extends AppCompatActivity implements
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(TAG, "On create loader");
         mSwipeContainer.setRefreshing(true);
+        String category = args.getString(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
+        if (category == null) category = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
+        Uri uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI.buildUpon()
+                .appendPath(category).build();
         return new CursorLoader(
                 this,
-                BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                uri,
                 PROJECTION,
                 null,
                 null,
-                BBCContentContract.BBC6MinuteEnglishEntry.SORT_ORDER
+                BBCContentContract.BBCLearningEnglishEntry.SORT_ORDER
         );
     }
 
@@ -211,23 +216,29 @@ public class ContentListActivity extends AppCompatActivity implements
         int id = item.getItemId();
         ActionBar actionBar = getSupportActionBar();
         switch (id) {
-            case R.id.class_six:
-                actionBar.setTitle(R.string.class_6_minute_english);
+            case R.id.category_six:
+                actionBar.setTitle(R.string.category_6_minute_english);
+                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH);
                 break;
-            case R.id.class_we_speak:
-                actionBar.setTitle(R.string.class_the_english_we_speak);
+            case R.id.category_we_speak:
+                actionBar.setTitle(R.string.category_the_english_we_speak);
+                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK);
                 break;
-            case R.id.class_news_report:
-                actionBar.setTitle(R.string.class_news_report);
+            case R.id.category_news_report:
+                actionBar.setTitle(R.string.category_news_report);
+                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT);
                 break;
-            case R.id.class_lingo_hack:
-                actionBar.setTitle(R.string.class_lingo_hack);
+            case R.id.category_lingo_hack:
+                actionBar.setTitle(R.string.category_lingo_hack);
+                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK);
                 break;
-            case R.id.class_work:
-                actionBar.setTitle(R.string.class_english_at_work);
+            case R.id.category_work:
+                actionBar.setTitle(R.string.category_english_at_work);
+                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK);
                 break;
-            case R.id.class_university:
-                actionBar.setTitle(R.string.class_english_at_university);
+            case R.id.category_university:
+                actionBar.setTitle(R.string.category_english_at_university);
+                restartLoaderByCategory(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY);
                 break;
             case R.id.drawer_rating:
                 break;
@@ -242,5 +253,11 @@ public class ContentListActivity extends AppCompatActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void restartLoaderByCategory(String category) {
+        Bundle bundle = new Bundle();
+        bundle.putString(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
+        getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, bundle, this);
     }
 }

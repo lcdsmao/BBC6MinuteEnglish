@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish.sync;
+package com.example.mao.BBCLearningEnglish.sync;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
+import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 
 /**
  * Created by MAO on 7/24/2017.
@@ -21,8 +21,8 @@ public class BBCSyncUtility {
                                                       @NonNull final Uri uriWithTimeStamp) {
 
         Log.v(uriWithTimeStamp.toString(), "Start initialize");
-        final String projection[] = {BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE,
-                BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF};
+        final String projection[] = {BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
+                BBCContentContract.BBCLearningEnglishEntry.COLUMN_HREF};
         final int ARTICLE_INDEX = 0;
         final int ARTICLE_HREF_INDEX = 1;
 
@@ -67,7 +67,7 @@ public class BBCSyncUtility {
         Log.v(uriWithTimeStamp.toString(), "Start article sync");
         Intent intentToSyncImmediately = new Intent(context, BBCSyncArticleIntentService.class);
         intentToSyncImmediately.setData(uriWithTimeStamp);
-        intentToSyncImmediately.putExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_HREF,
+        intentToSyncImmediately.putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_HREF,
                 articleHref);
         context.startService(intentToSyncImmediately);
     }

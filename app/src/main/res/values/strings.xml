@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">BBC Learning English</string>
 
-    <string name="class_6_minute_english">6 Minute English</string>
-    <string name="class_english_at_university">English at University</string>
-    <string name="class_english_at_work">English at Work</string>
-    <string name="class_news_report">News Report</string>
-    <string name="class_the_english_we_speak">The English We Speak</string>
-    <string name="class_lingo_hack">LingoHack</string>
+    <string name="category_6_minute_english">6 Minute English</string>
+    <string name="category_english_at_university">English at University</string>
+    <string name="category_english_at_work">English at Work</string>
+    <string name="category_news_report">News Report</string>
+    <string name="category_the_english_we_speak">The English We Speak</string>
+    <string name="category_lingo_hack">LingoHack</string>
 
     <string name="refresh">Refresh</string>
     <string name="setting">Settings</string>

@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish.sync;
+package com.example.mao.BBCLearningEnglish.sync;
 
 import android.app.IntentService;
 import android.content.Intent;

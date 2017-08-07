@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish.utilities;
+package com.example.mao.BBCLearningEnglish.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

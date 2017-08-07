@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish.data;
+package com.example.mao.BBCLearningEnglish.data;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -10,6 +10,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import java.util.List;
 
 /**
  * Created by MAO on 7/18/2017.
@@ -18,8 +21,9 @@ import android.support.annotation.Nullable;
 public class BBCContentProvider extends ContentProvider {
 
     // Match code for uri matcher
-    private static final int CONTENT_CODE = 100;
-    private static final int CONTENT_WITH_TIMESTAMP_CODE = 101;
+    private static final int BBC_CODE = 100;
+    private static final int BBC_FILTER_CODE = 101;
+    private static final int BBC_FILTER_TIMESTAMP_CODE = 102;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -29,9 +33,11 @@ public class BBCContentProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        uriMatcher.addURI(BBCContentContract.AUTHORITY, BBCContentContract.PATH_BBC, CONTENT_CODE);
+        uriMatcher.addURI(BBCContentContract.AUTHORITY, BBCContentContract.PATH_BBC, BBC_CODE);
         uriMatcher.addURI(BBCContentContract.AUTHORITY,
-                BBCContentContract.PATH_BBC + "/#", CONTENT_WITH_TIMESTAMP_CODE);
+                BBCContentContract.PATH_BBC + "/*", BBC_FILTER_CODE);
+        uriMatcher.addURI(BBCContentContract.AUTHORITY,
+                BBCContentContract.PATH_BBC + "/*/#", BBC_FILTER_TIMESTAMP_CODE);
         return uriMatcher;
     }
 
@@ -47,10 +53,13 @@ public class BBCContentProvider extends ContentProvider {
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getReadableDatabase();
         int code = sUriMatcher.match(uri);
+        Log.v("Query", "Code = " + code);
         Cursor cursor;
+        String filter;
+        String timeStamp;
         switch (code) {
-            case CONTENT_CODE :
-                cursor = sqLiteDatabase.query(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+            case BBC_CODE:
+                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -58,12 +67,29 @@ public class BBCContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            case CONTENT_WITH_TIMESTAMP_CODE:
-                long timeStamp = ContentUris.parseId(uri);
-                cursor = sqLiteDatabase.query(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+            case BBC_FILTER_CODE:
+                filter = uri.getLastPathSegment();
+                Log.v("FILTER:", filter);
+                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?";
+                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         projection,
-                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + "=?",
-                        new String[]{String.valueOf(timeStamp)},
+                        selection,
+                        new String[]{filter},
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case BBC_FILTER_TIMESTAMP_CODE:
+                List<String> pathSegments = uri.getPathSegments();
+                filter = pathSegments.get(1);
+                timeStamp = pathSegments.get(2);
+                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
+                        + " AND "
+                        + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
+                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        new String[]{filter, timeStamp},
                         null,
                         null,
                         null);
@@ -71,6 +97,7 @@ public class BBCContentProvider extends ContentProvider {
             default:
                 throw new SQLException("Query failed!");
         }
+        Log.v("Count", "" + cursor.getCount());
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -89,13 +116,13 @@ public class BBCContentProvider extends ContentProvider {
         long id = -1;
         Uri returnedUri;
         switch (code) {
-            case CONTENT_CODE:
-                id = sqLiteDatabase.insert(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+            case BBC_CODE:
+                id = sqLiteDatabase.insert(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         null,
                         values);
                 if (id > 0) {
                     returnedUri = ContentUris.withAppendedId(
-                            BBCContentContract.BBC6MinuteEnglishEntry.CONTENT_URI,
+                            BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
                             id);
                 } else {
                     throw new SQLException("Insert failed!");
@@ -117,9 +144,9 @@ public class BBCContentProvider extends ContentProvider {
             return n;
         }
         switch (code) {
-            case CONTENT_CODE :
+            case BBC_CODE:
                 for (ContentValues contentValues : values) {
-                    long id = sqLiteDatabase.insert(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+                    long id = sqLiteDatabase.insert(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                             null,
                             contentValues);
                     if (id > 0) {
@@ -140,17 +167,24 @@ public class BBCContentProvider extends ContentProvider {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
         int n = -1;
         int code = sUriMatcher.match(uri);
+        String filter;
+        String timeStamp;
         switch (code) {
-            case CONTENT_CODE :
-                n = sqLiteDatabase.delete(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+            case BBC_CODE:
+                n = sqLiteDatabase.delete(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         selection,
                         selectionArgs);
                 break;
-            case CONTENT_WITH_TIMESTAMP_CODE:
-                long timeStamp = ContentUris.parseId(uri);
-                n = sqLiteDatabase.delete(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
-                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + "=?",
-                        new String[]{String.valueOf(timeStamp)});
+            case BBC_FILTER_TIMESTAMP_CODE:
+                List<String> pathSegments = uri.getPathSegments();
+                filter = pathSegments.get(1);
+                timeStamp = pathSegments.get(2);
+                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
+                        + " AND "
+                        + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
+                n = sqLiteDatabase.delete(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        selection,
+                        new String[]{filter, timeStamp});
                 break;
             default:
                 throw new SQLException("Delete failed!");
@@ -165,19 +199,34 @@ public class BBCContentProvider extends ContentProvider {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
         int n = -1;
         int code = sUriMatcher.match(uri);
+        String filter;
+        String timeStamp;
         switch (code) {
-            case CONTENT_CODE :
-                n = sqLiteDatabase.update(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+            case BBC_CODE:
+                n = sqLiteDatabase.update(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs);
                 break;
-            case CONTENT_WITH_TIMESTAMP_CODE:
-                long timeStamp = ContentUris.parseId(uri);
-                n = sqLiteDatabase.update(BBCContentContract.BBC6MinuteEnglishEntry.TABLE_NAME,
+            case BBC_FILTER_CODE:
+                filter = uri.getLastPathSegment();
+                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?";
+                n = sqLiteDatabase.update(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         values,
-                        BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TIMESTAMP + "=?",
-                        new String[]{String.valueOf(timeStamp)});
+                        selection,
+                        new String[]{filter});
+                break;
+            case BBC_FILTER_TIMESTAMP_CODE:
+                List<String> pathSegments = uri.getPathSegments();
+                filter = pathSegments.get(1);
+                timeStamp = pathSegments.get(2);
+                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
+                        + " AND "
+                        + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
+                n = sqLiteDatabase.update(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        new String[]{filter, timeStamp});
                 break;
             default:
                 throw new SQLException("Update failed!");

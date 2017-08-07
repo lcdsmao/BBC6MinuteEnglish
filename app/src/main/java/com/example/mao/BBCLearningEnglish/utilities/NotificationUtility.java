@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish.utilities;
+package com.example.mao.BBCLearningEnglish.utilities;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -12,11 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.example.mao.bbc6minuteenglish.ArticleActivity;
-import com.example.mao.bbc6minuteenglish.AudioPlayService;
-import com.example.mao.bbc6minuteenglish.ContentListActivity;
-import com.example.mao.bbc6minuteenglish.R;
-import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
+import com.example.mao.BBCLearningEnglish.ArticleActivity;
+import com.example.mao.BBCLearningEnglish.AudioPlayService;
+import com.example.mao.BBCLearningEnglish.ContentListActivity;
+import com.example.mao.BBCLearningEnglish.R;
+import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 
 /**
  * Created by MAO on 7/28/2017.
@@ -25,8 +25,8 @@ import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
 public class NotificationUtility {
 
     private static final String[] PROJECTION = {
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_DESCRIPTION
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION
     };
 
     private static final int TITLE_INDEX = 0;

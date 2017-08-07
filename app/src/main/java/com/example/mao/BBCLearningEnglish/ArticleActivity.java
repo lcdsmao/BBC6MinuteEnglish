@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish;
+package com.example.mao.BBCLearningEnglish;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -25,10 +25,10 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
-import com.example.mao.bbc6minuteenglish.utilities.TimeUtility;
-import com.example.mao.bbc6minuteenglish.utilities.BBCHtmlUtility;
+import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
+import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
+import com.example.mao.BBCLearningEnglish.utilities.TimeUtility;
+import com.example.mao.BBCLearningEnglish.utilities.BBCHtmlUtility;
 
 public class ArticleActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener,
@@ -41,9 +41,9 @@ public class ArticleActivity extends AppCompatActivity implements
     private static final String SERVICE_STATE_KEY = "service_state";
 
     private static final String[] PROJECTION = {
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_TITLE,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_ARTICLE,
-            BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF
     };
 
     private static final int TITLE_INDEX = 0;
@@ -93,7 +93,7 @@ public class ArticleActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mArticleAdapter = new ArticlePagerAdapter(getSupportFragmentManager(), this);
+        mArticleAdapter = new ArticlePagerAdapter(getSupportFragmentManager());
 
         // Show progress bar and hide article
         showArticleLoading();
@@ -156,10 +156,11 @@ public class ArticleActivity extends AppCompatActivity implements
         String article = data.getString(ARTICLE_INDEX);
         String title = data.getString(TITLE_INDEX);
         String audioHref = data.getString(AUDIO_HREF_INDEX);
+        // TODO: Use class to create article section
         getSupportActionBar().setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
-            mArticleAdapter.setArticleContents(BBCHtmlUtility.getArticleSections(article));
+            // Todo: set article Section
             mArticleViewPager.setAdapter(mArticleAdapter);
             mTabLayout.setupWithViewPager(mArticleViewPager);
             showArticle();
@@ -224,7 +225,7 @@ public class ArticleActivity extends AppCompatActivity implements
             Intent playerIntent = new Intent(this, AudioPlayService.class)
                     .setData(mUriWithTimeStamp)
                     .setAction(AudioPlayService.ACTION_INITIALIZE)
-                    .putExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF, audioHref);
+                    .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF, audioHref);
             startService(playerIntent);
             bindService(playerIntent, mConnection, BIND_AUTO_CREATE);
         }

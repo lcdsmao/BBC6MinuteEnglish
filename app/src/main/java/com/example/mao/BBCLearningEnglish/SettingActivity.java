@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish;
+package com.example.mao.BBCLearningEnglish;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

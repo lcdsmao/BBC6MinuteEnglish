@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish;
+package com.example.mao.BBCLearningEnglish;
 
 import android.app.Notification;
 import android.app.Service;
@@ -7,11 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioAttributes;
-import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Binder;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
@@ -22,9 +20,9 @@ import android.widget.Toast;
 
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.example.mao.bbc6minuteenglish.cache.App;
-import com.example.mao.bbc6minuteenglish.data.BBCContentContract;
-import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
+import com.example.mao.BBCLearningEnglish.cache.App;
+import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
+import com.example.mao.BBCLearningEnglish.utilities.NotificationUtility;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,7 +103,7 @@ public class AudioPlayService extends Service implements
     private void initialize(Intent intent) {
 
         mAudioHref = intent
-                .getStringExtra(BBCContentContract.BBC6MinuteEnglishEntry.COLUMN_MP3_HREF);
+                .getStringExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF);
 
         mUriWithTimeStamp = intent.getData();
 

@@ -2,26 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
-        android:id="@+id/group_class"
+        android:id="@+id/group_category"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/class_six"
-            android:title="@string/class_6_minute_english" />
+            android:id="@+id/category_six"
+            android:title="@string/category_6_minute_english" />
         <item
-            android:id="@+id/class_we_speak"
-            android:title="@string/class_the_english_we_speak" />
+            android:id="@+id/category_we_speak"
+            android:title="@string/category_the_english_we_speak" />
         <item
-            android:id="@+id/class_news_report"
-            android:title="@string/class_news_report" />
+            android:id="@+id/category_news_report"
+            android:title="@string/category_news_report" />
         <item
-            android:id="@+id/class_work"
-            android:title="@string/class_english_at_work" />
+            android:id="@+id/category_work"
+            android:title="@string/category_english_at_work" />
         <item
-            android:id="@+id/class_university"
-            android:title="@string/class_english_at_university"/>
+            android:id="@+id/category_university"
+            android:title="@string/category_english_at_university"/>
         <item
-            android:id="@+id/class_lingo_hack"
-            android:title="@string/class_lingo_hack"/>
+            android:id="@+id/category_lingo_hack"
+            android:title="@string/category_lingo_hack"/>
     </group>
 
     <group

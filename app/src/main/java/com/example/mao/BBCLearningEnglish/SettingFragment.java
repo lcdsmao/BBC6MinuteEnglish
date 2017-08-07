@@ -1,4 +1,4 @@
-package com.example.mao.bbc6minuteenglish;
+package com.example.mao.BBCLearningEnglish;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,9 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.webkit.WebView;
 
-import com.example.mao.bbc6minuteenglish.sync.BBCSyncUtility;
-import com.example.mao.bbc6minuteenglish.sync.JobDispatcher;
-import com.example.mao.bbc6minuteenglish.utilities.NotificationUtility;
+import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
+import com.example.mao.BBCLearningEnglish.sync.JobDispatcher;
 
 
 public class SettingFragment extends PreferenceFragment
