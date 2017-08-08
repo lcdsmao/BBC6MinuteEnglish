@@ -7,18 +7,8 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.webkit.WebView;
-import android.widget.TextView;
 
-import com.example.mao.BBCLearningEnglish.data.BBCPreference;
-import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
-import com.example.mao.BBCLearningEnglish.sync.JobDispatcher;
-
-import org.w3c.dom.Text;
+import com.example.mao.BBCLearningEnglish.sync.BBCSyncJobDispatcher;
 
 
 public class SettingFragment extends PreferenceFragment
@@ -38,9 +28,7 @@ public class SettingFragment extends PreferenceFragment
         if (getString(R.string.setting_history_key).equals(key)) {
             setMaxHistorySummary();
         } else if (getString(R.string.setting_notification_key).equals(key)) {
-            JobDispatcher.dispatcherScheduleSync(getActivity());
-            //Test notification
-            //NotificationUtility.showNewContentNotification(getActivity());
+            BBCSyncJobDispatcher.dispatcherScheduleSync(getActivity());
         }
     }
 

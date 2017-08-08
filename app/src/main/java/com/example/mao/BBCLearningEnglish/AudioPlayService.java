@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.example.mao.BBCLearningEnglish.cache.App;
+import com.example.mao.BBCLearningEnglish.cache.MyApp;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.example.mao.BBCLearningEnglish.utilities.NotificationUtility;
 
@@ -31,7 +31,7 @@ import java.io.IOException;
  * Create by mao 2017.7
  *
  * Thanks for the guide
- * A Step by Step Guide to Building an Android Audio Player App
+ * A Step by Step Guide to Building an Android Audio Player MyApp
  * By Valdio Veliu  August 19, 2016
  * https://www.sitepoint.com/a-step-by-step-guide-to-building-an-android-audio-player-app/
  */
@@ -316,7 +316,7 @@ public class AudioPlayService extends Service implements
     }
 
     private void checkCachedState() {
-        HttpProxyCacheServer proxy = App.getProxy(this);
+        HttpProxyCacheServer proxy = MyApp.getProxy(this);
         if (proxy.isCached(mAudioHref)) {
             mCachedProgress = 100;
         } else {
@@ -345,7 +345,7 @@ public class AudioPlayService extends Service implements
                         .build()
         );
 
-        mAudioProxy = App.getProxy(this);
+        mAudioProxy = MyApp.getProxy(this);
         String proxyUrl = mAudioProxy.getProxyUrl(mAudioHref);
         checkCachedState();
         mAudioProxy.registerCacheListener(this, mAudioHref);

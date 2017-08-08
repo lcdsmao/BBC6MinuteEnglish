@@ -1,6 +1,5 @@
 package com.example.mao.BBCLearningEnglish.sync;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -11,12 +10,10 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.mao.BBCLearningEnglish.cache.App;
-import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
+import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.data.BBCCategory;
 import com.example.mao.BBCLearningEnglish.data.BBCPreference;
-import com.example.mao.BBCLearningEnglish.utilities.BBCHtmlUtility;
-
-import org.jsoup.nodes.Document;
+import com.example.mao.BBCLearningEnglish.utilities.NotificationUtility;
 
 /**
  * Created by MAO on 7/24/2017.
@@ -33,7 +30,7 @@ public class BBCSyncTask {
                 , uriWithTimeStamp, context);
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        App.getRequestQueue(context).add(request);
+        MyApp.getRequestQueue(context).add(request);
 
     }
 
@@ -41,13 +38,17 @@ public class BBCSyncTask {
 //
 //    }
 
-    synchronized public static void syncCategoryList(Context context, String category) {
-        String url = BBCHtmlUtility.sCategoryMap.get(category);
+    synchronized public static void syncCategoryList(final Context context, final String category) {
+        String url = BBCCategory.sCategoryUrlMap.get(category);
         BBCContentListRequest request = new BBCContentListRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (!TextUtils.isEmpty(response)) BBCSyncUtility.sIsContentListSyncComplete = true;
+                        BBCSyncUtility.sIsContentListSyncComplete = true;
+                        Log.v(TAG, "Response:" + response);
+                        if (!TextUtils.isEmpty(response)) {
+                            NotificationUtility.showNewContentNotification(context, response);
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -59,9 +60,7 @@ public class BBCSyncTask {
                 }, context);
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        App.getRequestQueue(context).add(request);
+        MyApp.getRequestQueue(context).add(request);
         BBCPreference.setLastUpdateTime(context, category, System.currentTimeMillis());
     }
-
-
 }

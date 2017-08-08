@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit;
  * Created by MAO on 8/2/2017.
  */
 
-public class JobDispatcher {
+public class BBCSyncJobDispatcher {
 
     private static final int TRIGGER_INTERVAL = (int) TimeUnit.DAYS.toSeconds(2);
-    private static final int TRIGGER_WINDOWS = (int) TimeUnit.DAYS.toSeconds(3);
+    private static final int TRIGGER_WINDOWS = (int) TimeUnit.HOURS.toSeconds(6);
 
     private static void buildScheduleSync(Context context) {
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
@@ -31,11 +31,10 @@ public class JobDispatcher {
                 .setRecurring(true)
                 .setReplaceCurrent(true)
                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                .setTrigger(Trigger.executionWindow(TRIGGER_INTERVAL, TRIGGER_WINDOWS))
-                .setConstraints(
-                        Constraint.ON_UNMETERED_NETWORK,
-                        Constraint.DEVICE_CHARGING
-                ).build();
+                .setTrigger(Trigger.executionWindow(TRIGGER_INTERVAL,
+                        TRIGGER_INTERVAL + TRIGGER_WINDOWS))
+                .setConstraints(Constraint.ON_UNMETERED_NETWORK)
+                .build();
         dispatcher.schedule(syncJob);
     }
 

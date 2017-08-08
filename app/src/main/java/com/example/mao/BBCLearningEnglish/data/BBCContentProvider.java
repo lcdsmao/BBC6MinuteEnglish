@@ -53,7 +53,6 @@ public class BBCContentProvider extends ContentProvider {
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getReadableDatabase();
         int code = sUriMatcher.match(uri);
-        Log.v("Query", "Code = " + code);
         Cursor cursor;
         String filter;
         String timeStamp;
@@ -69,7 +68,6 @@ public class BBCContentProvider extends ContentProvider {
                 break;
             case BBC_FILTER_CODE:
                 filter = uri.getLastPathSegment();
-                Log.v("FILTER:", filter);
                 selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?";
                 cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         projection,
@@ -114,51 +112,24 @@ public class BBCContentProvider extends ContentProvider {
         SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
         int code = sUriMatcher.match(uri);
         long id = -1;
-        Uri returnedUri;
+        Uri returnedUri = null;
         switch (code) {
             case BBC_CODE:
-                id = sqLiteDatabase.insert(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                id = sqLiteDatabase.insertWithOnConflict(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
                         null,
-                        values);
+                        values,
+                        SQLiteDatabase.CONFLICT_IGNORE);
                 if (id > 0) {
                     returnedUri = ContentUris.withAppendedId(
                             BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
                             id);
-                } else {
-                    throw new SQLException("Insert failed!");
+                    getContext().getContentResolver().notifyChange(uri, null);
                 }
                 break;
             default:
                 throw new SQLException("Insert failed!");
         }
-        getContext().getContentResolver().notifyChange(uri, null);
         return returnedUri;
-    }
-
-    @Override
-    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
-        SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
-        int code = sUriMatcher.match(uri);
-        int n = 0;
-        if (values.length == 0) {
-            return n;
-        }
-        switch (code) {
-            case BBC_CODE:
-                for (ContentValues contentValues : values) {
-                    long id = sqLiteDatabase.insert(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
-                            null,
-                            contentValues);
-                    if (id > 0) {
-                       n++;
-                    }
-                }
-                break;
-            default:
-                throw new SQLException("Bulk insert failed");
-        }
-        getContext().getContentResolver().notifyChange(uri, null);
-        return n;
     }
 
     @Override

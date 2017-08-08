@@ -1,6 +1,5 @@
 package com.example.mao.BBCLearningEnglish;
 
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -27,11 +26,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mao.BBCLearningEnglish.data.BBCArticleSection;
+import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.data.BBCCategory;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.example.mao.BBCLearningEnglish.data.BBCPreference;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
-import com.example.mao.BBCLearningEnglish.sync.JobDispatcher;
+import com.example.mao.BBCLearningEnglish.sync.BBCSyncJobDispatcher;
 
 public class ContentListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
@@ -46,6 +46,7 @@ public class ContentListActivity extends AppCompatActivity implements
 
     private BBCContentAdapter mBBCContentAdapter;
     private SwipeRefreshLayout mSwipeContainer;
+    private NavigationView mNavigationView;
 
     // Projection for Showing data
     public static final String[] PROJECTION = {
@@ -69,7 +70,6 @@ public class ContentListActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -82,10 +82,17 @@ public class ContentListActivity extends AppCompatActivity implements
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().getItem(0).setChecked(true);
-        mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+        Intent intent = getIntent();
+        int id = R.id.category_six;
+        if (intent.hasExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY)) {
+            mCurrentCategory = intent.getStringExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
+            id = BBCCategory.sCategoryItemIdMap.get(mCurrentCategory);
+        }
+        mNavigationView.setCheckedItem(id);
+        handleCategoryId(id);
 
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_content_container);
         mSwipeContainer.setOnRefreshListener(this);
@@ -97,6 +104,8 @@ public class ContentListActivity extends AppCompatActivity implements
         contentRecycleView.setLayoutManager(new LinearLayoutManager(this));
         contentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
+
+        BBCSyncJobDispatcher.dispatcherScheduleSync(this);
 
         Log.v(TAG, "On create");
         getSupportLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, new Bundle(), this);
@@ -117,6 +126,13 @@ public class ContentListActivity extends AppCompatActivity implements
         if (!BBCSyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(true);
         }
+        MyApp.activityResumed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MyApp.activityPaused();
     }
 
     @Override
@@ -218,31 +234,14 @@ public class ContentListActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        ActionBar actionBar = getSupportActionBar();
+        Log.v(TAG, "Navigation check" + id);
         switch (id) {
             case R.id.category_six:
-                actionBar.setTitle(R.string.category_6_minute_english);
-                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH;
-                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
-                break;
             case R.id.category_we_speak:
-                actionBar.setTitle(R.string.category_the_english_we_speak);
-                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK;
-                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
-                break;
             case R.id.category_news_report:
-                actionBar.setTitle(R.string.category_news_report);
-                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT;
-                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
-                break;
             case R.id.category_lingo_hack:
-                actionBar.setTitle(R.string.category_lingo_hack);
-                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK;
-                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
-                break;
             case R.id.category_university:
-                actionBar.setTitle(R.string.category_english_at_university);
-                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY;
+                handleCategoryId(id);
                 getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.drawer_rating:
@@ -270,6 +269,35 @@ public class ContentListActivity extends AppCompatActivity implements
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         getSupportActionBar().setTitle(savedInstanceState.getString(TITLE_STATE_KEY));
+    }
+
+    private void handleCategoryId(int id) {
+        ActionBar actionBar = getSupportActionBar();
+        switch (id) {
+            case R.id.category_six:
+                actionBar.setTitle(R.string.category_6_minute_english);
+                mCurrentCategory = BBCCategory.CATEGORY_6_MINUTE_ENGLISH;
+                break;
+            case R.id.category_we_speak:
+                actionBar.setTitle(R.string.category_the_english_we_speak);
+                mCurrentCategory = BBCCategory.CATEGORY_THE_ENGLISH_WE_SPEAK;
+                break;
+            case R.id.category_news_report:
+                actionBar.setTitle(R.string.category_news_report);
+                mCurrentCategory = BBCCategory.CATEGORY_NEWS_REPORT;
+                break;
+            case R.id.category_lingo_hack:
+                actionBar.setTitle(R.string.category_lingo_hack);
+                mCurrentCategory = BBCCategory.CATEGORY_LINGO_HACK;
+                break;
+            case R.id.category_university:
+                actionBar.setTitle(R.string.category_english_at_university);
+                mCurrentCategory = BBCCategory.CATEGORY_ENGLISH_AT_UNIVERSITY;
+                break;
+            default:
+                actionBar.setTitle(R.string.category_6_minute_english);
+                mCurrentCategory = BBCCategory.CATEGORY_6_MINUTE_ENGLISH;
+        }
     }
 
 }

@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.mao.BBCLearningEnglish.cache.MyApp;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
 import com.example.mao.BBCLearningEnglish.utilities.TimeUtility;
@@ -204,12 +205,14 @@ public class ArticleActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         mPlayerHandler.postDelayed(mRunnable, REFRESH_TIME_INTERVAL);
+        MyApp.activityResumed();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mPlayerHandler.removeCallbacks(mRunnable);
+        MyApp.activityPaused();
     }
 
     @Override

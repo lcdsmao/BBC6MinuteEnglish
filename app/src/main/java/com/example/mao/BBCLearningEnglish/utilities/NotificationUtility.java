@@ -16,6 +16,8 @@ import com.example.mao.BBCLearningEnglish.ArticleActivity;
 import com.example.mao.BBCLearningEnglish.AudioPlayService;
 import com.example.mao.BBCLearningEnglish.ContentListActivity;
 import com.example.mao.BBCLearningEnglish.R;
+import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.data.BBCCategory;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 
 /**
@@ -106,16 +108,19 @@ public class NotificationUtility {
                 getDrawable(action), getActionName(context, action), pendingIntentService);
     }
 
-    public static void showNewContentNotification(Context context) {
+    public static void showNewContentNotification(Context context, String category) {
+        if (MyApp.isActivityVisible()) return;
+
         Intent intent = new Intent(context, ContentListActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_headset)
-                .setContentTitle("New Content")
-                .setContentText("Let's start")
+                .setContentTitle(context.getString(R.string.notification_new_content_title))
+                .setContentText(context.getString(BBCCategory.sCategoryStringResourceMap.get(category)))
                 .setColor(ContextCompat.getColor(context, R.color.primary))
                 .setAutoCancel(true)
                 .build();

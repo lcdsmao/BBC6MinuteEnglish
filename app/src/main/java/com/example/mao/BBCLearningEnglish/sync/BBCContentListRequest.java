@@ -10,6 +10,7 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
+import com.example.mao.BBCLearningEnglish.data.BBCCategory;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.example.mao.BBCLearningEnglish.data.BBCPreference;
 import com.example.mao.BBCLearningEnglish.utilities.BBCHtmlUtility;
@@ -29,12 +30,23 @@ public class BBCContentListRequest extends StringRequest {
 
     private String mCategory;
     private Context mContext;
+    private int newRow;
 
     public BBCContentListRequest(int method, String url, Response.Listener<String> listener,
                                  Response.ErrorListener errorListener, Context context) {
         super(method, url, listener, errorListener);
-        mCategory = BBCHtmlUtility.sCategoryMap.get(url);
+        mCategory = BBCCategory.sCategoryUrlMap.get(url);
         mContext = context;
+        newRow = 0;
+    }
+
+    @Override
+    protected void deliverResponse(String response) {
+        if (newRow > 0) {
+            super.deliverResponse(mCategory);
+        } else {
+            super.deliverResponse("");
+        }
     }
 
     @Override
@@ -58,7 +70,7 @@ public class BBCContentListRequest extends StringRequest {
                         contentValues);
             }
 
-            contentResolver.delete(BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
+            newRow = contentResolver.delete(BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
                     BBCContentContract.BBCLearningEnglishEntry.getMaxHistoryWhere(maxHistory, mCategory),
                     null);
         } catch (UnsupportedEncodingException e) {

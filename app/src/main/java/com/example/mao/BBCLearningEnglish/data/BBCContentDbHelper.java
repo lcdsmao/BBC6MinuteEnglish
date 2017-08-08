@@ -12,7 +12,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bbcLearningEnglish.db";
 
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 17;
 
     public BBCContentDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,7 +35,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
                 + " UNIQUE (" + BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
                 + ", "
                 + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP
-                + " ) ON CONFLICT REPLACE);";
+                + " ) ON CONFLICT IGNORE);";
 
         db.execSQL(createTable);
     }

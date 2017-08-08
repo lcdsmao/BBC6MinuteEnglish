@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.mao.BBCLearningEnglish.cache.MyApp;
+
 public class SettingActivity extends AppCompatActivity {
 
     @Override
@@ -24,5 +26,17 @@ public class SettingActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApp.activityResumed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MyApp.activityPaused();
     }
 }
