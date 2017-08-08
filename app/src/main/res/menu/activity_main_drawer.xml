@@ -6,18 +6,23 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/category_six"
+            android:icon="@drawable/ic_6minute"
             android:title="@string/category_6_minute_english" />
         <item
             android:id="@+id/category_we_speak"
+            android:icon="@drawable/ic_we"
             android:title="@string/category_the_english_we_speak" />
         <item
             android:id="@+id/category_news_report"
+            android:icon="@drawable/ic_news"
             android:title="@string/category_news_report" />
         <item
             android:id="@+id/category_university"
+            android:icon="@drawable/ic_university"
             android:title="@string/category_english_at_university"/>
         <item
             android:id="@+id/category_lingo_hack"
+            android:icon="@drawable/ic_world"
             android:title="@string/category_lingo_hack"/>
     </group>
 
@@ -25,9 +30,11 @@
         android:id="@+id/group_other">
         <item
             android:id="@+id/drawer_rating"
+            android:icon="@drawable/ic_rate"
             android:title="Rate this App"/>
         <item
             android:id="@+id/drawer_setting"
+            android:icon="@drawable/ic_settings"
             android:title="@string/setting"/>
     </group>
 

@@ -9,6 +9,6 @@
     <dimen name="list_item_img_width">120dp</dimen>
     <dimen name="list_item_height">120dp</dimen>
     <dimen name="control_layout_height">64dp</dimen>
-    <dimen name="control_play_button1_height">48dp</dimen>
+    <dimen name="control_play_button1_height">36dp</dimen>
     <dimen name="control_play_button2_height">32dp</dimen>
 </resources>
