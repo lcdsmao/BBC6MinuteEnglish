@@ -7,6 +7,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.example.mao.BBCLearningEnglish.R;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncJobDispatcher;
@@ -28,6 +29,8 @@ public class SettingFragment extends PreferenceFragment
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (getString(R.string.setting_history_key).equals(key)) {
             setMaxHistorySummary();
+            Toast.makeText(getActivity(), getString(R.string.setting_history_suggestion),
+                    Toast.LENGTH_SHORT).show();
         } else if (getString(R.string.setting_notification_key).equals(key)) {
             BBCSyncJobDispatcher.dispatcherScheduleSync(getActivity());
         }

@@ -142,87 +142,91 @@ public class BBCHtmlUtility {
                                                             String category) {
         List<BBCArticleSection> list = new ArrayList<>();
         String[] splitResult = html.split("</?h3>");
-        switch (category){
-            case BBCCategory.CATEGORY_6_MINUTE_ENGLISH:
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_question))
-                        .setArticle(splitResult[2])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_vocabulary))
-                        .setArticle(splitResult[4])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(splitResult[6])
-                );
-                break;
-            case BBCCategory.CATEGORY_THE_ENGLISH_WE_SPEAK:
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_summary))
-                        .setArticle(splitResult[2])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(splitResult[4])
-                );
-                break;
-            case BBCCategory.CATEGORY_NEWS_REPORT:
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_question))
-                        .setArticle(splitResult[2])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_key_words))
-                        .setArticle(splitResult[4])
-                );
-                String newsReport = splitResult[6];
-                if (splitResult.length > 8) {
-                    newsReport += "\n<p><Strong>"
-                            + splitResult[7]
-                            + "</strong></p>\n"
-                            + splitResult[8];
-                }
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(newsReport)
-                );
-                break;
-            case BBCCategory.CATEGORY_ENGLISH_AT_UNIVERSITY:
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_summary))
-                        .setArticle(splitResult[2])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_focus))
-                        .setArticle(splitResult[4])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_vocabulary))
-                        .setArticle(splitResult[6])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(splitResult[8])
-                );
-                break;
-            case BBCCategory.CATEGORY_LINGO_HACK:
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_headlines))
-                        .setArticle(splitResult[2])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_vocabulary))
-                        .setArticle(splitResult[6])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(splitResult[4])
-                );
-                //more
-                break;
-            default:
-                break;
+        try{
+            switch (category){
+                case BBCCategory.CATEGORY_6_MINUTE_ENGLISH:
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_question))
+                            .setArticle(splitResult[2])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_vocabulary))
+                            .setArticle(splitResult[4])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_transcript))
+                            .setArticle(splitResult[6])
+                    );
+                    break;
+                case BBCCategory.CATEGORY_THE_ENGLISH_WE_SPEAK:
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_summary))
+                            .setArticle(splitResult[2])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_transcript))
+                            .setArticle(splitResult[4])
+                    );
+                    break;
+                case BBCCategory.CATEGORY_NEWS_REPORT:
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_question))
+                            .setArticle(splitResult[2])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_key_words))
+                            .setArticle(splitResult[4])
+                    );
+                    String newsReport = splitResult[6];
+                    if (splitResult.length > 8) {
+                        newsReport += "\n<p><Strong>"
+                                + splitResult[7]
+                                + "</strong></p>\n"
+                                + splitResult[8];
+                    }
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_transcript))
+                            .setArticle(newsReport)
+                    );
+                    break;
+                case BBCCategory.CATEGORY_ENGLISH_AT_UNIVERSITY:
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_summary))
+                            .setArticle(splitResult[2])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_focus))
+                            .setArticle(splitResult[4])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_vocabulary))
+                            .setArticle(splitResult[6])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_transcript))
+                            .setArticle(splitResult[8])
+                    );
+                    break;
+                case BBCCategory.CATEGORY_LINGO_HACK:
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_headlines))
+                            .setArticle(splitResult[2])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_vocabulary))
+                            .setArticle(splitResult[6])
+                    );
+                    list.add(new BBCArticleSection()
+                            .setTitle(context.getString(R.string.article_transcript))
+                            .setArticle(splitResult[4])
+                    );
+                    //more
+                    break;
+                default:
+                    break;
+            }
+        } catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
         }
         return list;
     }

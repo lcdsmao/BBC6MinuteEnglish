@@ -39,7 +39,7 @@
     <string name="setting_notification_title">Notification</string>
     <string name="setting_notification_summary">Enable it to receive new content notification</string>
     <string name="setting_notification_key" translatable="false">notification_key</string>
-
+    <string name="setting_history_suggestion">You may need to refresh to see changes</string>
     <string name="setting_about">About</string>
 
     <string name="setting_version_title">Version</string>
