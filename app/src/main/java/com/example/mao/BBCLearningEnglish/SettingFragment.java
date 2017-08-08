@@ -52,15 +52,8 @@ public class SettingFragment extends PreferenceFragment
     }
 
     private void displayLicensesAlertDialog() {
-        WebView view = (WebView) LayoutInflater.from(getActivity())
-                .inflate(R.layout.dialog_licenses, null);
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        view.loadUrl("file:///android_asset/Licenses.html");
-        new AlertDialog.Builder(getActivity(), R.style.AppTheme_Dialog)
-                .setTitle(getString(R.string.open_source_license))
-                .setView(view)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+        LicenseFragment licenseFragment = LicenseFragment.newInstance();
+        licenseFragment.show(getFragmentManager(), "License Dialog");
     }
 
     private void setPreferenceClickListener() {
