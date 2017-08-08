@@ -2,7 +2,6 @@ package com.example.mao.BBCLearningEnglish.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 

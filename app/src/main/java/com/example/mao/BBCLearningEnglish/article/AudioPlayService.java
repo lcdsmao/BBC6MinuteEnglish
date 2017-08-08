@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.article;
 
 import android.app.Notification;
 import android.app.Service;
@@ -20,7 +20,8 @@ import android.widget.Toast;
 
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.singleton.MyApp;
+import com.example.mao.BBCLearningEnglish.R;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.example.mao.BBCLearningEnglish.utilities.NotificationUtility;
 

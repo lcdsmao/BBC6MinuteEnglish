@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mao.BBCLearningEnglish.ArticleActivity">
+    tools:context="com.example.mao.BBCLearningEnglish.article.ArticleActivity">
 
     <include layout="@layout/control_layout"
         android:id="@+id/control_layout"/>

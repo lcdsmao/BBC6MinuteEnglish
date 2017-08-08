@@ -12,11 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.example.mao.BBCLearningEnglish.ArticleActivity;
-import com.example.mao.BBCLearningEnglish.AudioPlayService;
-import com.example.mao.BBCLearningEnglish.ContentListActivity;
+import com.example.mao.BBCLearningEnglish.article.ArticleActivity;
+import com.example.mao.BBCLearningEnglish.article.AudioPlayService;
+import com.example.mao.BBCLearningEnglish.list.BBCContentListActivity;
 import com.example.mao.BBCLearningEnglish.R;
-import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.singleton.MyApp;
 import com.example.mao.BBCLearningEnglish.data.BBCCategory;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 
@@ -111,7 +111,7 @@ public class NotificationUtility {
     public static void showNewContentNotification(Context context, String category) {
         if (MyApp.isActivityVisible()) return;
 
-        Intent intent = new Intent(context, ContentListActivity.class)
+        Intent intent = new Intent(context, BBCContentListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         PendingIntent pendingIntent =

@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 
+import com.example.mao.BBCLearningEnglish.R;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncJobDispatcher;
 
 

@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.list;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,19 +26,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.article.ArticleActivity;
+import com.example.mao.BBCLearningEnglish.singleton.MyApp;
+import com.example.mao.BBCLearningEnglish.R;
+import com.example.mao.BBCLearningEnglish.settings.SettingActivity;
 import com.example.mao.BBCLearningEnglish.data.BBCCategory;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.example.mao.BBCLearningEnglish.data.BBCPreference;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncJobDispatcher;
 
-public class ContentListActivity extends AppCompatActivity implements
+public class BBCContentListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, BBCContentAdapter.OnListItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener,
         NavigationView.OnNavigationItemSelectedListener{
 
-    public static final String TAG = ContentListActivity.class.getSimpleName();
+    public static final String TAG = BBCContentListActivity.class.getSimpleName();
 
     private static final int BBC_CONTENT_LOADER_ID = 1;
 

@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.settings;
 
 
 import android.app.Dialog;
@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.webkit.WebView;
+
+import com.example.mao.BBCLearningEnglish.R;
 
 public class LicenseFragment extends DialogFragment {
 

@@ -1,7 +1,4 @@
 package com.example.mao.BBCLearningEnglish.data;
-
-import java.util.List;
-
 /**
  * Created by Paranoid on 17/8/5.
  */

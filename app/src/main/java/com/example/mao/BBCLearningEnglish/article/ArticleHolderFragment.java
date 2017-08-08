@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.article;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.mao.BBCLearningEnglish.R;
 
 /**
  * Created by Paranoid on 17/7/31.

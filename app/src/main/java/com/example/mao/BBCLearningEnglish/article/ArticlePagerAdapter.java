@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.article;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

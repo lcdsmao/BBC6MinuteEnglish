@@ -10,7 +10,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.singleton.MyApp;
 import com.example.mao.BBCLearningEnglish.data.BBCCategory;
 import com.example.mao.BBCLearningEnglish.data.BBCPreference;
 import com.example.mao.BBCLearningEnglish.utilities.NotificationUtility;

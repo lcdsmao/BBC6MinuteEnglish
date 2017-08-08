@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.article;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -25,7 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.singleton.MyApp;
+import com.example.mao.BBCLearningEnglish.R;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
 import com.example.mao.BBCLearningEnglish.utilities.TimeUtility;

@@ -1,10 +1,11 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.settings;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.mao.BBCLearningEnglish.cache.MyApp;
+import com.example.mao.BBCLearningEnglish.singleton.MyApp;
+import com.example.mao.BBCLearningEnglish.R;
 
 public class SettingActivity extends AppCompatActivity {
 

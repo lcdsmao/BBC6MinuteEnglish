@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish.cache;
+package com.example.mao.BBCLearningEnglish.data;
 
 import android.net.Uri;
 
@@ -12,7 +12,6 @@ public class AudioFileNameGenerator implements FileNameGenerator{
     @Override
     public String generate(String url) {
         Uri uri = Uri.parse(url);
-        String audioName = uri.getLastPathSegment();
-        return audioName;
+        return uri.getLastPathSegment();
     }
 }

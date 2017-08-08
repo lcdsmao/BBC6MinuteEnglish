@@ -2,7 +2,6 @@ package com.example.mao.BBCLearningEnglish.data;
 
 import com.example.mao.BBCLearningEnglish.R;
 import com.example.mao.BBCLearningEnglish.utilities.BBCHtmlUtility;
-import com.google.common.collect.HashBiMap;
 
 import java.util.HashMap;
 

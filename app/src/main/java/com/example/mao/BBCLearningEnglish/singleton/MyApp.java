@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish.cache;
+package com.example.mao.BBCLearningEnglish.singleton;
 
 import android.app.Application;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.util.Log;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.example.mao.BBCLearningEnglish.data.AudioFileNameGenerator;
 
 /**
  * Created by MAO on 8/1/2017.

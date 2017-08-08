@@ -1,4 +1,4 @@
-package com.example.mao.BBCLearningEnglish;
+package com.example.mao.BBCLearningEnglish.list;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mao.BBCLearningEnglish.R;
 import com.example.mao.BBCLearningEnglish.data.BBCContentContract;
 import com.squareup.picasso.Picasso;
 
@@ -48,17 +49,17 @@ public class BBCContentAdapter extends
         mCursor.moveToPosition(position);
 
         // Title set
-        holder.mTitleTextView.setText(mCursor.getString(ContentListActivity.TITLE_INDEX));
+        holder.mTitleTextView.setText(mCursor.getString(BBCContentListActivity.TITLE_INDEX));
 
         // Time set
-        holder.mTimeTextView.setText(mCursor.getString(ContentListActivity.TIME_INDEX));
+        holder.mTimeTextView.setText(mCursor.getString(BBCContentListActivity.TIME_INDEX));
 
         // Description set
-        holder.mDescriptionTextView.setText(mCursor.getString(ContentListActivity.DESCRIPTION_INDEX));
+        holder.mDescriptionTextView.setText(mCursor.getString(BBCContentListActivity.DESCRIPTION_INDEX));
 
         // Use picasso to load image
         Picasso.with(mContext)
-                .load(mCursor.getString(ContentListActivity.THUMBNAIL_INDEX))
+                .load(mCursor.getString(BBCContentListActivity.THUMBNAIL_INDEX))
                 .resizeDimen(R.dimen.list_item_img_width, R.dimen.list_item_img_height)
                 .centerCrop()
                 .placeholder(R.drawable.image_place_holder)
@@ -102,11 +103,11 @@ public class BBCContentAdapter extends
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-            String path = mCursor.getString(ContentListActivity.TIMESTAMP_INDEX)
+            String path = mCursor.getString(BBCContentListActivity.TIMESTAMP_INDEX)
                     + "/"
                     + BBCContentContract.PATH_CATEGORY
                     + "/"
-                    + mCursor.getString(ContentListActivity.CATEGORY_INDEX);
+                    + mCursor.getString(BBCContentListActivity.CATEGORY_INDEX);
             mOnClickListener.onClickItem(path);
         }
     }
