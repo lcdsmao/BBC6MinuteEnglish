@@ -237,12 +237,12 @@ public class BBCHtmlUtility {
                         .setArticle(splitResult[2])
                 );
                 list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(splitResult[4])
-                );
-                list.add(new BBCArticleSection()
                         .setTitle(context.getString(R.string.article_vocabulary))
                         .setArticle(splitResult[6])
+                );
+                list.add(new BBCArticleSection()
+                        .setTitle(context.getString(R.string.article_transcript))
+                        .setArticle(splitResult[4])
                 );
                 //more
                 break;

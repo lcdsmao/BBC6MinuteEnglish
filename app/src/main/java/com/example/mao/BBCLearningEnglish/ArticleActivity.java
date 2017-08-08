@@ -70,19 +70,20 @@ public class ArticleActivity extends AppCompatActivity implements
     private Toolbar mToolbar;
     private TextView mCurrentTimeText;
     private TextView mDurationTimeText;
+    private ImageView mForwardButton;
+    private ImageView mReplayButton;
 
     private Handler mPlayerHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mBond) {
-                showAudioLoading();
-                updateSeekBar();
-                updatePlayButton();
-            }
+            updateAudioLoadingUI();
+            updateSeekBarUI();
+            updatePlayerControlButtonUI();
             mPlayerHandler.postDelayed(this, REFRESH_TIME_INTERVAL);
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,10 +118,10 @@ public class ArticleActivity extends AppCompatActivity implements
         mTabLayout = (TabLayout) findViewById(R.id.tabbar);
         mArticleViewPager = (ViewPager) findViewById(R.id.view_pager);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        ImageView ForwardButton = (ImageView) findViewById(R.id.iv_forward);
-        ForwardButton.setOnClickListener(this);
-        ImageView ReplayButton = (ImageView) findViewById(R.id.iv_replay);
-        ReplayButton.setOnClickListener(this);
+        mForwardButton = (ImageView) findViewById(R.id.iv_forward);
+        mForwardButton.setOnClickListener(this);
+        mReplayButton = (ImageView) findViewById(R.id.iv_replay);
+        mReplayButton.setOnClickListener(this);
         mCurrentTimeText = (TextView) findViewById(R.id.tv_current);
         mDurationTimeText = (TextView) findViewById(R.id.tv_duration);
     }
@@ -232,12 +233,13 @@ public class ArticleActivity extends AppCompatActivity implements
         }
     }
 
-    private void updateSeekBar(){
+    private void updateSeekBarUI(){
         if (mBond && mAudioService.isPrepared()) {
             mAudioSeekBar.setEnabled(true);
             mAudioSeekBar.setMax(mAudioService.getDuration());
+            mAudioSeekBar.setSecondaryProgress(mAudioService.getCachedProgress());
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
-                mAudioSeekBar.setProgress(mAudioService.getCurrentPosition(), true);
+                mAudioSeekBar.setProgress(mAudioService.getCurrentPosition(), false);
             } else {
                 mAudioSeekBar.setProgress(mAudioService.getCurrentPosition());
             }
@@ -246,25 +248,32 @@ public class ArticleActivity extends AppCompatActivity implements
         }
     }
 
-    private void updatePlayButton() {
-        if (mBond && mAudioService.isPlaying()) {
-            mPlayButton.setImageResource(R.drawable.ic_pause);
+    private void updatePlayerControlButtonUI() {
+        if (mBond && mAudioService.isPrepared()) {
+            mPlayButton.setEnabled(true);
+            mReplayButton.setEnabled(true);
+            mForwardButton.setEnabled(true);
+            if (mAudioService.isPlaying()) {
+                mPlayButton.setImageResource(R.drawable.ic_pause);
+            } else {
+                mPlayButton.setImageResource(R.drawable.ic_play_arrow);
+            }
         } else {
-            mPlayButton.setImageResource(R.drawable.ic_play_arrow);
+            mPlayButton.setEnabled(false);
+            mReplayButton.setEnabled(false);
+            mForwardButton.setEnabled(false);
         }
     }
 
-    private void showAudioLoading() {
-        if (!mBond) return;
-        boolean isCached =
-                (mAudioService.getCurrentPosition() - mAudioService.getCachedProgress()) < 1000;
-        if (mAudioService.isPrepared()
-                && isCached) {
-            mAudioLoading.setVisibility(View.INVISIBLE);
-            mPlayButton.setVisibility(View.VISIBLE);
-        } else {
-            mAudioLoading.setVisibility(View.VISIBLE);
-            mPlayButton.setVisibility(View.INVISIBLE);
+    private void updateAudioLoadingUI() {
+        if (mBond && mAudioService.isPrepared()) {
+            if (mAudioService.getCurrentPosition() - mAudioService.getCachedProgress() < 1000) {
+                mAudioLoading.setVisibility(View.INVISIBLE);
+                mPlayButton.setVisibility(View.VISIBLE);
+            } else {
+                mAudioLoading.setVisibility(View.VISIBLE);
+                mPlayButton.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -288,23 +297,20 @@ public class ArticleActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        int newPosition;
         switch (id) {
             case R.id.iv_play_pause:
-                if (mBond && mAudioService.isPrepared()) {
-                    mAudioService.controlPlayStatus();
-                }
+                mAudioService.controlPlayStatus();
                 break;
             case R.id.iv_forward:
-                if (mBond && mAudioService.isPrepared()) {
-                    int newPosition = mAudioService.getCurrentPosition() + 5000;
-                    mAudioService.controlSeekPosition(newPosition);
-                }
+                // 5 seconds
+                newPosition = mAudioService.getCurrentPosition() + 5000;
+                mAudioService.controlSeekPosition(newPosition);
                 break;
             case R.id.iv_replay:
-                if (mBond && mAudioService.isPrepared()) {
-                    int newPosition = mAudioService.getCurrentPosition() - 5000;
-                    mAudioService.controlSeekPosition(newPosition);
-                }
+                // 5 seconds
+                newPosition = mAudioService.getCurrentPosition() - 5000;
+                mAudioService.controlSeekPosition(newPosition);
                 break;
         }
     }

@@ -421,7 +421,7 @@ public class AudioPlayService extends Service implements
     }
 
     public int getDuration() {
-        if (isPrepared()){
+        if (mIsPrepared){
             return mMediaPlayer.getDuration();
         } else {
             return 0;
@@ -429,7 +429,7 @@ public class AudioPlayService extends Service implements
     }
 
     public int getCurrentPosition() {
-        if (isPrepared()) {
+        if (mIsPrepared) {
             return mMediaPlayer.getCurrentPosition();
         } else {
             return -1;
