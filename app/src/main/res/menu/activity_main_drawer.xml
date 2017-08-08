@@ -14,9 +14,6 @@
             android:id="@+id/category_news_report"
             android:title="@string/category_news_report" />
         <item
-            android:id="@+id/category_work"
-            android:title="@string/category_english_at_work" />
-        <item
             android:id="@+id/category_university"
             android:title="@string/category_english_at_university"/>
         <item

@@ -27,11 +27,11 @@ public class BBCPreference {
         return sharedPreferences.getBoolean(notificationKey, true);
     }
 
-    public static void setLastUpdateTime(Context context, String category) {
+    public static void setLastUpdateTime(Context context, String category, long time) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String lastUpdateKey = category + context.getString(R.string.pref_last_update_time_key);
-        editor.putLong(lastUpdateKey, System.currentTimeMillis());
+        editor.putLong(lastUpdateKey, time);
         editor.apply();
     }
 

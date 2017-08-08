@@ -240,11 +240,6 @@ public class ContentListActivity extends AppCompatActivity implements
                 mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK;
                 getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
-            case R.id.category_work:
-                actionBar.setTitle(R.string.category_english_at_work);
-                mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK;
-                getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
-                break;
             case R.id.category_university:
                 actionBar.setTitle(R.string.category_english_at_university);
                 mCurrentCategory = BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY;

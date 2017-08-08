@@ -52,14 +52,14 @@ public class BBCHtmlUtility {
         final HashMap<String, String> map = new HashMap<>();
         map.put(BBC_6_MINUTE_ENGLISH_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH);
         map.put(BBC_ENGLISH_AT_UNIVERSITY_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY);
-        map.put(BBC_ENGLISH_AT_WORK_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK);
+        //map.put(BBC_ENGLISH_AT_WORK_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK);
         map.put(BBC_NEWS_REPORT_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT);
         map.put(BBC_THE_ENGLISH_WE_SPEAK_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK);
         map.put(BBC_LINGO_HACK_URL, BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK);
 
         map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_6_MINUTE_ENGLISH, BBC_6_MINUTE_ENGLISH_URL);
         map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY, BBC_ENGLISH_AT_UNIVERSITY_URL);
-        map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK, BBC_ENGLISH_AT_WORK_URL);
+        //map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK, BBC_ENGLISH_AT_WORK_URL);
         map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT, BBC_NEWS_REPORT_URL);
         map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_THE_ENGLISH_WE_SPEAK, BBC_THE_ENGLISH_WE_SPEAK_URL);
         map.put(BBCContentContract.BBCLearningEnglishEntry.CATEGORY_LINGO_HACK, BBC_LINGO_HACK_URL);
@@ -194,34 +194,23 @@ public class BBCHtmlUtility {
                 break;
             case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_NEWS_REPORT:
                 list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_summary))
+                        .setTitle(context.getString(R.string.article_question))
                         .setArticle(splitResult[2])
                 );
                 list.add(new BBCArticleSection()
                         .setTitle(context.getString(R.string.article_key_words))
                         .setArticle(splitResult[4])
                 );
+                String newsReport = splitResult[6];
+                if (splitResult.length > 8) {
+                    newsReport += "\n<p><Strong>"
+                            + splitResult[7]
+                            + "</strong></p>\n"
+                            + splitResult[8];
+                }
                 list.add(new BBCArticleSection()
                         .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(splitResult[6])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_answer))
-                        .setArticle(splitResult[8])
-                );
-                break;
-            case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_WORK:
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_summary))
-                        .setArticle(splitResult[2])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_transcript))
-                        .setArticle(splitResult[4])
-                );
-                list.add(new BBCArticleSection()
-                        .setTitle(context.getString(R.string.article_answer))
-                        .setArticle(splitResult[6])
+                        .setArticle(newsReport)
                 );
                 break;
             case BBCContentContract.BBCLearningEnglishEntry.CATEGORY_ENGLISH_AT_UNIVERSITY:

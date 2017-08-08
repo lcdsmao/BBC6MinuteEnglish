@@ -8,11 +8,17 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.TextView;
 
+import com.example.mao.BBCLearningEnglish.data.BBCPreference;
 import com.example.mao.BBCLearningEnglish.sync.BBCSyncUtility;
 import com.example.mao.BBCLearningEnglish.sync.JobDispatcher;
+
+import org.w3c.dom.Text;
 
 
 public class SettingFragment extends PreferenceFragment
@@ -30,7 +36,6 @@ public class SettingFragment extends PreferenceFragment
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (getString(R.string.setting_history_key).equals(key)) {
-            //BBCSyncUtility.contentListSync(getActivity());
             setMaxHistorySummary();
         } else if (getString(R.string.setting_notification_key).equals(key)) {
             JobDispatcher.dispatcherScheduleSync(getActivity());
@@ -49,6 +54,7 @@ public class SettingFragment extends PreferenceFragment
     private void displayLicensesAlertDialog() {
         WebView view = (WebView) LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_licenses, null);
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         view.loadUrl("file:///android_asset/Licenses.html");
         new AlertDialog.Builder(getActivity(), R.style.AppTheme_Dialog)
                 .setTitle(getString(R.string.open_source_license))
