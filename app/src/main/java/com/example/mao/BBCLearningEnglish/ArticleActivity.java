@@ -102,7 +102,6 @@ public class ArticleActivity extends AppCompatActivity implements
 
         // Check database if the article is null or not
         mUriWithTimeStamp = getIntent().getData();
-        BBCSyncUtility.articleInitialize(this, mUriWithTimeStamp);
 
         getSupportLoaderManager().initLoader(ARTICLE_LOADER_ID, null, this);
     }
@@ -137,11 +136,11 @@ public class ArticleActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uriWithTimeStamp = getIntent().getData();
         Log.v(TAG, "Create Loader");
+        BBCSyncUtility.articleInitialize(this, mUriWithTimeStamp);
         return new CursorLoader(
                 this,
-                uriWithTimeStamp,
+                mUriWithTimeStamp,
                 PROJECTION,
                 null,
                 null,
