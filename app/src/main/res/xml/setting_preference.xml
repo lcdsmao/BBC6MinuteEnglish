@@ -25,8 +25,8 @@
 
         <Preference
             android:title="@string/setting_version_title"
-            android:key="@string/setting_version_key"
-            android:summary="Beta 0.5"/>
+            android:key="@string/setting_version_key">
+        </Preference>
         <Preference
             android:title="@string/setting_licenses_title"
             android:key="@string/setting_licenses_key"/>

@@ -31,7 +31,7 @@
         <item
             android:id="@+id/drawer_rating"
             android:icon="@drawable/ic_rate"
-            android:title="Rate this App"/>
+            android:title="@string/rate"/>
         <item
             android:id="@+id/drawer_setting"
             android:icon="@drawable/ic_settings"

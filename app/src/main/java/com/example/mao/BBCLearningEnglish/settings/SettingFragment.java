@@ -1,6 +1,10 @@
 package com.example.mao.BBCLearningEnglish.settings;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -22,6 +26,7 @@ public class SettingFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.setting_preference);
 
         setMaxHistorySummary();
+        setVersionSummary();
         setPreferenceClickListener();
     }
 
@@ -38,9 +43,22 @@ public class SettingFragment extends PreferenceFragment
 
     private void setMaxHistorySummary() {
         String key = getString(R.string.setting_history_key);
-        PreferenceScreen preferenceScreen = getPreferenceScreen();
-        ListPreference preference = (ListPreference) preferenceScreen.findPreference(key);
+        ListPreference preference = (ListPreference) findPreference(key);
         preference.setSummary(preference.getValue());
+    }
+
+    private void setVersionSummary() {
+        String version = "";
+        try {
+            PackageInfo pInfo = getActivity().getPackageManager()
+                    .getPackageInfo(getActivity().getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String key = getString(R.string.setting_version_key);
+        Preference preference = findPreference(key);
+        preference.setSummary(version);
     }
 
     private void displayLicensesAlertDialog() {
@@ -49,13 +67,24 @@ public class SettingFragment extends PreferenceFragment
     }
 
     private void setPreferenceClickListener() {
-        PreferenceScreen preferenceScreen = getPreferenceScreen();
-        Preference licensesPreference =
-                preferenceScreen.findPreference(getString(R.string.setting_licenses_key));
+        Preference licensesPreference = findPreference(getString(R.string.setting_licenses_key));
         licensesPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 displayLicensesAlertDialog();
+                return true;
+            }
+        });
+        Preference versionPreference = findPreference(getString(R.string.setting_version_key));
+        versionPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("market://details?id=com.example.mao.BBCLearningEnglish");
+                intent.setData(uri);
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
                 return true;
             }
         });

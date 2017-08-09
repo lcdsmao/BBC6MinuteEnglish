@@ -237,6 +237,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        Intent intent;
         Log.v(TAG, "Navigation check" + id);
         switch (id) {
             case R.id.category_six:
@@ -248,9 +249,15 @@ public class BBCContentListActivity extends AppCompatActivity implements
                 getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
             case R.id.drawer_rating:
+                intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("market://details?id=com.example.mao.BBCLearningEnglish");
+                intent.setData(uri);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
                 break;
             case R.id.drawer_setting:
-                Intent intent = new Intent(this, SettingActivity.class);
+                intent = new Intent(this, SettingActivity.class);
                 startActivity(intent);
                 break;
             default:
