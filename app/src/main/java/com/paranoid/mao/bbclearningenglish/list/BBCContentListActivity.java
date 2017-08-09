@@ -44,6 +44,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
 
     private BBCContentAdapter mBBCContentAdapter;
     private SwipeRefreshLayout mSwipeContainer;
+    private DrawerLayout mDrawerLayout;
 
     // Projection for Showing data
     public static final String[] PROJECTION = {
@@ -73,11 +74,14 @@ public class BBCContentListActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.category_6_minute_english);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (mDrawerLayout != null) {
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            mDrawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+        }
+
 
         NavigationView NavigationView = (NavigationView) findViewById(R.id.nav_view);
         NavigationView.setNavigationItemSelectedListener(this);
@@ -156,9 +160,8 @@ public class BBCContentListActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -240,8 +243,9 @@ public class BBCContentListActivity extends AppCompatActivity implements
                 return false;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 

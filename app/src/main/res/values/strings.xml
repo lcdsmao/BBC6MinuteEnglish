@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BBC Learning English</string>
+    <string name="app_name">Learn English with BBC</string>
     <string name="package_name">com.example.mao.BBCLearningEnglish</string>
 
     <string name="category_6_minute_english">6 Minute English</string>
