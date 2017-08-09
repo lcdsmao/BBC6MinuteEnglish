@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mao.BBCLearningEnglish">
+    package="com.paranoid.mao.bbclearningenglish">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.example.mao.BBCLearningEnglish.singleton.MyApp"
+        android:name="com.paranoid.mao.bbclearningenglish.singleton.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:fullBackupContent="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.mao.BBCLearningEnglish.list.BBCContentListActivity"
+            android:name="com.paranoid.mao.bbclearningenglish.list.BBCContentListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.mao.BBCLearningEnglish.article.ArticleActivity"
+            android:name="com.paranoid.mao.bbclearningenglish.article.ArticleActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:launchMode="singleTask"
-            android:parentActivityName="com.example.mao.BBCLearningEnglish.list.BBCContentListActivity"
+            android:parentActivityName="com.paranoid.mao.bbclearningenglish.list.BBCContentListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.mao.BBCLearningEnglish.list.BBCContentListActivity" />
+                android:value="com.paranoid.mao.bbclearningenglish.list.BBCContentListActivity" />
         </activity>
-        <activity android:name="com.example.mao.BBCLearningEnglish.settings.SettingActivity"
+        <activity android:name="com.paranoid.mao.bbclearningenglish.settings.SettingActivity"
             android:label="@string/setting"/>
 
         <provider
-            android:name="com.example.mao.BBCLearningEnglish.data.BBCContentProvider"
-            android:authorities="com.example.mao.BBCLearningEnglish"
+            android:name="com.paranoid.mao.bbclearningenglish.data.BBCContentProvider"
+            android:authorities="com.paranoid.mao.bbclearningenglish"
             android:exported="false" />
 
         <service
-            android:name="com.example.mao.BBCLearningEnglish.sync.BBCSyncArticleIntentService"
+            android:name="com.paranoid.mao.bbclearningenglish.sync.BBCSyncArticleIntentService"
             android:exported="false" />
         <service
-            android:name="com.example.mao.BBCLearningEnglish.sync.BBCSyncContentListIntentService"
+            android:name="com.paranoid.mao.bbclearningenglish.sync.BBCSyncContentListIntentService"
             android:exported="false" />
         <service
-            android:name="com.example.mao.BBCLearningEnglish.article.AudioPlayService"
+            android:name="com.paranoid.mao.bbclearningenglish.article.AudioPlayService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name="com.example.mao.BBCLearningEnglish.sync.ScheduleSyncJobService"
+            android:name="com.paranoid.mao.bbclearningenglish.sync.ScheduleSyncJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
