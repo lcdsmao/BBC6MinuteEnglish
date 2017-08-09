@@ -2,6 +2,7 @@ package com.example.mao.BBCLearningEnglish.utilities;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * Created by MAO on 7/31/2017.
@@ -30,7 +31,7 @@ public class TimeUtility {
     public static long getTimeStamp(String timeFromBBC) {
         long timestamp = -1;
         try {
-            DateFormat format = new SimpleDateFormat("dd MMM yyyy");
+            DateFormat format = new SimpleDateFormat("dd MMM yyyy", Locale.US);
             timestamp = format.parse(timeFromBBC).getTime();
         } catch (Exception e) {
             e.printStackTrace();
