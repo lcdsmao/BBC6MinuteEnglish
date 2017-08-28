@@ -1,15 +1,11 @@
 package com.paranoid.mao.bbclearningenglish.sync;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
-import com.firebase.jobdispatcher.Trigger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,28 +15,24 @@ import java.util.concurrent.TimeUnit;
 
 public class BBCSyncJobDispatcher {
 
-    private static final int TRIGGER_INTERVAL = (int) TimeUnit.DAYS.toSeconds(2);
-    private static final int TRIGGER_WINDOWS = (int) TimeUnit.HOURS.toSeconds(6);
+    private static final int JOB_ID = 151515;
+
+    private static final long TRIGGER_INTERVAL = TimeUnit.DAYS.toMillis(1);
 
     private static void buildScheduleSync(Context context) {
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
-        Job syncJob = dispatcher.newJobBuilder()
-                .setService(ScheduleSyncJobService.class)
-                .setTag(ScheduleSyncJobService.TAG)
-                .setLifetime(Lifetime.FOREVER)
-                .setRecurring(true)
-                .setReplaceCurrent(true)
-                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                .setTrigger(Trigger.executionWindow(TRIGGER_INTERVAL,
-                        TRIGGER_INTERVAL + TRIGGER_WINDOWS))
-                .setConstraints(Constraint.ON_UNMETERED_NETWORK)
-                .build();
-        dispatcher.schedule(syncJob);
+        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID,
+                new ComponentName(context, ScheduleSyncJobService.class));
+
+        builder.setPeriodic(TRIGGER_INTERVAL);
+        builder.setPersisted(true);
+
+        JobScheduler tm = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        tm.schedule(builder.build());
     }
 
     private static void cancelScheduleSync(Context context) {
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
-        dispatcher.cancel(ScheduleSyncJobService.TAG);
+        JobScheduler tm = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        tm.cancelAll();
     }
 
     public static void dispatcherScheduleSync(Context context) {

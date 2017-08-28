@@ -110,7 +110,8 @@ public class NotificationUtility {
 
     public static void showNewContentNotification(Context context, String category) {
         if (MyApp.isActivityVisible()) return;
-
+        String contentText = context.getString(R.string.notification_new_content)
+                + context.getString(BBCCategory.sCategoryStringResourceMap.get(category));
         Intent intent = new Intent(context, BBCContentListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
@@ -119,8 +120,8 @@ public class NotificationUtility {
         Notification notification = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_headset)
-                .setContentTitle(context.getString(R.string.notification_new_content_title))
-                .setContentText(context.getString(BBCCategory.sCategoryStringResourceMap.get(category)))
+                .setContentTitle(context.getString(R.string.app_sub_name))
+                .setContentText(contentText)
                 .setColor(ContextCompat.getColor(context, R.color.primary))
                 .setAutoCancel(true)
                 .build();
