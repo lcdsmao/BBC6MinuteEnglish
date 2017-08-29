@@ -44,7 +44,7 @@ public class BBCPreference {
     public static boolean isUpdateNeed(Context context, String category) {
         long currentTime = System.currentTimeMillis();
         long lastUpdateTime = getLastUpdateTime(context, category);
-        return  TimeUnit.MILLISECONDS.toDays(currentTime - lastUpdateTime) > 2;
+        return TimeUnit.MILLISECONDS.toDays(currentTime - lastUpdateTime) >= 2;
     }
 
 }

@@ -25,6 +25,9 @@ public class BBCSyncJobDispatcher {
 
         builder.setPeriodic(TRIGGER_INTERVAL);
         builder.setPersisted(true);
+        builder.setBackoffCriteria(JobInfo.DEFAULT_INITIAL_BACKOFF_MILLIS,
+                JobInfo.BACKOFF_POLICY_EXPONENTIAL);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
 
         JobScheduler tm = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         tm.schedule(builder.build());

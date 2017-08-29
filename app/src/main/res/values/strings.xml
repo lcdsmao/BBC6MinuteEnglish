@@ -60,7 +60,7 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="notification_new_content">New content form </string>
+    <string name="notification_new_content">New content from</string>
     <string name="default_display_time">00:00</string>
     <string name="rate">Rate this App</string>
 

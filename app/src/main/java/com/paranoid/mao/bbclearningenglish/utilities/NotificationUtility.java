@@ -110,7 +110,7 @@ public class NotificationUtility {
 
     public static void showNewContentNotification(Context context, String category) {
         if (MyApp.isActivityVisible()) return;
-        String contentText = context.getString(R.string.notification_new_content)
+        String contentText = context.getString(R.string.notification_new_content) + " "
                 + context.getString(BBCCategory.sCategoryStringResourceMap.get(category));
         Intent intent = new Intent(context, BBCContentListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)

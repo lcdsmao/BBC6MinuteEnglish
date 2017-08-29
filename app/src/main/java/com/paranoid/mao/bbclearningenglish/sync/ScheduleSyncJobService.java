@@ -14,8 +14,6 @@ import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 
 public class ScheduleSyncJobService extends JobService {
 
-    public static final String TAG = ScheduleSyncJobService.class.getSimpleName();
-
     private static final String[] ALL_CATEGORY = {
             BBCCategory.CATEGORY_6_MINUTE_ENGLISH,
             BBCCategory.CATEGORY_ENGLISH_AT_UNIVERSITY,

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -34,7 +33,6 @@ public class BBCSyncTask {
 
     synchronized public static void syncCategoryList(final Context context, final String category) {
         String url = BBCCategory.sCategoryUrlMap.get(category);
-        Log.v("Tag", url);
         BBCContentListRequest request = new BBCContentListRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
