@@ -124,6 +124,7 @@ public class NotificationUtility {
                 .setContentText(contentText)
                 .setColor(ContextCompat.getColor(context, R.color.primary))
                 .setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
                 .build();
 
         NotificationManager notificationManager =
