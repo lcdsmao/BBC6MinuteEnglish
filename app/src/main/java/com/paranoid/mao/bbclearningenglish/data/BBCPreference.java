@@ -35,7 +35,7 @@ public class BBCPreference {
         editor.apply();
     }
 
-    private static long getLastUpdateTime(Context context, String category) {
+    public static long getLastUpdateTime(Context context, String category) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String lastUpdateKey = category + context.getString(R.string.pref_last_update_time_key);
         return sharedPreferences.getLong(lastUpdateKey, 0);

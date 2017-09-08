@@ -121,8 +121,8 @@ public class BBCContentProvider extends ContentProvider {
                     returnedUri = ContentUris.withAppendedId(
                             BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
                             id);
-                    getContext().getContentResolver().notifyChange(uri, null);
                 }
+                getContext().getContentResolver().notifyChange(uri, null);
                 break;
             default:
                 throw new SQLException("Insert failed!");

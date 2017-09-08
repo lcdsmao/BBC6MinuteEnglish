@@ -3,6 +3,7 @@ package com.paranoid.mao.bbclearningenglish.sync;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -25,25 +26,24 @@ import java.io.UnsupportedEncodingException;
 
 public class BBCContentListRequest extends StringRequest {
 
+    private static final int MAX_NUM = 200;
+
     private String mCategory;
     private Context mContext;
-    private int newRow;
+    private boolean mIsNew;
 
     public BBCContentListRequest(int method, String url, Response.Listener<String> listener,
                                  Response.ErrorListener errorListener, Context context) {
         super(method, url, listener, errorListener);
         mCategory = BBCCategory.sCategoryUrlMap.get(url);
         mContext = context;
-        newRow = 0;
+        mIsNew = false;
     }
 
     @Override
     protected void deliverResponse(String response) {
-        if (newRow > 0) {
-            super.deliverResponse(mCategory);
-        } else {
-            super.deliverResponse("");
-        }
+        String deliverContent = mIsNew? mCategory : "";
+        super.deliverResponse(deliverContent);
     }
 
     @Override
@@ -53,12 +53,12 @@ public class BBCContentListRequest extends StringRequest {
             htmlString =
                     new String(response.data, "UTF-8");
             Elements contentList = BBCHtmlUtility.getContentsList(htmlString);
-            if (contentList == null) return super.parseNetworkResponse(response);
-            int max = BBCPreference.getPreferenceMaxHistory(mContext);
-            int maxHistory = Math.min(max, contentList.size());
 
+            if (contentList == null || contentList.size() == 0) return super.parseNetworkResponse(response);
+
+            int max = Math.min(MAX_NUM, contentList.size());
             ContentResolver contentResolver = mContext.getContentResolver();
-            for (int i = 0; i < maxHistory; i++) {
+            for (int i = 0; i < max; i++) {
                 Element content = contentList.get(i);
                 ContentValues contentValues = getContentValues(content, mCategory);
                 contentResolver.insert(
@@ -66,9 +66,9 @@ public class BBCContentListRequest extends StringRequest {
                         contentValues);
             }
 
-            newRow = contentResolver.delete(BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
-                    BBCContentContract.BBCLearningEnglishEntry.getMaxHistoryWhere(maxHistory, mCategory),
-                    null);
+            long newestContentTime = BBCHtmlUtility.getTimeStamp(contentList.get(0));
+            mIsNew = newestContentTime > BBCPreference.getLastUpdateTime(mContext, mCategory);
+
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         }
