@@ -27,6 +27,15 @@
     </group>
 
     <group
+        android:id="@+id/group_custom"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/custom_favourites"
+            android:icon="@drawable/ic_favorite"
+            android:title="@string/custom_favourite"/>
+    </group>
+
+    <group
         android:id="@+id/group_other">
         <item
             android:id="@+id/drawer_rating"

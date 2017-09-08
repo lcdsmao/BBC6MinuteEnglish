@@ -1,6 +1,7 @@
 package com.paranoid.mao.bbclearningenglish.article;
 
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
@@ -17,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +39,7 @@ public class ArticleActivity extends AppCompatActivity implements
         SeekBar.OnSeekBarChangeListener{
 
     private static final int ARTICLE_LOADER_ID = 123;
+    private static final int CHECK_FAVOURITE_LOADER_ID = 1234;
 
     private static final String SERVICE_STATE_KEY = "service_state";
 
@@ -43,13 +47,15 @@ public class ArticleActivity extends AppCompatActivity implements
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
             BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY,
+            BBCContentContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES
     };
 
     private static final int TITLE_INDEX = 0;
     private static final int ARTICLE_INDEX = 1;
     private static final int AUDIO_HREF_INDEX = 2;
     private static final int CATEGORY_INDEX = 3;
+    private static final int FAVOURITES_INDEX = 4;
 
     private final static int REFRESH_TIME_INTERVAL = 500;
 
@@ -57,6 +63,7 @@ public class ArticleActivity extends AppCompatActivity implements
     private boolean mBond = false;
 
     private Uri mUriWithTimeStamp;
+    private boolean mIsFavourite = false;
 
     private ArticlePagerAdapter mArticleAdapter;
 
@@ -130,6 +137,11 @@ public class ArticleActivity extends AppCompatActivity implements
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
+        } else if (item.getItemId() == R.id.menu_favourite){
+            mIsFavourite = !item.isChecked();
+            item.setChecked(mIsFavourite);
+            item.setIcon(mIsFavourite? R.drawable.ic_favorite : R.drawable.ic_not_favorite);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -155,6 +167,8 @@ public class ArticleActivity extends AppCompatActivity implements
         String title = data.getString(TITLE_INDEX);
         String audioHref = data.getString(AUDIO_HREF_INDEX);
         String category = data.getString(CATEGORY_INDEX);
+        mIsFavourite = data.getLong(FAVOURITES_INDEX) > 0;
+
         getSupportActionBar().setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
@@ -207,6 +221,15 @@ public class ArticleActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         mPlayerHandler.removeCallbacks(mRunnable);
+        long favouriteTime = mIsFavourite? System.currentTimeMillis() : 0;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(
+                BBCContentContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, favouriteTime);
+        getContentResolver().update(
+                mUriWithTimeStamp,
+                contentValues,
+                null,
+                null);
         MyApp.activityPaused();
     }
 
@@ -335,4 +358,17 @@ public class ArticleActivity extends AppCompatActivity implements
         mPlayerHandler.postDelayed(mRunnable, REFRESH_TIME_INTERVAL);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.article_menu, menu);
+        MenuItem favouriteMenu = menu.findItem(R.id.menu_favourite);
+        favouriteMenu.setChecked(mIsFavourite);
+        favouriteMenu.setIcon(mIsFavourite? R.drawable.ic_favorite : R.drawable.ic_not_favorite);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
 }

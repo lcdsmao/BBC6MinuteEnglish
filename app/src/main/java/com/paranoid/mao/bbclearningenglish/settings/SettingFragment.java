@@ -24,26 +24,15 @@ public class SettingFragment extends PreferenceFragment
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.setting_preference);
 
-        setMaxHistorySummary();
         setVersionSummary();
         setPreferenceClickListener();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (getString(R.string.setting_history_key).equals(key)) {
-            setMaxHistorySummary();
-            Toast.makeText(getActivity(), getString(R.string.setting_history_suggestion),
-                    Toast.LENGTH_SHORT).show();
-        } else if (getString(R.string.setting_notification_key).equals(key)) {
+        if (getString(R.string.setting_notification_key).equals(key)) {
             BBCSyncJobDispatcher.dispatcherScheduleSync(getActivity());
         }
-    }
-
-    private void setMaxHistorySummary() {
-        String key = getString(R.string.setting_history_key);
-        ListPreference preference = (ListPreference) findPreference(key);
-        preference.setSummary(preference.getValue());
     }
 
     private void setVersionSummary() {

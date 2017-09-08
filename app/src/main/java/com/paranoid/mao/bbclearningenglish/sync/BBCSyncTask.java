@@ -33,6 +33,10 @@ public class BBCSyncTask {
     }
 
     synchronized public static void syncCategoryList(final Context context, final String category) {
+        if (!BBCCategory.sCategoryUrlMap.containsKey(category)) {
+            BBCSyncUtility.sIsContentListSyncComplete = true;
+            return;
+        }
         String url = BBCCategory.sCategoryUrlMap.get(category);
         BBCContentListRequest request = new BBCContentListRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

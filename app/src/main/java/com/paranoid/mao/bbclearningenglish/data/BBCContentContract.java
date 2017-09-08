@@ -13,6 +13,7 @@ public class BBCContentContract {
     public static final String AUTHORITY = "com.paranoid.mao.bbclearningenglish";
     public static final String PATH_BBC = "bbc";
     public static final String PATH_CATEGORY = "category";
+    public static final String PATH_FAVOURITE = "favourite";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -37,25 +38,10 @@ public class BBCContentContract {
         public static final String COLUMN_ARTICLE = "article";
         public static final String COLUMN_THUMBNAIL_HREF = "thumbnail";
         public static final String COLUMN_CATEGORY = "category";
+        public static final String COLUMN_FAVOURITES = "favourites";
 
         public static final String SORT_ORDER =
                 BBCLearningEnglishEntry.COLUMN_TIMESTAMP + " DESC";
 
-        public static String getMaxHistoryWhere(int maxHistory, String filter) {
-            return COLUMN_TIMESTAMP
-                    + " NOT IN "
-                    + " (SELECT "
-                    + COLUMN_TIMESTAMP
-                    + " FROM "
-                    + TABLE_NAME
-                    + " WHERE "
-                    + COLUMN_CATEGORY + " = '" + filter + "'"
-                    + " ORDER BY "
-                    + SORT_ORDER
-                    + " LIMIT "
-                    + maxHistory
-                    + ") AND "
-                    + COLUMN_CATEGORY + " = '" + filter + "'";
-        }
     }
 }

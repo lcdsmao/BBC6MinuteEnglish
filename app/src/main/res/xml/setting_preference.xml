@@ -4,13 +4,6 @@
     <PreferenceCategory
         android:title="@string/setting_general">
 
-        <ListPreference
-            android:title="@string/setting_history_title"
-            android:key="@string/setting_history_key"
-            android:entries="@array/setting_history_entries"
-            android:entryValues="@array/setting_history_values"
-            android:defaultValue="@string/setting_history_less" />
-
         <CheckBoxPreference
             android:title="@string/setting_notification_title"
             android:key="@string/setting_notification_key"

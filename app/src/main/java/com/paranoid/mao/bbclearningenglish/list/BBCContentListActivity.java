@@ -40,6 +40,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener{
 
     private static final int BBC_CONTENT_LOADER_ID = 1;
+    //private static final int BBC_FAVOURITE_LOADER_ID = 2;
 
     private static final String TITLE_STATE_KEY = "title";
 
@@ -147,8 +148,10 @@ public class BBCContentListActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_refresh:
-                mSwipeContainer.setRefreshing(true);
-                BBCSyncUtility.contentListSync(this, mCurrentCategory);
+                if (BBCCategory.sCategoryUrlMap.containsKey(mCurrentCategory)){
+                    mSwipeContainer.setRefreshing(true);
+                    BBCSyncUtility.contentListSync(this, mCurrentCategory);
+                }
                 return true;
             case R.id.menu_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
@@ -181,11 +184,23 @@ public class BBCContentListActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mSwipeContainer.setRefreshing(true);
-        Uri uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
-                .appendPath(mCurrentCategory).build();
-        if (BBCPreference.isUpdateNeed(this, mCurrentCategory)) {
-            BBCSyncUtility.contentListSync(this, mCurrentCategory);
+        Uri uri;
+        if (mCurrentCategory.equals(getString(R.string.custom_favourite))){
+            // Favourite
+            Log.v("Loader", "Favourite loader");
+            mSwipeContainer.setRefreshing(true);
+            uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI.buildUpon()
+                    .appendPath(BBCContentContract.PATH_FAVOURITE)
+                    .build();
+        } else {
+            Log.v("Loader", "Content loader");
+            // BBC content
+            mSwipeContainer.setRefreshing(true);
+            uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
+                    .appendPath(mCurrentCategory).build();
+            if (BBCPreference.isUpdateNeed(this, mCurrentCategory)) {
+                BBCSyncUtility.contentListSync(this, mCurrentCategory);
+            }
         }
         return new CursorLoader(
                 this,
@@ -193,12 +208,12 @@ public class BBCContentListActivity extends AppCompatActivity implements
                 PROJECTION,
                 null,
                 null,
-                BBCContentContract.BBCLearningEnglishEntry.SORT_ORDER
-        );
+                BBCContentContract.BBCLearningEnglishEntry.SORT_ORDER);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.v("Loader", "Finished " + loader.getId());
         mBBCContentAdapter.swapCursor(data);
         if (BBCSyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(false);
@@ -212,7 +227,11 @@ public class BBCContentListActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-        BBCSyncUtility.contentListSync(this, mCurrentCategory);
+        if (BBCCategory.sCategoryUrlMap.containsKey(mCurrentCategory)){
+            BBCSyncUtility.contentListSync(this, mCurrentCategory);
+        } else {
+            mSwipeContainer.setRefreshing(false);
+        }
     }
 
     @Override
@@ -225,9 +244,11 @@ public class BBCContentListActivity extends AppCompatActivity implements
             case R.id.category_news_report:
             case R.id.category_lingo_hack:
             case R.id.category_university:
+            case R.id.custom_favourites:
                 handleCategoryId(id);
                 getSupportLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
                 break;
+
             case R.id.drawer_rating:
                 intent = new Intent(Intent.ACTION_VIEW);
                 Uri uri = Uri.parse("market://details?id=com.paranoid.mao.bbclearningenglish");
@@ -284,6 +305,10 @@ public class BBCContentListActivity extends AppCompatActivity implements
             case R.id.category_university:
                 actionBar.setTitle(R.string.category_english_at_university);
                 mCurrentCategory = BBCCategory.CATEGORY_ENGLISH_AT_UNIVERSITY;
+                break;
+            case R.id.custom_favourites:
+                actionBar.setTitle(R.string.custom_favourite);
+                mCurrentCategory = getString(R.string.custom_favourite);
                 break;
             default:
                 actionBar.setTitle(R.string.category_6_minute_english);

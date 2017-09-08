@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class BBCContentProvider extends ContentProvider {
     private static final int BBC_CODE = 100;
     private static final int BBC_FILTER_CODE = 101;
     private static final int BBC_FILTER_TIMESTAMP_CODE = 102;
+    private static final int BBC_FAVOURITE_CODE = 103;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -37,6 +39,8 @@ public class BBCContentProvider extends ContentProvider {
                 BBCContentContract.PATH_BBC + "/" + BBCContentContract.PATH_CATEGORY + "/*", BBC_FILTER_CODE);
         uriMatcher.addURI(BBCContentContract.AUTHORITY,
                 BBCContentContract.PATH_BBC + "/#/" + BBCContentContract.PATH_CATEGORY + "/*", BBC_FILTER_TIMESTAMP_CODE);
+        uriMatcher.addURI(BBCContentContract.AUTHORITY,
+                BBCContentContract.PATH_BBC + "/" + BBCContentContract.PATH_FAVOURITE, BBC_FAVOURITE_CODE);
         return uriMatcher;
     }
 
@@ -91,9 +95,20 @@ public class BBCContentProvider extends ContentProvider {
                         null,
                         null);
                 break;
+            case BBC_FAVOURITE_CODE:
+                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES + ">0";
+                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new SQLException("Query failed!");
         }
+        Log.v("Query", uri.toString());
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -122,6 +137,7 @@ public class BBCContentProvider extends ContentProvider {
                             BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
                             id);
                 }
+                Log.v("Insert", uri.toString());
                 getContext().getContentResolver().notifyChange(uri, null);
                 break;
             default:

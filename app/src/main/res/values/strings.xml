@@ -9,6 +9,9 @@
     <string name="category_the_english_we_speak">The English We Speak</string>
     <string name="category_lingo_hack">LingoHack</string>
 
+    <string name="custom_favourite">Favourites</string>
+    <string name="add_to_favourite">Add to Favourite</string>
+
     <string name="refresh">Refresh</string>
     <string name="setting">Settings</string>
     <string name="audio_service_notification">Audio Service Notification</string>
@@ -32,12 +35,6 @@
     <string name="cache_complete">Download audio complete</string>
 
     <string name="setting_general">General</string>
-
-    <string name="setting_history_title">Max history</string>
-    <string name="setting_history_key" translatable="false">history_key</string>
-    <string name="setting_history_less" translatable="false">20</string>
-    <string name="setting_history_normal" translatable="false">50</string>
-    <string name="setting_history_more" translatable="false">100</string>
 
     <string name="setting_notification_title">Notification</string>
     <string name="setting_notification_summary">Enable it to receive new content notification</string>
