@@ -3,6 +3,8 @@ package com.paranoid.mao.bbclearningenglish.utilities;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.BBCArticleSection;
@@ -11,6 +13,7 @@ import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -138,95 +141,44 @@ public class BBCHtmlUtility {
     }
 
     public static List<BBCArticleSection> getArticleSection(Context context,
-                                                            String html,
-                                                            String category) {
+                                                            String articleHtml) {
         List<BBCArticleSection> list = new ArrayList<>();
-        String[] splitResult = html.split("</?h3>");
-        try{
-            switch (category){
-                case BBCCategory.CATEGORY_6_MINUTE_ENGLISH:
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_question))
-                            .setArticle(splitResult[2])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_vocabulary))
-                            .setArticle(splitResult[4])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_transcript))
-                            .setArticle(splitResult[6])
-                    );
-                    break;
-                case BBCCategory.CATEGORY_THE_ENGLISH_WE_SPEAK:
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_summary))
-                            .setArticle(splitResult[2])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_transcript))
-                            .setArticle(splitResult[4])
-                    );
-                    break;
-                case BBCCategory.CATEGORY_NEWS_REPORT:
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_question))
-                            .setArticle(splitResult[2])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_key_words))
-                            .setArticle(splitResult[4])
-                    );
-                    String newsReport = splitResult[6];
-                    if (splitResult.length > 8) {
-                        newsReport += "\n<p><Strong>"
-                                + splitResult[7]
-                                + "</strong></p>\n"
-                                + splitResult[8];
+        Elements elements = Jsoup.parse(articleHtml, "", Parser.xmlParser()).children();
+        String title = context.getString(R.string.article_summary);
+        String article = "";
+        for (Element element: elements) {
+            if (element.is("h3")) {
+                String text = element.toString();
+                if (text.matches("(.*[Ss]tep 1.*)|(.*[Ss]ummary.*)|(.*[Ee]pisode.*)")) {
+                    title = context.getString(R.string.article_summary);
+                } else if (text.matches("(.*[Vv]ocabulary.*)|(.*[Ww]ords.*)")) {
+                    if (!TextUtils.isEmpty(article)) {
+                        list.add(new BBCArticleSection(title, article));
+                        article = "";
                     }
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_transcript))
-                            .setArticle(newsReport)
-                    );
-                    break;
-                case BBCCategory.CATEGORY_ENGLISH_AT_UNIVERSITY:
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_summary))
-                            .setArticle(splitResult[2])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_focus))
-                            .setArticle(splitResult[4])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_vocabulary))
-                            .setArticle(splitResult[6])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_transcript))
-                            .setArticle(splitResult[8])
-                    );
-                    break;
-                case BBCCategory.CATEGORY_LINGO_HACK:
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_headlines))
-                            .setArticle(splitResult[2])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_vocabulary))
-                            .setArticle(splitResult[6])
-                    );
-                    list.add(new BBCArticleSection()
-                            .setTitle(context.getString(R.string.article_transcript))
-                            .setArticle(splitResult[4])
-                    );
-                    //more
-                    break;
-                default:
-                    break;
+                    Log.v("h3", text);
+                    title = context.getString(R.string.article_vocabulary);
+                } else if (text.matches(".*[Tt]ranscript.*")) {
+                    if (!TextUtils.isEmpty(article)) {
+                        list.add(new BBCArticleSection(title, article));
+                        article = "";
+                    }
+                    title = context.getString(R.string.article_transcript);
+                } else if (text.matches(".*[Ee]xercise.*")) {
+                    if (!TextUtils.isEmpty(article)) {
+                        list.add(new BBCArticleSection(title, article));
+                        article = "";
+                    }
+                    title = context.getString(R.string.article_exercise);
+                } else {
+                    article += text;
+                }
+            } else {
+                article += element.toString();
             }
-        } catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
+        }
+        if (!TextUtils.isEmpty(article)) {
+            list.add(new BBCArticleSection(title, article));
         }
         return list;
     }

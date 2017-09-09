@@ -46,15 +46,13 @@ public class ArticleActivity extends AppCompatActivity implements
             DatabaseContract.BBCLearningEnglishEntry.COLUMN_TITLE,
             DatabaseContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
             DatabaseContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
-            DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY,
             DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES
     };
 
     private static final int TITLE_INDEX = 0;
     private static final int ARTICLE_INDEX = 1;
     private static final int AUDIO_HREF_INDEX = 2;
-    private static final int CATEGORY_INDEX = 3;
-    private static final int FAVOURITES_INDEX = 4;
+    private static final int FAVOURITES_INDEX = 3;
 
     private final static int REFRESH_TIME_INTERVAL = 500;
 
@@ -165,13 +163,12 @@ public class ArticleActivity extends AppCompatActivity implements
         String article = data.getString(ARTICLE_INDEX);
         String title = data.getString(TITLE_INDEX);
         String audioHref = data.getString(AUDIO_HREF_INDEX);
-        String category = data.getString(CATEGORY_INDEX);
         mIsFavourite = data.getLong(FAVOURITES_INDEX) > 0;
 
         getSupportActionBar().setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
-            mArticleAdapter.setArticleSections(BBCHtmlUtility.getArticleSection(this, article, category));
+            mArticleAdapter.setArticleSections(BBCHtmlUtility.getArticleSection(this, article));
             mArticleViewPager.setAdapter(mArticleAdapter);
             mTabLayout.setupWithViewPager(mArticleViewPager);
             showArticle();

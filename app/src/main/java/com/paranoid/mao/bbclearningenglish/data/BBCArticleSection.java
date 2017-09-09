@@ -13,6 +13,11 @@ public class BBCArticleSection {
         this.article = "";
     }
 
+    public BBCArticleSection(String title, String article) {
+        this.title = title;
+        this.article = article;
+    }
+
     public BBCArticleSection setTitle(String title) {
         this.title = title;
         return this;

@@ -12,7 +12,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bbcLearningEnglish.db";
 
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
 
     public BBCContentDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
