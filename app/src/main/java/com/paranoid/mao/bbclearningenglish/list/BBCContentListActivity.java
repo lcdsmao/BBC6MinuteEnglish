@@ -185,6 +185,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri;
+        String sortOrder;
         if (mCurrentCategory.equals(getString(R.string.custom_favourite))){
             // Favourite
             Log.v("Loader", "Favourite loader");
@@ -192,6 +193,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
             uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI.buildUpon()
                     .appendPath(BBCContentContract.PATH_FAVOURITE)
                     .build();
+            sortOrder = BBCContentContract.BBCLearningEnglishEntry.FAVOURITE_SORT_ORDER;
         } else {
             Log.v("Loader", "Content loader");
             // BBC content
@@ -201,6 +203,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
             if (BBCPreference.isUpdateNeed(this, mCurrentCategory)) {
                 BBCSyncUtility.contentListSync(this, mCurrentCategory);
             }
+            sortOrder = BBCContentContract.BBCLearningEnglishEntry.NORMAL_SORT_ORDER;
         }
         return new CursorLoader(
                 this,
@@ -208,7 +211,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
                 PROJECTION,
                 null,
                 null,
-                BBCContentContract.BBCLearningEnglishEntry.SORT_ORDER);
+                sortOrder);
     }
 
     @Override

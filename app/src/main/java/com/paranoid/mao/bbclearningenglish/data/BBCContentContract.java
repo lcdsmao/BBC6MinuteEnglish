@@ -40,8 +40,11 @@ public class BBCContentContract {
         public static final String COLUMN_CATEGORY = "category";
         public static final String COLUMN_FAVOURITES = "favourites";
 
-        public static final String SORT_ORDER =
+        public static final String NORMAL_SORT_ORDER =
                 BBCLearningEnglishEntry.COLUMN_TIMESTAMP + " DESC";
+
+        public static final String FAVOURITE_SORT_ORDER =
+                BBCLearningEnglishEntry.COLUMN_FAVOURITES + " DESC";
 
     }
 }

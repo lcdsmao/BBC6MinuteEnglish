@@ -221,6 +221,12 @@ public class ArticleActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         mPlayerHandler.removeCallbacks(mRunnable);
+        MyApp.activityPaused();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         long favouriteTime = mIsFavourite? System.currentTimeMillis() : 0;
         ContentValues contentValues = new ContentValues();
         contentValues.put(
@@ -230,7 +236,6 @@ public class ArticleActivity extends AppCompatActivity implements
                 contentValues,
                 null,
                 null);
-        MyApp.activityPaused();
     }
 
     @Override
