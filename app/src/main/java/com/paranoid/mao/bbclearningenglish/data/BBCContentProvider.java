@@ -25,28 +25,35 @@ public class BBCContentProvider extends ContentProvider {
     private static final int BBC_FILTER_CODE = 101;
     private static final int BBC_FILTER_TIMESTAMP_CODE = 102;
     private static final int BBC_FAVOURITE_CODE = 103;
+    private static final int VOCABULARY_CODE = 104;
+    private static final int VOCABULARY_ID_CODE = 105;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     // Helper for create database
-    private BBCContentDbHelper mDbHelper;
+    private BBCContentDbHelper mBBCDbHelper;
+    private VocabularyDbHelper mVocabDbHelper;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        uriMatcher.addURI(BBCContentContract.AUTHORITY, BBCContentContract.PATH_BBC, BBC_CODE);
-        uriMatcher.addURI(BBCContentContract.AUTHORITY,
-                BBCContentContract.PATH_BBC + "/" + BBCContentContract.PATH_CATEGORY + "/*", BBC_FILTER_CODE);
-        uriMatcher.addURI(BBCContentContract.AUTHORITY,
-                BBCContentContract.PATH_BBC + "/#/" + BBCContentContract.PATH_CATEGORY + "/*", BBC_FILTER_TIMESTAMP_CODE);
-        uriMatcher.addURI(BBCContentContract.AUTHORITY,
-                BBCContentContract.PATH_BBC + "/" + BBCContentContract.PATH_FAVOURITE, BBC_FAVOURITE_CODE);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_BBC, BBC_CODE);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY,
+                DatabaseContract.PATH_BBC + "/" + DatabaseContract.PATH_CATEGORY + "/*", BBC_FILTER_CODE);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY,
+                DatabaseContract.PATH_BBC + "/#/" + DatabaseContract.PATH_CATEGORY + "/*", BBC_FILTER_TIMESTAMP_CODE);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY,
+                DatabaseContract.PATH_BBC + "/" + DatabaseContract.PATH_FAVOURITE, BBC_FAVOURITE_CODE);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_VOCABULARY, VOCABULARY_CODE);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY,
+                DatabaseContract.PATH_VOCABULARY + "/#", VOCABULARY_ID_CODE);
         return uriMatcher;
     }
 
     @Override
     public boolean onCreate() {
-        mDbHelper = new BBCContentDbHelper(getContext());
+        mBBCDbHelper = new BBCContentDbHelper(getContext());
+        mVocabDbHelper = new VocabularyDbHelper(getContext());
         return true;
     }
 
@@ -54,14 +61,15 @@ public class BBCContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        SQLiteDatabase sqLiteDatabase = mDbHelper.getReadableDatabase();
+        SQLiteDatabase bbcDatabase = mBBCDbHelper.getReadableDatabase();
+        SQLiteDatabase vocabDatabase = mVocabDbHelper.getReadableDatabase();
         int code = sUriMatcher.match(uri);
         Cursor cursor;
         String filter;
         String timeStamp;
         switch (code) {
             case BBC_CODE:
-                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                cursor = bbcDatabase.query(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -71,8 +79,8 @@ public class BBCContentProvider extends ContentProvider {
                 break;
             case BBC_FILTER_CODE:
                 filter = uri.getLastPathSegment();
-                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?";
-                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                selection = DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?";
+                cursor = bbcDatabase.query(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         projection,
                         selection,
                         new String[]{filter},
@@ -84,10 +92,10 @@ public class BBCContentProvider extends ContentProvider {
                 List<String> pathSegments = uri.getPathSegments();
                 filter = pathSegments.get(3);
                 timeStamp = pathSegments.get(1);
-                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
+                selection = DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
                         + " AND "
-                        + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
-                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        + DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
+                cursor = bbcDatabase.query(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         projection,
                         selection,
                         new String[]{filter, timeStamp},
@@ -96,8 +104,17 @@ public class BBCContentProvider extends ContentProvider {
                         null);
                 break;
             case BBC_FAVOURITE_CODE:
-                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES + ">0";
-                cursor = sqLiteDatabase.query(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                selection = DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES + ">0";
+                cursor = bbcDatabase.query(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case VOCABULARY_CODE:
+                cursor = vocabDatabase.query(DatabaseContract.VocabularyEntry.TABLE_NAME,
                         projection,
                         selection,
                         null,
@@ -122,22 +139,33 @@ public class BBCContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
+        SQLiteDatabase bbcDatabase = mBBCDbHelper.getWritableDatabase();
+        SQLiteDatabase vocabDatabase = mVocabDbHelper.getWritableDatabase();
         int code = sUriMatcher.match(uri);
         long id = -1;
         Uri returnedUri = null;
         switch (code) {
             case BBC_CODE:
-                id = sqLiteDatabase.insertWithOnConflict(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                id = bbcDatabase.insertWithOnConflict(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         null,
                         values,
                         SQLiteDatabase.CONFLICT_IGNORE);
                 if (id > 0) {
                     returnedUri = ContentUris.withAppendedId(
-                            BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
+                            DatabaseContract.BBCLearningEnglishEntry.CONTENT_URI,
                             id);
                 }
-                Log.v("Insert", uri.toString());
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            case VOCABULARY_CODE:
+                id = vocabDatabase.insert(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                        null,
+                        values);
+                if (id > 0) {
+                    returnedUri = ContentUris.withAppendedId(
+                            DatabaseContract.VocabularyEntry.CONTENT_URI,
+                            id);
+                }
                 getContext().getContentResolver().notifyChange(uri, null);
                 break;
             default:
@@ -149,14 +177,15 @@ public class BBCContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
-        SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
+        SQLiteDatabase bbcDatabase = mBBCDbHelper.getWritableDatabase();
+        SQLiteDatabase vocabDatabase = mVocabDbHelper.getWritableDatabase();
         int n = -1;
         int code = sUriMatcher.match(uri);
         String filter;
         String timeStamp;
         switch (code) {
             case BBC_CODE:
-                n = sqLiteDatabase.delete(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                n = bbcDatabase.delete(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         selection,
                         selectionArgs);
                 break;
@@ -164,12 +193,24 @@ public class BBCContentProvider extends ContentProvider {
                 List<String> pathSegments = uri.getPathSegments();
                 filter = pathSegments.get(3);
                 timeStamp = pathSegments.get(1);
-                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
+                selection = DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
                         + " AND "
-                        + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
-                n = sqLiteDatabase.delete(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        + DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
+                n = bbcDatabase.delete(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         selection,
                         new String[]{filter, timeStamp});
+                break;
+            case VOCABULARY_CODE:
+                n = vocabDatabase.delete(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            case VOCABULARY_ID_CODE:
+                long id = ContentUris.parseId(uri);
+                selection = DatabaseContract.VocabularyEntry._ID + "=?";
+                n = vocabDatabase.delete(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                        selection,
+                        new String[]{String.valueOf(id)});
                 break;
             default:
                 throw new SQLException("Delete failed!");
@@ -181,22 +222,22 @@ public class BBCContentProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
-        SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
+        SQLiteDatabase bbcDatabase = mBBCDbHelper.getWritableDatabase();
         int n = -1;
         int code = sUriMatcher.match(uri);
         String filter;
         String timeStamp;
         switch (code) {
             case BBC_CODE:
-                n = sqLiteDatabase.update(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                n = bbcDatabase.update(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs);
                 break;
             case BBC_FILTER_CODE:
                 filter = uri.getLastPathSegment();
-                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?";
-                n = sqLiteDatabase.update(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                selection = DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?";
+                n = bbcDatabase.update(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         values,
                         selection,
                         new String[]{filter});
@@ -205,10 +246,10 @@ public class BBCContentProvider extends ContentProvider {
                 List<String> pathSegments = uri.getPathSegments();
                 filter = pathSegments.get(3);
                 timeStamp = pathSegments.get(1);
-                selection = BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
+                selection = DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + "=?"
                         + " AND "
-                        + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
-                n = sqLiteDatabase.update(BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME,
+                        + DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + "=?";
+                n = bbcDatabase.update(DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME,
                         values,
                         selection,
                         new String[]{filter, timeStamp});

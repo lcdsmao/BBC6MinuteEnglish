@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
 /**
  * Created by MAO on 7/24/2017.
@@ -19,8 +19,8 @@ public class BBCSyncUtility {
     synchronized public static void articleInitialize(final Context context,
                                                       @NonNull final Uri uriWithTimeStamp) {
 
-        final String projection[] = {BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
-                BBCContentContract.BBCLearningEnglishEntry.COLUMN_HREF};
+        final String projection[] = {DatabaseContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
+                DatabaseContract.BBCLearningEnglishEntry.COLUMN_HREF};
         final int ARTICLE_INDEX = 0;
         final int ARTICLE_HREF_INDEX = 1;
 
@@ -60,14 +60,14 @@ public class BBCSyncUtility {
                                         final String articleHref) {
         Intent intentToSyncImmediately = new Intent(context, BBCSyncArticleIntentService.class);
         intentToSyncImmediately.setData(uriWithTimeStamp);
-        intentToSyncImmediately.putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_HREF,
+        intentToSyncImmediately.putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_HREF,
                 articleHref);
         context.startService(intentToSyncImmediately);
     }
 
     private static void startContentLisSyncByCategory(@NonNull final Context context, final String category) {
         Intent intentToSyncImmediately = new Intent(context, BBCSyncContentListIntentService.class)
-                .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
+                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         context.startService(intentToSyncImmediately);
     }
 

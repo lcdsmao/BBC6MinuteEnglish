@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.paranoid.mao.bbclearningenglish.R;
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -105,7 +105,7 @@ public class BBCContentAdapter extends
             mCursor.moveToPosition(position);
             String path = mCursor.getString(BBCContentListActivity.TIMESTAMP_INDEX)
                     + "/"
-                    + BBCContentContract.PATH_CATEGORY
+                    + DatabaseContract.PATH_CATEGORY
                     + "/"
                     + mCursor.getString(BBCContentListActivity.CATEGORY_INDEX);
             mOnClickListener.onClickItem(path);

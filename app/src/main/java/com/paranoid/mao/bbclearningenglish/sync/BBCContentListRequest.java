@@ -3,7 +3,6 @@ package com.paranoid.mao.bbclearningenglish.sync;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -11,7 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
 
@@ -62,7 +61,7 @@ public class BBCContentListRequest extends StringRequest {
                 Element content = contentList.get(i);
                 ContentValues contentValues = getContentValues(content, mCategory);
                 contentResolver.insert(
-                        BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI,
+                        DatabaseContract.BBCLearningEnglishEntry.CONTENT_URI,
                         contentValues);
             }
 
@@ -77,19 +76,19 @@ public class BBCContentListRequest extends StringRequest {
 
     private static ContentValues getContentValues(Element content, String filter) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_TITLE,
                 BBCHtmlUtility.getTitle(content));
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIME,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIME,
                 BBCHtmlUtility.getTime(content));
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION,
                 BBCHtmlUtility.getDescription(content));
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_HREF,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_HREF,
                 BBCHtmlUtility.getArticleHref(content));
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP,
                 BBCHtmlUtility.getTimeStamp(content));
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF,
                 BBCHtmlUtility.getImageHref(content));
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY,
                 filter);
         return contentValues;
     }

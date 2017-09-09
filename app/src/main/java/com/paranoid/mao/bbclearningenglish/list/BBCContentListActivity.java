@@ -29,7 +29,7 @@ import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.settings.SettingActivity;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncUtility;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncJobDispatcher;
@@ -50,12 +50,12 @@ public class BBCContentListActivity extends AppCompatActivity implements
 
     // Projection for Showing data
     public static final String[] PROJECTION = {
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIME,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIME,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
     };
 
     public static final int TITLE_INDEX = 0;
@@ -90,8 +90,8 @@ public class BBCContentListActivity extends AppCompatActivity implements
 
         Intent intent = getIntent();
         int id = R.id.category_six;
-        if (intent.hasExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY)) {
-            mCurrentCategory = intent.getStringExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
+        if (intent.hasExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY)) {
+            mCurrentCategory = intent.getStringExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
             id = BBCCategory.sCategoryItemIdMap.get(mCurrentCategory);
         }
         NavigationView.setCheckedItem(id);
@@ -174,7 +174,7 @@ public class BBCContentListActivity extends AppCompatActivity implements
     @Override
     public void onClickItem(String path) {
         Intent intent = new Intent(this, ArticleActivity.class);
-        Uri uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI
+        Uri uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_URI
                 .buildUpon()
                 .appendEncodedPath(path)
                 .build();
@@ -190,20 +190,20 @@ public class BBCContentListActivity extends AppCompatActivity implements
             // Favourite
             Log.v("Loader", "Favourite loader");
             mSwipeContainer.setRefreshing(true);
-            uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_URI.buildUpon()
-                    .appendPath(BBCContentContract.PATH_FAVOURITE)
+            uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_URI.buildUpon()
+                    .appendPath(DatabaseContract.PATH_FAVOURITE)
                     .build();
-            sortOrder = BBCContentContract.BBCLearningEnglishEntry.FAVOURITE_SORT_ORDER;
+            sortOrder = DatabaseContract.BBCLearningEnglishEntry.FAVOURITE_SORT_ORDER;
         } else {
             Log.v("Loader", "Content loader");
             // BBC content
             mSwipeContainer.setRefreshing(true);
-            uri = BBCContentContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
+            uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
                     .appendPath(mCurrentCategory).build();
             if (BBCPreference.isUpdateNeed(this, mCurrentCategory)) {
                 BBCSyncUtility.contentListSync(this, mCurrentCategory);
             }
-            sortOrder = BBCContentContract.BBCLearningEnglishEntry.NORMAL_SORT_ORDER;
+            sortOrder = DatabaseContract.BBCLearningEnglishEntry.NORMAL_SORT_ORDER;
         }
         return new CursorLoader(
                 this,

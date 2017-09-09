@@ -18,7 +18,7 @@ import com.paranoid.mao.bbclearningenglish.list.BBCContentListActivity;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
 /**
  * Created by MAO on 7/28/2017.
@@ -27,8 +27,8 @@ import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
 public class NotificationUtility {
 
     private static final String[] PROJECTION = {
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION
     };
 
     private static final int TITLE_INDEX = 0;
@@ -114,7 +114,7 @@ public class NotificationUtility {
                 + context.getString(BBCCategory.sCategoryStringResourceMap.get(category));
         Intent intent = new Intent(context, BBCContentListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
+                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(context)

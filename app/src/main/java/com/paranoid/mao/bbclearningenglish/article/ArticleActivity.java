@@ -18,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +28,7 @@ import android.widget.TextView;
 
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.R;
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.TimeUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
@@ -44,11 +43,11 @@ public class ArticleActivity extends AppCompatActivity implements
     private static final String SERVICE_STATE_KEY = "service_state";
 
     private static final String[] PROJECTION = {
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY,
-            BBCContentContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES
     };
 
     private static final int TITLE_INDEX = 0;
@@ -230,7 +229,7 @@ public class ArticleActivity extends AppCompatActivity implements
         long favouriteTime = mIsFavourite? System.currentTimeMillis() : 0;
         ContentValues contentValues = new ContentValues();
         contentValues.put(
-                BBCContentContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, favouriteTime);
+                DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, favouriteTime);
         getContentResolver().update(
                 mUriWithTimeStamp,
                 contentValues,
@@ -253,7 +252,7 @@ public class ArticleActivity extends AppCompatActivity implements
             Intent playerIntent = new Intent(this, AudioPlayService.class)
                     .setData(mUriWithTimeStamp)
                     .setAction(AudioPlayService.ACTION_INITIALIZE)
-                    .putExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF, audioHref);
+                    .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF, audioHref);
             startService(playerIntent);
             bindService(playerIntent, mConnection, BIND_AUTO_CREATE);
         }

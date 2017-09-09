@@ -21,21 +21,21 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE "
-                + BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME + "("
-                + BBCContentContract.BBCLearningEnglishEntry._ID + " INTEGER PRIMARY KEY,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TITLE + " TEXT NOT NULL,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIME + " TEXT NOT NULL,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + " INTEGER NOT NULL,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_HREF + " TEXT NOT NULL,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF + " TEXT,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE + " TEXT,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF + " TEXT NOT NULL,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + " TEXT NOT NULL,"
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES + " INTEGER,"
-                + " UNIQUE (" + BBCContentContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
+                + DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME + "("
+                + DatabaseContract.BBCLearningEnglishEntry._ID + " INTEGER PRIMARY KEY,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_TITLE + " TEXT NOT NULL,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIME + " TEXT NOT NULL,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP + " INTEGER NOT NULL,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_HREF + " TEXT NOT NULL,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF + " TEXT,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_ARTICLE + " TEXT,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF + " TEXT NOT NULL,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY + " TEXT NOT NULL,"
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES + " INTEGER,"
+                + " UNIQUE (" + DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
                 + ", "
-                + BBCContentContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP
+                + DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP
                 + " ) ON CONFLICT IGNORE);";
 
         db.execSQL(createTable);
@@ -44,7 +44,7 @@ public class BBCContentDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String dropTable = "DROP TABLE IF EXISTS "
-                + BBCContentContract.BBCLearningEnglishEntry.TABLE_NAME;
+                + DatabaseContract.BBCLearningEnglishEntry.TABLE_NAME;
         db.execSQL(dropTable);
         onCreate(db);
     }

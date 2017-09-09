@@ -21,7 +21,7 @@ import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.R;
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.utilities.NotificationUtility;
 
 import java.io.File;
@@ -105,7 +105,7 @@ public class AudioPlayService extends Service implements
         }
 
         mAudioHref = intent
-                .getStringExtra(BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF);
+                .getStringExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF);
 
         mUriWithTimeStamp = intent.getData();
 

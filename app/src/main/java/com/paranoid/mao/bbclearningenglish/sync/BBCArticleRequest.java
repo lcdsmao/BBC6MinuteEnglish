@@ -10,7 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
-import com.paranoid.mao.bbclearningenglish.data.BBCContentContract;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
 
 import org.jsoup.nodes.Document;
@@ -62,9 +62,9 @@ public class BBCArticleRequest extends StringRequest {
         String article = BBCHtmlUtility.getArticleHtml(document);
         String audioHref = BBCHtmlUtility.getMp3Href(document);
         ContentValues contentValues = new ContentValues();
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_ARTICLE,
                 article);
-        contentValues.put(BBCContentContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
+        contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_MP3_HREF,
                 audioHref);
         return contentValues;
     }
