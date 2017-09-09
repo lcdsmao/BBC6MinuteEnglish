@@ -33,6 +33,11 @@
             android:id="@+id/custom_favourites"
             android:icon="@drawable/ic_favorite"
             android:title="@string/custom_favourite"/>
+
+        <item
+            android:id="@+id/custom_word_book"
+            android:icon="@drawable/ic_word_book"
+            android:title="@string/custom_word_book"/>
     </group>
 
     <group
