@@ -122,6 +122,9 @@ public class FavoritesFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        getActivity().setTitle(R.string.custom_favourite);
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bbc_content_list, container, false);
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.srl_content_container);

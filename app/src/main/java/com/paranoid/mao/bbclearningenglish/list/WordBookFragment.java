@@ -37,6 +37,9 @@ public class WordBookFragment extends Fragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        getActivity().setTitle(R.string.custom_word_book);
+
         View view = inflater.inflate(R.layout.fragent_word_book_list, container, false);
 
         mAdapter = new WordBookAdapter(getContext());

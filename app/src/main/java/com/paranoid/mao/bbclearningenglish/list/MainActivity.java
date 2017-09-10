@@ -14,8 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -66,12 +64,13 @@ public class MainActivity extends AppCompatActivity implements
             id = BBCCategory.sCategoryItemIdMap.get(mCurrentCategory);
         }
         NavigationView.setCheckedItem(id);
-        getSupportActionBar().setTitle(BBCCategory.sCategoryStringResourceMap.get(mCurrentCategory));
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_list_container,
-                BBCContentFragment.newInstance(mCurrentCategory))
-                .commit();
+        if (savedInstanceState == null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_list_container,
+                    BBCContentFragment.newInstance(mCurrentCategory))
+                    .commit();
+        }
 
         BBCSyncJobDispatcher.dispatcherScheduleSync(this);
     }
@@ -94,11 +93,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.content_list_menu, menu);
         return true;
@@ -107,11 +101,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.menu_refresh:
-                if (BBCCategory.sCategoryUrlMap.containsKey(mCurrentCategory)){
-                    BBCSyncUtility.contentListSync(this, mCurrentCategory);
-                }
-                return true;
             case R.id.menu_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
                 startActivity(intent);
@@ -143,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.category_news_report:
             case R.id.category_lingo_hack:
             case R.id.category_university:
-                getSupportActionBar().setTitle(item.getTitle());
                 mCurrentCategory = BBCCategory.sCategoryItemIdMapInverse.get(id);
                 fm = getSupportFragmentManager();
                 BBCContentFragment bbcFm = (BBCContentFragment) fm.findFragmentByTag(BBC_CONTENT_TAG);
@@ -158,13 +146,11 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
             case R.id.custom_favourites:
-                getSupportActionBar().setTitle(R.string.custom_favourite);
                 ft = getSupportFragmentManager().beginTransaction();
                 newFragment = new FavoritesFragment();
                 ft.replace(R.id.content_list_container, newFragment, FAVORITES_TAG).commit();
                 break;
             case R.id.custom_word_book:
-                getSupportActionBar().setTitle(R.string.custom_word_book);
                 ft = getSupportFragmentManager().beginTransaction();
                 newFragment = new WordBookFragment();
                 ft.replace(R.id.content_list_container, newFragment, WORD_BOOK_TAG).commit();
@@ -189,18 +175,6 @@ public class MainActivity extends AppCompatActivity implements
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         return true;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(TITLE_STATE_KEY, getSupportActionBar().getTitle().toString());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        getSupportActionBar().setTitle(savedInstanceState.getString(TITLE_STATE_KEY));
     }
 
 }
