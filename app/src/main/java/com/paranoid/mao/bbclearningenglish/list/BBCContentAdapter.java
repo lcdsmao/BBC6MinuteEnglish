@@ -20,6 +20,23 @@ import com.squareup.picasso.Picasso;
 public class BBCContentAdapter extends
         RecyclerView.Adapter<BBCContentAdapter.BBCContentAdapterViewHolder> {
 
+    // Projection for Showing data
+    public static final String[] PROJECTION = {
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TITLE,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIME,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_DESCRIPTION,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_TIMESTAMP,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_THUMBNAIL_HREF,
+            DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
+    };
+
+    public static final int TITLE_INDEX = 0;
+    public static final int TIME_INDEX = 1;
+    public static final int DESCRIPTION_INDEX = 2;
+    public static final int TIMESTAMP_INDEX = 3;
+    public static final int THUMBNAIL_INDEX = 4;
+    public static final int CATEGORY_INDEX = 5;
+
     private Cursor mCursor;
     private Context mContext;
     private OnListItemClickListener mOnClickListener;
@@ -49,21 +66,28 @@ public class BBCContentAdapter extends
         mCursor.moveToPosition(position);
 
         // Title set
-        holder.mTitleTextView.setText(mCursor.getString(BBCContentListActivity.TITLE_INDEX));
+        holder.mTitleTextView.setText(mCursor.getString(TITLE_INDEX));
 
         // Time set
-        holder.mTimeTextView.setText(mCursor.getString(BBCContentListActivity.TIME_INDEX));
+        holder.mTimeTextView.setText(mCursor.getString(TIME_INDEX));
 
         // Description set
-        holder.mDescriptionTextView.setText(mCursor.getString(BBCContentListActivity.DESCRIPTION_INDEX));
+        holder.mDescriptionTextView.setText(mCursor.getString(DESCRIPTION_INDEX));
 
         // Use picasso to load image
         Picasso.with(mContext)
-                .load(mCursor.getString(BBCContentListActivity.THUMBNAIL_INDEX))
+                .load(mCursor.getString(THUMBNAIL_INDEX))
                 .resizeDimen(R.dimen.list_item_img_width, R.dimen.list_item_img_height)
                 .centerCrop()
                 .placeholder(R.drawable.image_place_holder)
                 .into(holder.mThumbnailImageView);
+
+        String tag = mCursor.getString(TIMESTAMP_INDEX)
+                + "/"
+                + DatabaseContract.PATH_CATEGORY
+                + "/"
+                + mCursor.getString(CATEGORY_INDEX);
+        holder.itemView.setTag(tag);
     }
 
     @Override
@@ -103,11 +127,11 @@ public class BBCContentAdapter extends
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-            String path = mCursor.getString(BBCContentListActivity.TIMESTAMP_INDEX)
+            String path = mCursor.getString(TIMESTAMP_INDEX)
                     + "/"
                     + DatabaseContract.PATH_CATEGORY
                     + "/"
-                    + mCursor.getString(BBCContentListActivity.CATEGORY_INDEX);
+                    + mCursor.getString(CATEGORY_INDEX);
             mOnClickListener.onClickItem(path);
         }
     }

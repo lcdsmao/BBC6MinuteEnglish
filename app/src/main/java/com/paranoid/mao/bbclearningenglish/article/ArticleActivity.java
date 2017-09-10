@@ -38,7 +38,6 @@ public class ArticleActivity extends AppCompatActivity implements
         SeekBar.OnSeekBarChangeListener{
 
     private static final int ARTICLE_LOADER_ID = 123;
-    private static final int CHECK_FAVOURITE_LOADER_ID = 1234;
 
     private static final String SERVICE_STATE_KEY = "service_state";
 
@@ -60,7 +59,8 @@ public class ArticleActivity extends AppCompatActivity implements
     private boolean mBond = false;
 
     private Uri mUriWithTimeStamp;
-    private boolean mIsFavourite = false;
+    private boolean mIsFavorite = false;
+    private boolean mIsFavoriteChanged = false;
 
     private ArticlePagerAdapter mArticleAdapter;
 
@@ -135,9 +135,10 @@ public class ArticleActivity extends AppCompatActivity implements
             finish();
             return true;
         } else if (item.getItemId() == R.id.menu_favourite){
-            mIsFavourite = !item.isChecked();
-            item.setChecked(mIsFavourite);
-            item.setIcon(mIsFavourite? R.drawable.ic_favorite : R.drawable.ic_not_favorite);
+            mIsFavoriteChanged = true;
+            mIsFavorite = !item.isChecked();
+            item.setChecked(mIsFavorite);
+            item.setIcon(mIsFavorite ? R.drawable.ic_favorite : R.drawable.ic_not_favorite);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -163,7 +164,7 @@ public class ArticleActivity extends AppCompatActivity implements
         String article = data.getString(ARTICLE_INDEX);
         String title = data.getString(TITLE_INDEX);
         String audioHref = data.getString(AUDIO_HREF_INDEX);
-        mIsFavourite = data.getLong(FAVOURITES_INDEX) > 0;
+        mIsFavorite = data.getLong(FAVOURITES_INDEX) > 0;
 
         getSupportActionBar().setTitle(title);
 
@@ -223,7 +224,8 @@ public class ArticleActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        long favouriteTime = mIsFavourite? System.currentTimeMillis() : 0;
+        if (!mIsFavoriteChanged) return;
+        long favouriteTime = mIsFavorite ? System.currentTimeMillis() : 0;
         ContentValues contentValues = new ContentValues();
         contentValues.put(
                 DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, favouriteTime);
@@ -363,13 +365,8 @@ public class ArticleActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.article_menu, menu);
         MenuItem favouriteMenu = menu.findItem(R.id.menu_favourite);
-        favouriteMenu.setChecked(mIsFavourite);
-        favouriteMenu.setIcon(mIsFavourite? R.drawable.ic_favorite : R.drawable.ic_not_favorite);
+        favouriteMenu.setChecked(mIsFavorite);
+        favouriteMenu.setIcon(mIsFavorite ? R.drawable.ic_favorite : R.drawable.ic_not_favorite);
         return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
     }
 }

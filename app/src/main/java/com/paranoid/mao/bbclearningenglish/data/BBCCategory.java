@@ -1,5 +1,7 @@
 package com.paranoid.mao.bbclearningenglish.data;
 
+import android.util.SparseArray;
+
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
 
@@ -18,11 +20,12 @@ public class BBCCategory {
     public static final String CATEGORY_ENGLISH_AT_UNIVERSITY = "atUniversity";
     public static final String CATEGORY_LINGO_HACK = "lingoHack";
 
-    public static final HashMap<String, String> sCategoryUrlMap = createCategoryMap();
+    public static final HashMap<String, String> sCategoryUrlMap = createCategoryUrlMap();
     public static final HashMap<String, Integer> sCategoryItemIdMap = createCategoryItemIdMap();
     public static final HashMap<String, Integer> sCategoryStringResourceMap = createCategoryStringResourceMap();
+    public static final SparseArray<String> sCategoryItemIdMapInverse = createCategoryItemIdMapInverse();
 
-    private static HashMap<String,Integer> createCategoryStringResourceMap() {
+    private static HashMap<String, Integer> createCategoryStringResourceMap() {
         HashMap<String, Integer> map = new HashMap<>();
         map.put(CATEGORY_6_MINUTE_ENGLISH, R.string.category_6_minute_english);
         map.put(CATEGORY_ENGLISH_AT_UNIVERSITY, R.string.category_english_at_university);
@@ -32,7 +35,7 @@ public class BBCCategory {
         return map;
     }
 
-    private static HashMap<String, String> createCategoryMap() {
+    private static HashMap<String, String> createCategoryUrlMap() {
         final HashMap<String, String> map = new HashMap<>();
         map.put(BBCHtmlUtility.BBC_6_MINUTE_ENGLISH_URL, CATEGORY_6_MINUTE_ENGLISH);
         map.put(BBCHtmlUtility.BBC_ENGLISH_AT_UNIVERSITY_URL, CATEGORY_ENGLISH_AT_UNIVERSITY);
@@ -56,6 +59,16 @@ public class BBCCategory {
         map.put(CATEGORY_NEWS_REPORT, R.id.category_news_report);
         map.put(CATEGORY_THE_ENGLISH_WE_SPEAK, R.id.category_we_speak);
         map.put(CATEGORY_LINGO_HACK, R.id.category_lingo_hack);
+        return map;
+    }
+
+    private static SparseArray<String> createCategoryItemIdMapInverse() {
+        SparseArray<String> map = new SparseArray<>();
+        map.put(R.id.category_six, CATEGORY_6_MINUTE_ENGLISH);
+        map.put(R.id.category_university, CATEGORY_ENGLISH_AT_UNIVERSITY);
+        map.put(R.id.category_news_report, CATEGORY_NEWS_REPORT);
+        map.put(R.id.category_we_speak, CATEGORY_THE_ENGLISH_WE_SPEAK);
+        map.put(R.id.category_lingo_hack, CATEGORY_LINGO_HACK);
         return map;
     }
 }
