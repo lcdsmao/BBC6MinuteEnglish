@@ -22,7 +22,7 @@ public class LicenseFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         WebView webView = (WebView) LayoutInflater.from(
-                getActivity()).inflate(R.layout.fragment_license, null);
+                getActivity()).inflate(R.layout.fragment_web_view, null);
         webView.loadUrl("file:///android_asset/Licenses.html");
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.setting_licenses_title)

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.paranoid.mao.bbclearningenglish.data.DefinitionFragment;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
@@ -21,7 +22,8 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
  */
 
 public class WordBookFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor>,
+        WordBookAdapter.OnListItemClickListener{
 
     private static final int WORD_BOOK_LOADER_ID = 64236;
 
@@ -42,7 +44,7 @@ public class WordBookFragment extends Fragment implements
 
         View view = inflater.inflate(R.layout.fragent_word_book_list, container, false);
 
-        mAdapter = new WordBookAdapter(getContext());
+        mAdapter = new WordBookAdapter(getContext(), this);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         RecyclerView recyclerView = view.findViewById(R.id.rv_word_book_list);
         recyclerView.setAdapter(mAdapter);
@@ -72,5 +74,11 @@ public class WordBookFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onClickItem(String word) {
+        DefinitionFragment fragment = DefinitionFragment.newInstance(word);
+        fragment.show(getFragmentManager(), "Definition Fragment");
     }
 }

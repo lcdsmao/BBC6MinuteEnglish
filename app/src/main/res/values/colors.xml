@@ -10,5 +10,6 @@
     <color name="divider">#BDBDBD</color>
     <color name="background">#f9f9f9</color>
     <color name="red">#DB4437</color>
+    <color name="gray">#E2E2E2</color>
 </resources>
 

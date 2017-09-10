@@ -4,4 +4,8 @@
         android:id="@+id/menu_word_book"
         android:title="@string/add_to_word_book"
         android:icon="@drawable/ic_word_book"/>
+    <item
+        android:id="@+id/menu_definition"
+        android:title="@string/definition"
+        android:icon="@drawable/ic_search"/>
 </menu>

@@ -6,7 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
@@ -26,8 +28,15 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
     private Context mContext;
     private Cursor mCursor;
 
-    public WordBookAdapter(Context context) {
+    private OnListItemClickListener mClickListener;
+
+    public WordBookAdapter(Context context, OnListItemClickListener listener) {
         mContext = context;
+        mClickListener = listener;
+    }
+
+    public interface OnListItemClickListener{
+        void onClickItem(String word);
     }
 
     @Override
@@ -54,13 +63,22 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
         notifyDataSetChanged();
     }
 
-    public class VocabularyViewHolder extends RecyclerView.ViewHolder{
+    public class VocabularyViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener{
 
         TextView mVocabularyTextView;
 
         public VocabularyViewHolder(View itemView) {
             super(itemView);
             mVocabularyTextView = itemView.findViewById(R.id.tv_vocabulary);
+            ImageView search = itemView.findViewById(R.id.iv_search);
+            search.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            String word = mVocabularyTextView.getText().toString();
+            mClickListener.onClickItem(word);
         }
     }
 }

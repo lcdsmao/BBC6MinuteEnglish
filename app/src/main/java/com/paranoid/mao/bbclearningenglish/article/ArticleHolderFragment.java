@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
+import com.paranoid.mao.bbclearningenglish.data.DefinitionFragment;
 
 /**
  * Created by Paranoid on 17/7/31.
@@ -63,9 +64,10 @@ public class ArticleHolderFragment extends Fragment {
 
             @Override
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                String word;
                 switch (menuItem.getItemId()) {
                     case R.id.menu_word_book:
-                        String word = getSelectedText();
+                        word = getSelectedText();
                         ContentValues contentValues = new ContentValues();
                         if (word != null && word.length() > 0 && word.length() < 20) {
                             contentValues.put(DatabaseContract.VocabularyEntry.COLUMN_VOCAB, word);
@@ -75,6 +77,10 @@ public class ArticleHolderFragment extends Fragment {
                             );
                         }
                         actionMode.finish();
+                        break;
+                    case R.id.menu_definition:
+                        word = getSelectedText();
+                        DefinitionFragment.newInstance(word).show(getFragmentManager(), "Definition Fragment");
                         break;
                     default:
                         actionMode.finish();

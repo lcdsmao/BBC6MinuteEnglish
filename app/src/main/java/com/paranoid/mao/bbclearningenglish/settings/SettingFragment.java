@@ -6,15 +6,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncJobDispatcher;
-
 
 public class SettingFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener{
