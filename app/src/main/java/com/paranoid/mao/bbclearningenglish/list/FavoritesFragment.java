@@ -3,9 +3,14 @@ package com.paranoid.mao.bbclearningenglish.list;
 import android.content.ContentValues;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,10 +18,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +51,7 @@ public class FavoritesFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ItemTouchHelper.SimpleCallback swipeToDelete = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback swipeToDelete = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -69,18 +76,41 @@ public class FavoritesFragment extends Fragment implements
                     View itemView = viewHolder.itemView;
 
                     Paint p = new Paint();
-                    p.setColor(ContextCompat.getColor(getContext(), R.color.red));
-                    float left = itemView.getLeft();
-                    float top = itemView.getTop();
-                    float bottom = itemView.getBottom();
-                    c.drawRect(left, top, dX, bottom, p);
 
-                    p.setColor(ContextCompat.getColor(getContext(), R.color.background));
-                    float line_left = dX - 164;
-                    float line_right = dX - 100;
-                    float line_top = (top + bottom) / 2 + 6;
-                    float line_bottom = (top + bottom) / 2 - 6;
-                    c.drawRect(line_left, line_top, line_right, line_bottom, p);
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 2.5f;
+                    height = height * 0.48f;
+
+                    RectF background;
+                    RectF icon;
+
+                    if(dX > 0){
+                        background = new RectF((float) itemView.getLeft(),
+                                (float) itemView.getTop(),
+                                dX,
+                                (float) itemView.getBottom());
+                        icon = new RectF(
+                                dX - 2*width ,
+                                (float) itemView.getTop() + height,
+                                dX - width,
+                                (float)itemView.getBottom() - height);
+                    } else {
+                        background = new RectF(
+                                (float) itemView.getRight() + dX,
+                                (float) itemView.getTop(),
+                                (float) itemView.getRight(),
+                                (float) itemView.getBottom());
+                        icon = new RectF(
+                                (float) itemView.getRight() + dX + width ,
+                                (float) itemView.getTop() + height,
+                                (float) itemView.getRight() + dX + 2*width,
+                                (float)itemView.getBottom() - height);
+                    }
+
+                    p.setColor(ContextCompat.getColor(getContext(), R.color.red));
+                    c.drawRect(background, p);
+                    p.setColor(ContextCompat.getColor(getContext(), R.color.icons));
+                    c.drawRect(icon, p);
 
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
