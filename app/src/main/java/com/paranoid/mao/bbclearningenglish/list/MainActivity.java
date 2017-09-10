@@ -27,13 +27,14 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncUtility;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncJobDispatcher;
 
-public class BBCContentListActivity extends AppCompatActivity implements
+public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TITLE_STATE_KEY = "title";
 
     private static final String BBC_CONTENT_TAG = "bbc_content";
     private static final String FAVORITES_TAG = "favorites";
+    private static final String WORD_BOOK_TAG = "wordbook";
 
     private DrawerLayout mDrawerLayout;
 
@@ -133,6 +134,9 @@ public class BBCContentListActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         Intent intent;
+        FragmentManager fm;
+        FragmentTransaction ft;
+        Fragment newFragment;
         switch (id) {
             case R.id.category_six:
             case R.id.category_we_speak:
@@ -141,13 +145,13 @@ public class BBCContentListActivity extends AppCompatActivity implements
             case R.id.category_university:
                 getSupportActionBar().setTitle(item.getTitle());
                 mCurrentCategory = BBCCategory.sCategoryItemIdMapInverse.get(id);
-                FragmentManager fm = getSupportFragmentManager();
+                fm = getSupportFragmentManager();
                 BBCContentFragment bbcFm = (BBCContentFragment) fm.findFragmentByTag(BBC_CONTENT_TAG);
                 if (bbcFm != null) {
                     bbcFm.swapCategory(mCurrentCategory);
                 } else {
                     //ft.setCustomAnimations(android.R.anim., android.R.anim.slide_out_right);
-                    Fragment newFragment = BBCContentFragment.newInstance(mCurrentCategory);
+                    newFragment = BBCContentFragment.newInstance(mCurrentCategory);
                     fm.beginTransaction().replace(R.id.content_list_container,
                             newFragment, BBC_CONTENT_TAG)
                             .commit();
@@ -155,9 +159,15 @@ public class BBCContentListActivity extends AppCompatActivity implements
                 break;
             case R.id.custom_favourites:
                 getSupportActionBar().setTitle(R.string.custom_favourite);
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                Fragment newFragment = new FavoritesFragment();
+                ft = getSupportFragmentManager().beginTransaction();
+                newFragment = new FavoritesFragment();
                 ft.replace(R.id.content_list_container, newFragment, FAVORITES_TAG).commit();
+                break;
+            case R.id.custom_word_book:
+                getSupportActionBar().setTitle(R.string.custom_word_book);
+                ft = getSupportFragmentManager().beginTransaction();
+                newFragment = new WordBookFragment();
+                ft.replace(R.id.content_list_container, newFragment, WORD_BOOK_TAG).commit();
                 break;
             case R.id.drawer_rating:
                 intent = new Intent(Intent.ACTION_VIEW);

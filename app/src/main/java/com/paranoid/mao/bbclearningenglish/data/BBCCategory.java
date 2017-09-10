@@ -20,6 +20,15 @@ public class BBCCategory {
     public static final String CATEGORY_ENGLISH_AT_UNIVERSITY = "atUniversity";
     public static final String CATEGORY_LINGO_HACK = "lingoHack";
 
+    public static final String[] ALL_CATEGORY = {
+            CATEGORY_6_MINUTE_ENGLISH,
+            CATEGORY_ENGLISH_AT_UNIVERSITY,
+            CATEGORY_LINGO_HACK,
+            CATEGORY_NEWS_REPORT,
+            CATEGORY_THE_ENGLISH_WE_SPEAK
+    };
+
+
     public static final HashMap<String, String> sCategoryUrlMap = createCategoryUrlMap();
     public static final HashMap<String, Integer> sCategoryItemIdMap = createCategoryItemIdMap();
     public static final HashMap<String, Integer> sCategoryStringResourceMap = createCategoryStringResourceMap();

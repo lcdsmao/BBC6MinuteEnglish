@@ -31,8 +31,7 @@ public class BBCContentProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     // Helper for create database
-    private BBCContentDbHelper mBBCDbHelper;
-    private VocabularyDbHelper mVocabDbHelper;
+    private BBCDbHelper mBBCDbHelper;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -52,8 +51,7 @@ public class BBCContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mBBCDbHelper = new BBCContentDbHelper(getContext());
-        mVocabDbHelper = new VocabularyDbHelper(getContext());
+        mBBCDbHelper = new BBCDbHelper(getContext());
         return true;
     }
 
@@ -62,7 +60,6 @@ public class BBCContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase bbcDatabase = mBBCDbHelper.getReadableDatabase();
-        SQLiteDatabase vocabDatabase = mVocabDbHelper.getReadableDatabase();
         int code = sUriMatcher.match(uri);
         Cursor cursor;
         String filter;
@@ -114,7 +111,7 @@ public class BBCContentProvider extends ContentProvider {
                         sortOrder);
                 break;
             case VOCABULARY_CODE:
-                cursor = vocabDatabase.query(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                cursor = bbcDatabase.query(DatabaseContract.VocabularyEntry.TABLE_NAME,
                         projection,
                         selection,
                         null,
@@ -140,7 +137,6 @@ public class BBCContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         SQLiteDatabase bbcDatabase = mBBCDbHelper.getWritableDatabase();
-        SQLiteDatabase vocabDatabase = mVocabDbHelper.getWritableDatabase();
         int code = sUriMatcher.match(uri);
         long id = -1;
         Uri returnedUri = null;
@@ -158,7 +154,7 @@ public class BBCContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 break;
             case VOCABULARY_CODE:
-                id = vocabDatabase.insert(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                id = bbcDatabase.insert(DatabaseContract.VocabularyEntry.TABLE_NAME,
                         null,
                         values);
                 if (id > 0) {
@@ -178,7 +174,6 @@ public class BBCContentProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
         SQLiteDatabase bbcDatabase = mBBCDbHelper.getWritableDatabase();
-        SQLiteDatabase vocabDatabase = mVocabDbHelper.getWritableDatabase();
         int n = -1;
         int code = sUriMatcher.match(uri);
         String filter;
@@ -201,14 +196,14 @@ public class BBCContentProvider extends ContentProvider {
                         new String[]{filter, timeStamp});
                 break;
             case VOCABULARY_CODE:
-                n = vocabDatabase.delete(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                n = bbcDatabase.delete(DatabaseContract.VocabularyEntry.TABLE_NAME,
                         selection,
                         selectionArgs);
                 break;
             case VOCABULARY_ID_CODE:
                 long id = ContentUris.parseId(uri);
                 selection = DatabaseContract.VocabularyEntry._ID + "=?";
-                n = vocabDatabase.delete(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                n = bbcDatabase.delete(DatabaseContract.VocabularyEntry.TABLE_NAME,
                         selection,
                         new String[]{String.valueOf(id)});
                 break;

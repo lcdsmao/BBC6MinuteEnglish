@@ -14,14 +14,6 @@ import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 
 public class ScheduleSyncJobService extends JobService {
 
-    private static final String[] ALL_CATEGORY = {
-            BBCCategory.CATEGORY_6_MINUTE_ENGLISH,
-            BBCCategory.CATEGORY_ENGLISH_AT_UNIVERSITY,
-            BBCCategory.CATEGORY_LINGO_HACK,
-            BBCCategory.CATEGORY_NEWS_REPORT,
-            BBCCategory.CATEGORY_THE_ENGLISH_WE_SPEAK
-    };
-
     private AsyncTask<Void, Void, Void> mSyncTask;
 
     @Override
@@ -29,7 +21,7 @@ public class ScheduleSyncJobService extends JobService {
         mSyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                for (String category: ALL_CATEGORY) {
+                for (String category: BBCCategory.ALL_CATEGORY) {
                     if (BBCPreference.isUpdateNeed(getApplicationContext(), category)) {
                         BBCSyncTask.syncCategoryList(getApplicationContext(), category);
                     }

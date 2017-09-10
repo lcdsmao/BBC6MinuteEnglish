@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.paranoid.mao.bbclearningenglish.article.ArticleActivity;
 import com.paranoid.mao.bbclearningenglish.article.AudioPlayService;
-import com.paranoid.mao.bbclearningenglish.list.BBCContentListActivity;
+import com.paranoid.mao.bbclearningenglish.list.MainActivity;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
@@ -112,7 +112,7 @@ public class NotificationUtility {
         if (MyApp.isActivityVisible()) return;
         String contentText = context.getString(R.string.notification_new_content) + " "
                 + context.getString(BBCCategory.sCategoryStringResourceMap.get(category));
-        Intent intent = new Intent(context, BBCContentListActivity.class)
+        Intent intent = new Intent(context, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         PendingIntent pendingIntent =
