@@ -4,14 +4,13 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -50,6 +49,8 @@ public class DefinitionFragment extends BottomSheetDialogFragment
 
     private MediaPlayer mMediaPlayer;
 
+    private BottomSheetBehavior mBehavior;
+
     public static DefinitionFragment newInstance(String word, Mode mode) {
         Bundle args = new Bundle();
         args.putString(WORD_KEY, word);
@@ -59,19 +60,11 @@ public class DefinitionFragment extends BottomSheetDialogFragment
         return fagFragment;
     }
 
-    private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
-
-        @Override
-        public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                dismiss();
-            }
-        }
-
-        @Override
-        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-        }
-    };
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
 
     @Override
     public void setupDialog(Dialog dialog, int style) {
@@ -88,13 +81,7 @@ public class DefinitionFragment extends BottomSheetDialogFragment
         mWordView.setText(mWord);
 
         dialog.setContentView(view);
-
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) view.getParent()).getLayoutParams();
-        CoordinatorLayout.Behavior behavior = params.getBehavior();
-
-        if( behavior != null && behavior instanceof BottomSheetBehavior ) {
-            ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
-        }
+        mBehavior = BottomSheetBehavior.from((View) view.getParent());
 
         getDefinition(mWord);
     }
@@ -143,6 +130,8 @@ public class DefinitionFragment extends BottomSheetDialogFragment
                             DatabaseContract.VocabularyEntry.CONTENT_URI,
                             contentValues
                     );
+                    Toast.makeText(getContext(),
+                            getString(R.string.added_to_word_book), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.iv_pronunciation:

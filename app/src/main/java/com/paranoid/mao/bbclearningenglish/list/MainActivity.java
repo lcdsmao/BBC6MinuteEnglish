@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_list_container,
-                    BBCContentFragment.newInstance(mCurrentCategory))
+                    BBCContentFragment.newInstance(mCurrentCategory), BBC_CONTENT_TAG)
                     .commit();
         }
 
