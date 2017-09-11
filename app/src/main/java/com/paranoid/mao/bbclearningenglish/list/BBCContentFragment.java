@@ -3,6 +3,7 @@ package com.paranoid.mao.bbclearningenglish.list;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -58,8 +59,6 @@ public class BBCContentFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getActivity().setTitle(BBCCategory.sCategoryStringResourceMap.get(mCategory));
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bbc_content_list, container, false);
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.srl_content_container);
@@ -99,6 +98,7 @@ public class BBCContentFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mBBCContentAdapter.swapCursor(data);
+        getActivity().setTitle(BBCCategory.sCategoryStringResourceMap.get(mCategory));
         if (BBCSyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(false);
         }
@@ -126,5 +126,19 @@ public class BBCContentFragment extends Fragment implements
         mCategory = category;
         getLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
         mContentRecycleView.scrollToPosition(0);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_CATEGORY, mCategory);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null ) {
+            mCategory = savedInstanceState.getString(KEY_CATEGORY);
+        }
     }
 }
