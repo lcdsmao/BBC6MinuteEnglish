@@ -206,6 +206,7 @@ public class BBCContentProvider extends ContentProvider {
                 n = bbcDatabase.delete(DatabaseContract.VocabularyEntry.TABLE_NAME,
                         selection,
                         new String[]{String.valueOf(id)});
+                Log.v("DELETE", "" + id);
                 break;
             default:
                 throw new SQLException("Delete failed!");

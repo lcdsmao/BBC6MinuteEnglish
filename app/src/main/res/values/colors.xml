@@ -11,5 +11,7 @@
     <color name="background">#f9f9f9</color>
     <color name="red">#DB4437</color>
     <color name="gray">#E2E2E2</color>
+    <color name="accent_dark">#FFC107</color>
+    <color name="blue">#03A8F3</color>
 </resources>
 

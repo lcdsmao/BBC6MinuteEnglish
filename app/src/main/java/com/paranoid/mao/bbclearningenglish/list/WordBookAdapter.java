@@ -3,6 +3,7 @@ package com.paranoid.mao.bbclearningenglish.list;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,12 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.VocabularyViewHolder> {
 
     public static final String[] PROJECTION = {
-            DatabaseContract.VocabularyEntry.COLUMN_VOCAB
+            DatabaseContract.VocabularyEntry.COLUMN_VOCAB,
+            DatabaseContract.VocabularyEntry._ID
     };
 
-    public static final int VOCAB_INDEX = 0;
+    private static final int VOCAB_INDEX = 0;
+    private static final int ID_INDEX = 1;
 
     private Context mContext;
     private Cursor mCursor;
@@ -49,8 +52,11 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
     public void onBindViewHolder(VocabularyViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         String vocabulary = mCursor.getString(VOCAB_INDEX);
-
         holder.mVocabularyTextView.setText(vocabulary);
+
+        long ID = mCursor.getInt(ID_INDEX);
+        Log.v("ID", "" + ID);
+        holder.itemView.setTag(ID);
     }
 
     @Override

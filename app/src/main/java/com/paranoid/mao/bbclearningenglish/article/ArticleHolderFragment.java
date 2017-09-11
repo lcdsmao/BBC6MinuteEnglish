@@ -80,7 +80,8 @@ public class ArticleHolderFragment extends Fragment {
                         break;
                     case R.id.menu_definition:
                         word = getSelectedText();
-                        DefinitionFragment.newInstance(word).show(getFragmentManager(), "Definition Fragment");
+                        DefinitionFragment.newInstance(word, DefinitionFragment.Mode.ARTICLE_MODE).show(getFragmentManager(), "Definition Fragment");
+                        actionMode.finish();
                         break;
                     default:
                         actionMode.finish();

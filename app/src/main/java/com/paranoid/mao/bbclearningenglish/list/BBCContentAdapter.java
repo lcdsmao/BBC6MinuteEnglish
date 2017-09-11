@@ -30,12 +30,12 @@ public class BBCContentAdapter extends
             DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY
     };
 
-    public static final int TITLE_INDEX = 0;
-    public static final int TIME_INDEX = 1;
-    public static final int DESCRIPTION_INDEX = 2;
-    public static final int TIMESTAMP_INDEX = 3;
-    public static final int THUMBNAIL_INDEX = 4;
-    public static final int CATEGORY_INDEX = 5;
+    private static final int TITLE_INDEX = 0;
+    private static final int TIME_INDEX = 1;
+    private static final int DESCRIPTION_INDEX = 2;
+    private static final int TIMESTAMP_INDEX = 3;
+    private static final int THUMBNAIL_INDEX = 4;
+    private static final int CATEGORY_INDEX = 5;
 
     private Cursor mCursor;
     private Context mContext;
