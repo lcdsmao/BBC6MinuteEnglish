@@ -22,7 +22,6 @@ import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.settings.SettingActivity;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
-import com.paranoid.mao.bbclearningenglish.sync.BBCSyncUtility;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncJobDispatcher;
 
 public class MainActivity extends AppCompatActivity implements

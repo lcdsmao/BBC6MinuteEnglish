@@ -4,11 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.BBCArticleSection;
-import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -156,7 +154,6 @@ public class BBCHtmlUtility {
                         list.add(new BBCArticleSection(title, article));
                         article = "";
                     }
-                    Log.v("h3", text);
                     title = context.getString(R.string.article_vocabulary);
                 } else if (text.matches(".*[Tt]ranscript.*")) {
                     if (!TextUtils.isEmpty(article)) {

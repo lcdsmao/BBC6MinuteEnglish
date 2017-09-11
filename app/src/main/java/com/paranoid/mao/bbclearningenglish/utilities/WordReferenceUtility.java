@@ -1,7 +1,6 @@
 package com.paranoid.mao.bbclearningenglish.utilities;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.paranoid.mao.bbclearningenglish.data.VocabularyDefinition;
 

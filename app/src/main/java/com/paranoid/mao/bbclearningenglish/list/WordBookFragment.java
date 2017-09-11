@@ -1,6 +1,5 @@
 package com.paranoid.mao.bbclearningenglish.list;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;

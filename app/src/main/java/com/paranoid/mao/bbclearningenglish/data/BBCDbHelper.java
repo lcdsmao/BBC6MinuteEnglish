@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.paranoid.mao.bbclearningenglish.list.MainActivity;
-
 /**
  * Created by MAO on 7/17/2017.
  */
