@@ -33,7 +33,7 @@
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         app:layout_constraintLeft_toLeftOf="@+id/view"
-        app:layout_constraintRight_toLeftOf="@+id/iv_audio"
+        app:layout_constraintRight_toLeftOf="@+id/iv_pronunciation"
         app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
