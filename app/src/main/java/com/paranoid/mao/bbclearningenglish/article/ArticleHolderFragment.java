@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
@@ -49,7 +50,6 @@ public class ArticleHolderFragment extends Fragment {
             mArticleText.setText(Html.fromHtml(str));
         }
 
-        // for test
         mArticleText.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -59,12 +59,14 @@ public class ArticleHolderFragment extends Fragment {
 
             @Override
             public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                return false;
+                menu.removeItem(android.R.id.selectAll);
+                return true;
             }
 
             @Override
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 String word;
+                actionMode.invalidate();
                 switch (menuItem.getItemId()) {
                     case R.id.menu_word_book:
                         word = getSelectedText();
@@ -75,6 +77,8 @@ public class ArticleHolderFragment extends Fragment {
                                     DatabaseContract.VocabularyEntry.CONTENT_URI,
                                     contentValues
                             );
+                            Toast.makeText(getContext(),
+                                    getString(R.string.added_to_word_book), Toast.LENGTH_SHORT).show();
                         }
                         actionMode.finish();
                         break;
@@ -84,7 +88,7 @@ public class ArticleHolderFragment extends Fragment {
                         actionMode.finish();
                         break;
                     default:
-                        actionMode.finish();
+
                 }
                 return false;
             }

@@ -12,8 +12,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -61,11 +59,6 @@ public class AudioPlayService extends Service implements
     private boolean mIsPrepared;
     private Uri mUriWithTimeStamp;
     private int mCachedProgress;
-
-    //Handle incoming phone calls
-    private boolean mOngoingCall = false;
-    private PhoneStateListener mPhoneStateListener;
-    private TelephonyManager mTelephonyManager;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -215,7 +208,6 @@ public class AudioPlayService extends Service implements
     @Override
     public void onCreate() {
         super.onCreate();
-        callStateListener();
         registerBecomingNoisyReceiver();
     }
 
@@ -225,9 +217,6 @@ public class AudioPlayService extends Service implements
         if (mMediaPlayer != null) {
             stopMedia();
             mMediaPlayer.release();
-        }
-        if (mTelephonyManager != null) {
-            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
         // remove audio focus
         removeAudioFocus();
@@ -240,42 +229,6 @@ public class AudioPlayService extends Service implements
         if (percentsAvailable == 100) {
             Toast.makeText(this, getString(R.string.cache_complete), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    //Handle incoming phone calls
-    private void callStateListener() {
-        // Get the telephony manager
-        mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        //Starting listening for PhoneState changes
-        mPhoneStateListener = new PhoneStateListener() {
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                switch (state) {
-                    //if at least one call exists or the phone is ringing
-                    //pause the MediaPlayer
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                    case TelephonyManager.CALL_STATE_RINGING:
-                        if (mMediaPlayer != null) {
-                            pauseMedia();
-                            mOngoingCall = true;
-                        }
-                        break;
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        // Phone idle. Start playing.
-                        if (mMediaPlayer != null && mOngoingCall) {
-                            mOngoingCall = false;
-                            resumeMedia();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-        // Register the listener with the telephony manager
-        // Listen for changes to the device call state.
-        mTelephonyManager.listen(mPhoneStateListener,
-                PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     //Becoming noisy

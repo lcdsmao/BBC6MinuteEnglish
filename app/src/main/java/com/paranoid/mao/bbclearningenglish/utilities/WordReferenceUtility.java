@@ -52,7 +52,12 @@ public class WordReferenceUtility {
     }
 
     private static String getSymbol(Element trans) {
-        return trans.select(".tooltip").first().ownText();
+        Element tooltip = trans.select(".tooltip").first();
+        if (tooltip != null) {
+            return tooltip.ownText();
+        } else {
+            return "";
+        }
     }
 
     private static String getDefinition(Element trans) {
