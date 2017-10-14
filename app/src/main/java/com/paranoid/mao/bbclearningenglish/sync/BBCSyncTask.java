@@ -56,6 +56,5 @@ public class BBCSyncTask {
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MyApp.getRequestQueue(context).add(request);
-        BBCPreference.setLastUpdateTime(context, category, System.currentTimeMillis());
     }
 }

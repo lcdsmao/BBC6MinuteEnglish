@@ -13,6 +13,7 @@ import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
+import com.paranoid.mao.bbclearningenglish.utilities.NotificationUtility;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -30,6 +31,7 @@ public class BBCContentListRequest extends StringRequest {
     private String mCategory;
     private Context mContext;
     private boolean mIsNew;
+    private String mContentTitle;
 
     public BBCContentListRequest(int method, String url, Response.Listener<String> listener,
                                  Response.ErrorListener errorListener, Context context) {
@@ -41,7 +43,8 @@ public class BBCContentListRequest extends StringRequest {
 
     @Override
     protected void deliverResponse(String response) {
-        String deliverContent = mIsNew? mCategory : "";
+        String deliverContent = mIsNew?
+                NotificationUtility.createContent(mCategory, mContentTitle) : "";
         super.deliverResponse(deliverContent);
     }
 
@@ -67,6 +70,8 @@ public class BBCContentListRequest extends StringRequest {
 
             long newestContentTime = BBCHtmlUtility.getTimeStamp(contentList.get(0));
             mIsNew = newestContentTime > BBCPreference.getLastUpdateTime(mContext, mCategory);
+            mContentTitle = BBCHtmlUtility.getTitle(contentList.get(0));
+            BBCPreference.setLastUpdateTime(mContext, mCategory, System.currentTimeMillis());
 
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));

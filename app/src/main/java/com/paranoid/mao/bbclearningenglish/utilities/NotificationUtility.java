@@ -108,20 +108,21 @@ public class NotificationUtility {
                 getDrawable(action), getActionName(context, action), pendingIntentService);
     }
 
-    public static void showNewContentNotification(Context context, String category) {
+    public static void showNewContentNotification(Context context, String newContent) {
         if (MyApp.isActivityVisible()) return;
-        String contentText = context.getString(R.string.notification_new_content) + " "
-                + context.getString(BBCCategory.sCategoryStringResourceMap.get(category));
+        String[] content = splitContent(newContent);
+        String contentTitle = context.getString(R.string.notification_new_content) + " "
+                + context.getString(BBCCategory.sCategoryStringResourceMap.get(content[0]));
         Intent intent = new Intent(context, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
+                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, content[0]);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_headset)
-                .setContentTitle(context.getString(R.string.app_sub_name))
-                .setContentText(contentText)
+                .setContentTitle(contentTitle)
+                .setContentText(content[1])
                 .setColor(ContextCompat.getColor(context, R.color.primary))
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
@@ -130,5 +131,13 @@ public class NotificationUtility {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(12345, notification);
+    }
+
+    public static String createContent(String category, String title) {
+        return category + "$" + title;
+    }
+
+    private static String[] splitContent(String content) {
+        return content.split("\\$");
     }
 }
