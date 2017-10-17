@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
-import com.paranoid.mao.bbclearningenglish.data.DefinitionFragment;
 
 /**
  * Created by Paranoid on 17/7/31.
@@ -84,7 +83,7 @@ public class ArticleHolderFragment extends Fragment {
                         break;
                     case R.id.menu_definition:
                         word = getSelectedText();
-                        DefinitionFragment.newInstance(word, DefinitionFragment.Mode.ARTICLE_MODE).show(getFragmentManager(), "Definition Fragment");
+                        DefinitionFragment.newInstance(word).show(getFragmentManager(), "Definition Fragment");
                         actionMode.finish();
                         break;
                     default:

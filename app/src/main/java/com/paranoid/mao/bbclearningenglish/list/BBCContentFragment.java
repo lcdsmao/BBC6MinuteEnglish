@@ -20,7 +20,7 @@ import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
-import com.paranoid.mao.bbclearningenglish.sync.BBCSyncUtility;
+import com.paranoid.mao.bbclearningenglish.sync.SyncUtility;
 
 public class BBCContentFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
@@ -83,7 +83,7 @@ public class BBCContentFragment extends Fragment implements
         Uri uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
                 .appendPath(mCategory).build();
         if (BBCPreference.isUpdateNeed(getContext(), mCategory)) {
-            BBCSyncUtility.contentListSync(getContext(), mCategory);
+            SyncUtility.contentListSync(getContext(), mCategory);
         }
         String sortOrder = DatabaseContract.BBCLearningEnglishEntry.NORMAL_SORT_ORDER;
         return new CursorLoader(
@@ -99,7 +99,7 @@ public class BBCContentFragment extends Fragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mBBCContentAdapter.swapCursor(data);
         getActivity().setTitle(BBCCategory.sCategoryStringResourceMap.get(mCategory));
-        if (BBCSyncUtility.sIsContentListSyncComplete) {
+        if (SyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(false);
         }
     }
@@ -111,13 +111,13 @@ public class BBCContentFragment extends Fragment implements
 
     @Override
     public void onRefresh() {
-        BBCSyncUtility.contentListSync(getContext(), mCategory);
+        SyncUtility.contentListSync(getContext(), mCategory);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (!BBCSyncUtility.sIsContentListSyncComplete) {
+        if (!SyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(true);
         }
     }

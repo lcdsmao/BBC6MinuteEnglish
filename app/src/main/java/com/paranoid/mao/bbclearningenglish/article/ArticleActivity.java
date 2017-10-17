@@ -29,7 +29,7 @@ import android.widget.TextView;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
-import com.paranoid.mao.bbclearningenglish.sync.BBCSyncUtility;
+import com.paranoid.mao.bbclearningenglish.sync.SyncUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.TimeUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
 
@@ -146,7 +146,7 @@ public class ArticleActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        BBCSyncUtility.articleInitialize(this, mUriWithTimeStamp);
+        SyncUtility.articleInitialize(this, mUriWithTimeStamp);
         return new CursorLoader(
                 this,
                 mUriWithTimeStamp,

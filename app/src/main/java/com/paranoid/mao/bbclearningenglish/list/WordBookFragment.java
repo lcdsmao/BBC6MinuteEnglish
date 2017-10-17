@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,9 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.paranoid.mao.bbclearningenglish.data.DefinitionFragment;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
+import com.paranoid.mao.bbclearningenglish.sync.SyncUtility;
+
+import java.io.IOException;
 
 /**
  * Created by Paranoid on 17/9/10.
@@ -29,12 +32,14 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
 public class WordBookFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        WordBookAdapter.OnListItemClickListener{
+        WordBookAdapter.OnItemClickListener {
 
     private static final int WORD_BOOK_LOADER_ID = 64236;
 
     private WordBookAdapter mAdapter;
     private ItemTouchHelper mSwipeToDeleteHelper;
+    private MediaPlayer mMediaPlayer;
+    private String mCurrentAudioHref = "";
 
     public WordBookFragment(){};
 
@@ -135,7 +140,7 @@ public class WordBookFragment extends Fragment implements
                 WordBookAdapter.PROJECTION,
                 null,
                 null,
-                DatabaseContract.VocabularyEntry._ID);
+                DatabaseContract.VocabularyEntry._ID + " DESC");
     }
 
     @Override
@@ -149,8 +154,50 @@ public class WordBookFragment extends Fragment implements
     }
 
     @Override
-    public void onClickItem(String word) {
-        DefinitionFragment fragment = DefinitionFragment.newInstance(word, DefinitionFragment.Mode.WORDBOOK_MODE);
-        fragment.show(getFragmentManager(), "Definition Fragment");
+    public void OnPronunciationClick(String audioHref) {
+        if (mCurrentAudioHref.equals(audioHref) && mMediaPlayer != null) {
+            mMediaPlayer.start();
+        } else {
+            prepareMedia(audioHref);
+            mCurrentAudioHref = audioHref;
+        }
+    }
+
+    @Override
+    public void OnDetailClick(long id) {
+        Uri uri = DatabaseContract.VocabularyEntry.CONTENT_URI
+                .buildUpon()
+                .appendEncodedPath(String.valueOf(id))
+                .build();
+        SyncUtility.wordBookInitialize(getContext(), uri);
+    }
+
+    private void prepareMedia(String audioHref){
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+        }
+        mMediaPlayer = new MediaPlayer();
+        try {
+            mMediaPlayer.setDataSource(audioHref);
+            mMediaPlayer.prepareAsync();
+            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                }
+            });
+        } catch (IOException e) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
     }
 }

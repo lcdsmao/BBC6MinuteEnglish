@@ -67,7 +67,8 @@ public class WordReferenceUtility {
             String d = def.get(i).ownText();
             int l = d.length() - 1;
             if (d.charAt(l) == ':') d = d.substring(0, l);
-            defStr += (i + 1) + ". " + d + "\n\n";
+            if (i != 0) defStr += "\n\n";
+            defStr += (i + 1) + ". " + d;
         }
         return defStr;
     }

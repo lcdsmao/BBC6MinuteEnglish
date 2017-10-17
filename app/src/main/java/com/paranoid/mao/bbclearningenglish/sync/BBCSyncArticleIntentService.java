@@ -19,6 +19,6 @@ public class BBCSyncArticleIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Uri uriWithStamp = intent.getData();
         String articleHref = intent.getStringExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_HREF);
-        BBCSyncTask.syncArticle(this, uriWithStamp, articleHref);
+        SyncTask.syncArticle(this, uriWithStamp, articleHref);
     }
 }

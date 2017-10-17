@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
 import java.util.List;
 
 /**
@@ -116,6 +118,17 @@ public class BBCContentProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
+            case VOCABULARY_ID_CODE:
+                long id = ContentUris.parseId(uri);
+                selection = DatabaseContract.VocabularyEntry._ID + "=?";
+                cursor = bbcDatabase.query(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        new String[]{String.valueOf(id)},
+                        null,
+                        null,
+                        null);
                 break;
             default:
                 throw new SQLException("Query failed!");
@@ -245,6 +258,15 @@ public class BBCContentProvider extends ContentProvider {
                         values,
                         selection,
                         new String[]{filter, timeStamp});
+                break;
+            case VOCABULARY_ID_CODE:
+                long id = ContentUris.parseId(uri);
+                selection = DatabaseContract.VocabularyEntry._ID + "=?";
+                Log.v("ID", selection);
+                bbcDatabase.update(DatabaseContract.VocabularyEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        new String[]{String.valueOf(id)});
                 break;
             default:
                 throw new SQLException("Update failed!");

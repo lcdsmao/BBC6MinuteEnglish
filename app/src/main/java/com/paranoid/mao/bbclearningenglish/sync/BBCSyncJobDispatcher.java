@@ -21,7 +21,7 @@ public class BBCSyncJobDispatcher {
 
     private static void buildScheduleSync(Context context) {
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID,
-                new ComponentName(context, ScheduleSyncJobService.class));
+                new ComponentName(context, BBCSyncJobService.class));
 
         builder.setPeriodic(TRIGGER_INTERVAL);
         builder.setPersisted(true);

@@ -7,12 +7,11 @@
     android:layout_height="wrap_content"
     android:paddingBottom="24dp">
 
-
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="120dp"
-        android:background="@color/blue"
+        android:background="@color/primary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,9 +31,7 @@
         android:layout_marginBottom="8dp"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
-        app:layout_constraintLeft_toLeftOf="@+id/view"
-        app:layout_constraintRight_toLeftOf="@+id/iv_pronunciation"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintLeft_toLeftOf="@+id/view" />
 
     <TextView
         android:id="@+id/tv_symbol"
@@ -45,49 +42,30 @@
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="italic"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_word"
         tools:text="/θroʊn/" />
 
     <ImageView
-        android:id="@+id/iv_pronunciation"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="8dp"
-        android:visibility="gone"
-        android:contentDescription="@string/pronunciation"
-        android:background="?android:attr/selectableItemBackground"
-        app:srcCompat="@drawable/ic_volume"
-        app:layout_constraintRight_toLeftOf="@+id/iv_add"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view"
-        android:layout_marginBottom="8dp" />
-
-    <ImageView
         android:id="@+id/iv_add"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:visibility="gone"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/add_to_favourite"
+        android:paddingBottom="8dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
-        android:background="?android:attr/selectableItemBackground"
         app:srcCompat="@drawable/ic_add" />
 
     <TextView

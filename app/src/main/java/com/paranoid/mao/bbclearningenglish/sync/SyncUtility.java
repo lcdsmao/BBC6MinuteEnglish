@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
@@ -12,7 +13,7 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
  * Created by MAO on 7/24/2017.
  */
 
-public class BBCSyncUtility {
+public class SyncUtility {
 
     public static boolean sIsContentListSyncComplete = true;
 
@@ -71,4 +72,44 @@ public class BBCSyncUtility {
         context.startService(intentToSyncImmediately);
     }
 
+    synchronized public static void wordBookInitialize(final Context context,
+                                                      @NonNull final Uri uriWithID) {
+
+        final String projection[] = {
+                DatabaseContract.VocabularyEntry.COLUMN_VOCAB,
+                DatabaseContract.VocabularyEntry.COLUMN_MEAN};
+        final int VOCAB_INDEX = 0;
+        final int MEAN_INDEX = 1;
+
+        Thread checkForEmpty = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = context.getContentResolver().query(uriWithID,
+                        projection,
+                        null,
+                        null,
+                        null);
+                if (cursor == null) return;
+                cursor.moveToFirst();
+                String vocab = cursor.getString(VOCAB_INDEX);
+                String mean = cursor.getString(MEAN_INDEX);
+
+                if (TextUtils.isEmpty(mean)) {
+                    startVocabularySync(context, uriWithID, vocab);
+                }
+
+                cursor.close();
+            }
+        });
+
+        checkForEmpty.start();
+
+    }
+
+    private static void startVocabularySync(final Context context, Uri uriWithID, String vocab){
+        Intent intent = new Intent(context, SyncVocabularyIntentService.class)
+                .setData(uriWithID)
+                .putExtra(DatabaseContract.VocabularyEntry.COLUMN_VOCAB, vocab);
+        context.startService(intent);
+    }
 }

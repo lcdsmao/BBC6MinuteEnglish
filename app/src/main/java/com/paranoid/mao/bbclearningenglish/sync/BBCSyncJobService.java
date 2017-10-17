@@ -12,7 +12,7 @@ import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
  * Created by MAO on 8/2/2017.
  */
 
-public class ScheduleSyncJobService extends JobService {
+public class BBCSyncJobService extends JobService {
 
     private AsyncTask<Void, Void, Void> mSyncTask;
 
@@ -23,7 +23,7 @@ public class ScheduleSyncJobService extends JobService {
             protected Void doInBackground(Void... voids) {
                 for (String category: BBCCategory.ALL_CATEGORY) {
                     if (BBCPreference.isUpdateNeed(getApplicationContext(), category)) {
-                        BBCSyncTask.syncCategoryList(getApplicationContext(), category);
+                        SyncTask.syncCategoryList(getApplicationContext(), category);
                     }
                 }
                 return null;

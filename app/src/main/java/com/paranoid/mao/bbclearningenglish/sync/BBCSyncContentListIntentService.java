@@ -20,7 +20,7 @@ public class BBCSyncContentListIntentService extends IntentService {
         if (intent.hasExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY)) {
             String category = intent.getStringExtra(
                     DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
-            BBCSyncTask.syncCategoryList(this, category);
+            SyncTask.syncCategoryList(this, category);
         }
 
     }

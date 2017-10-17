@@ -4,15 +4,11 @@
     xmlns:apps="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/word_card"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
+
     apps:cardBackgroundColor="@android:color/white"
-    apps:cardUseCompatPadding="true"
-    apps:cardCornerRadius="2dp"
     apps:cardElevation="2dp">
 
     <RelativeLayout
@@ -46,20 +42,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"/>
 
-        <ProgressBar
-            android:id="@+id/pb_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="-6dp"
-            android:layout_below="@id/tv_vocabulary"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:indeterminate="true"
-            android:indeterminateBehavior="cycle"/>
-
         <LinearLayout
             android:id="@+id/detail_container"
             android:layout_width="match_parent"
@@ -68,12 +50,22 @@
             android:layout_marginEnd="16dp"
             android:orientation="vertical"
             android:layout_below="@id/tv_vocabulary"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/divider" />
+
+            <ProgressBar
+                android:id="@+id/pb_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:visibility="visible"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:indeterminate="true"
+                android:indeterminateBehavior="repeat"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -94,7 +86,7 @@
                     android:layout_height="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_gravity="center_vertical"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_volume" />
             </LinearLayout>
@@ -104,10 +96,10 @@
                 android:id="@+id/tv_detail_definition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                tools:text="1.the seat occupied by a sovereign at certain occasions or ceremonies. \n
-2.the rank, office, or dignity of a king or queen:
-to assume the throne.\n" />
+                tools:text="1.the seat occupied by a sovereign at certain occasions or ceremonies.\n\n2.the rank, office, or dignity of a king or queen:
+to assume the throne" />
 
         </LinearLayout>
 

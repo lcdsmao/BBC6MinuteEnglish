@@ -1,4 +1,4 @@
-package com.paranoid.mao.bbclearningenglish.data;
+package com.paranoid.mao.bbclearningenglish.article;
 
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +15,8 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.paranoid.mao.bbclearningenglish.R;
+import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
+import com.paranoid.mao.bbclearningenglish.data.VocabularyDefinition;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.sync.WordReferenceRequest;
 
@@ -28,21 +29,12 @@ import java.io.IOException;
 public class DefinitionFragment extends BottomSheetDialogFragment
     implements View.OnClickListener{
 
-    public enum Mode {
-        ARTICLE_MODE,
-        WORDBOOK_MODE
-    }
-
-    private static final String MODE_KEY = "mode";
     private static final String WORD_KEY = "word";
-
-    private Mode mMode;
 
     private TextView mDefinitionView;
     private TextView mWordView;
     private TextView mSymbolView;
     private ImageView mAddView;
-    private ImageView mPronView;
 
     private String mWord;
     private String mPronUrl;
@@ -51,10 +43,9 @@ public class DefinitionFragment extends BottomSheetDialogFragment
 
     private BottomSheetBehavior mBehavior;
 
-    public static DefinitionFragment newInstance(String word, Mode mode) {
+    public static DefinitionFragment newInstance(String word) {
         Bundle args = new Bundle();
         args.putString(WORD_KEY, word);
-        args.putSerializable(MODE_KEY, mode);
         DefinitionFragment fagFragment = new DefinitionFragment();
         fagFragment.setArguments(args);
         return fagFragment;
@@ -71,13 +62,11 @@ public class DefinitionFragment extends BottomSheetDialogFragment
         super.setupDialog(dialog, style);
         View view = View.inflate(getContext(), R.layout.fragment_definition, null);
         mWord = getArguments().getString(WORD_KEY);
-        mMode = (Mode) getArguments().get(MODE_KEY);
 
         mDefinitionView = view.findViewById(R.id.tv_definition);
         mWordView = view.findViewById(R.id.tv_word);
         mSymbolView = view.findViewById(R.id.tv_symbol);
         mAddView = view.findViewById(R.id.iv_add);
-        mPronView = view.findViewById(R.id.iv_pronunciation);
         mWordView.setText(mWord);
 
         dialog.setContentView(view);
@@ -94,17 +83,7 @@ public class DefinitionFragment extends BottomSheetDialogFragment
                         mWordView.setText(response.getWord());
                         mSymbolView.setText(response.getSymbol());
                         mDefinitionView.setText(response.getDefinition());
-                        mPronUrl = response.getAudioHref();
-                        if (mMode == Mode.ARTICLE_MODE) {
-                            mAddView.setVisibility(View.VISIBLE);
-                            mAddView.setOnClickListener(DefinitionFragment.this);
-                            mPronView.setVisibility(View.GONE);
-                        } else if (mMode == Mode.WORDBOOK_MODE && !TextUtils.isEmpty(mPronUrl)){
-                            mAddView.setVisibility(View.GONE);
-                            mPronView.setVisibility(View.VISIBLE);
-                            mPronView.setOnClickListener(DefinitionFragment.this);
-                            prepareMedia();
-                        }
+                        mAddView.setOnClickListener(DefinitionFragment.this);
                     }
                 },
                 new Response.ErrorListener() {
@@ -134,35 +113,8 @@ public class DefinitionFragment extends BottomSheetDialogFragment
                             getString(R.string.added_to_word_book), Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.iv_pronunciation:
-                 if (mMediaPlayer != null) {
-                    mMediaPlayer.start();
-                }
-                break;
             default:
                 break;
-        }
-    }
-
-    private void prepareMedia(){
-        if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-            try {
-                mMediaPlayer.setDataSource(mPronUrl);
-                mMediaPlayer.prepareAsync();
-            } catch (IOException e) {
-                mMediaPlayer.release();
-                mMediaPlayer = null;
-            }
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mMediaPlayer != null) {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
         }
     }
 }
