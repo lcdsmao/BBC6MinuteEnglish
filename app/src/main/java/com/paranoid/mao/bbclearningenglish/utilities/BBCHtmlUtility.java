@@ -45,6 +45,7 @@ public class BBCHtmlUtility {
     /**
      * Connect to bbc 6 minute English to get the newest document html.
      * Use Jsoup to parse the html to Elements which contains all contents.
+     *
      * @return list of all contents
      */
     @Nullable
@@ -59,6 +60,7 @@ public class BBCHtmlUtility {
 
     /**
      * Get content's title
+     *
      * @param content the Element inside getContentsList()
      * @return title
      */
@@ -69,6 +71,7 @@ public class BBCHtmlUtility {
 
     /**
      * Get content's content's hyper link
+     *
      * @param content the Element inside getContentsList()
      * @return content's hyper link
      */
@@ -79,6 +82,7 @@ public class BBCHtmlUtility {
 
     /**
      * Get content's thumbnail's hyper link
+     *
      * @param content the Element inside getContentsList()
      * @return thumbnail's hyper link
      */
@@ -89,11 +93,12 @@ public class BBCHtmlUtility {
 
     /**
      * Get content's time
+     *
      * @param content the Element inside getContentsList()
      * @return time
      */
     @NonNull
-    public static String getTime(Element content){
+    public static String getTime(Element content) {
         Elements details = content.select(".details");
         String time = details.select("h3").text();
         return time.split("/")[1].trim();
@@ -101,16 +106,18 @@ public class BBCHtmlUtility {
 
     /**
      * Get content's short description
+     *
      * @param content the Element inside getContentsList()
      * @return description
      */
-    public static String getDescription(Element content){
+    public static String getDescription(Element content) {
         Elements details = content.select(".details");
         return details.select("p").text();
     }
 
     /**
      * Parse the article form specific content document
+     *
      * @param document
      * @return article's html format string
      */
@@ -121,6 +128,7 @@ public class BBCHtmlUtility {
 
     /**
      * Parse the mp3 link from specific content document
+     *
      * @param document
      * @return mp3 link string
      */
@@ -144,7 +152,7 @@ public class BBCHtmlUtility {
         Elements elements = Jsoup.parse(articleHtml, "", Parser.xmlParser()).children();
         String title = context.getString(R.string.article_summary);
         String article = "";
-        for (Element element: elements) {
+        for (Element element : elements) {
             if (element.is("h3")) {
                 String text = element.toString();
                 if (text.matches("(.*[Ss]tep 1.*)|(.*[Ss]ummary.*)|(.*[Ee]pisode.*)")) {

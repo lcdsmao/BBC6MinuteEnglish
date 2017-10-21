@@ -2,7 +2,12 @@ package com.paranoid.mao.bbclearningenglish.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 
+import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
 /**
@@ -17,10 +22,23 @@ public class BBCSyncContentListIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent.hasExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY)) {
-            String category = intent.getStringExtra(
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            String category = bundle.getString(
                     DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
-            SyncTask.syncCategoryList(this, category);
+            if (category == null) return;
+            boolean isSuccessful = SyncTask.syncCategoryList(this, category);
+
+            Messenger messenger = (Messenger) bundle.get(SyncUtility.MESSENGER_KEY);
+            if (messenger == null) return;
+            Message msg = Message.obtain();
+            msg.arg1 = isSuccessful ? 1 : 0;
+            msg.arg2 = BBCCategory.getCategoryItemId(category);
+            try {
+                messenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
     }

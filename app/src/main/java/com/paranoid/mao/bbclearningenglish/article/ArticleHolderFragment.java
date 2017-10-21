@@ -41,7 +41,7 @@ public class ArticleHolderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_article, container, false);
-        mArticleText = (TextView) rootView.findViewById(R.id.tv_article);
+        mArticleText = rootView.findViewById(R.id.tv_article);
         String str = getArguments().getString(ARTICLE_KEY);
         if (Build.VERSION.SDK_INT >= 24) {
             mArticleText.setText(Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY));

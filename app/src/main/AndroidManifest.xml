@@ -57,10 +57,10 @@
         <service
             android:name=".sync.BBCSyncJobService"
             android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE"></service>
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service
             android:name=".sync.SyncVocabularyIntentService"
-            android:exported="false"></service>
+            android:exported="false"/>
     </application>
 
 </manifest>

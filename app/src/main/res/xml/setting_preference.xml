@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="@string/setting_general">
+    <PreferenceCategory android:title="@string/setting_general">
 
         <CheckBoxPreference
             android:title="@string/setting_notification_title"
             android:key="@string/setting_notification_key"
             android:defaultValue="true"
-            android:summary="@string/setting_notification_summary"/>
+            android:summary="@string/setting_notification_summary" />
 
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/setting_about">
+    <PreferenceCategory android:title="@string/setting_about">
 
         <Preference
             android:title="@string/setting_version_title"
-            android:key="@string/setting_version_key">
-        </Preference>
+            android:key="@string/setting_version_key"></Preference>
         <Preference
             android:title="@string/setting_licenses_title"
-            android:key="@string/setting_licenses_key"/>
+            android:key="@string/setting_licenses_key" />
     </PreferenceCategory>
 
 </PreferenceScreen>

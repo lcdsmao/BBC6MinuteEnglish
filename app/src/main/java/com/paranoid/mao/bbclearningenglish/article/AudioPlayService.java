@@ -13,14 +13,13 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
+import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.utilities.NotificationUtility;
 
 import java.io.File;
@@ -28,7 +27,7 @@ import java.io.IOException;
 
 /**
  * Create by mao 2017.7
- *
+ * <p>
  * Thanks for the guide
  * A Step by Step Guide to Building an Android Audio Player MyApp
  * By Valdio Veliu  August 19, 2016
@@ -39,7 +38,7 @@ import java.io.IOException;
 public class AudioPlayService extends Service implements
         MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
-        AudioManager.OnAudioFocusChangeListener, CacheListener{
+        AudioManager.OnAudioFocusChangeListener, CacheListener {
 
     private HttpProxyCacheServer mAudioProxy;
 
@@ -71,6 +70,7 @@ public class AudioPlayService extends Service implements
 
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
+        if (action == null) return;
         switch (action) {
             case ACTION_INITIALIZE:
                 initialize(intent);
@@ -216,7 +216,6 @@ public class AudioPlayService extends Service implements
     public void onDestroy() {
         super.onDestroy();
         if (mMediaPlayer != null) {
-            Log.v("audio", " destroy");
             stopMedia();
             mMediaPlayer.reset();
             mMediaPlayer.release();
@@ -265,7 +264,7 @@ public class AudioPlayService extends Service implements
         }
     }
 
-    public class LocalBinder extends Binder{
+    public class LocalBinder extends Binder {
         public AudioPlayService getService() {
             return AudioPlayService.this;
         }
@@ -362,7 +361,7 @@ public class AudioPlayService extends Service implements
     }
 
     public int getDuration() {
-        if (mIsPrepared){
+        if (mIsPrepared) {
             return mMediaPlayer.getDuration();
         } else {
             return 0;
@@ -382,6 +381,6 @@ public class AudioPlayService extends Service implements
     }
 
     public int getCachedProgress() {
-        return mCachedProgress  * getDuration() / 100;
+        return mCachedProgress * getDuration() / 100;
     }
 }

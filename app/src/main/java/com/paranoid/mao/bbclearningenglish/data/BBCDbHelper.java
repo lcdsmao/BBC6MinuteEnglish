@@ -64,7 +64,7 @@ public class BBCDbHelper extends SQLiteOpenHelper {
         db.execSQL(dropWordBookTable);
         onCreate(db);
 
-        for (String category: BBCCategory.ALL_CATEGORY) {
+        for (String category : BBCCategory.ALL_CATEGORY) {
             BBCPreference.setLastUpdateTime(mContext, category, 0);
         }
     }

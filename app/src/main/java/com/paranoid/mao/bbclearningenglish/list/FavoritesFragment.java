@@ -25,7 +25,7 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
 public class FavoritesFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final int FAVORITES_LOADER_ID = 1;
 
@@ -73,16 +73,16 @@ public class FavoritesFragment extends Fragment implements
                     RectF background;
                     RectF icon;
 
-                    if(dX > 0){
+                    if (dX > 0) {
                         background = new RectF((float) itemView.getLeft(),
                                 (float) itemView.getTop(),
                                 dX,
                                 (float) itemView.getBottom());
                         icon = new RectF(
-                                dX - 2*width ,
+                                dX - 2 * width,
                                 (float) itemView.getTop() + height,
                                 dX - width,
-                                (float)itemView.getBottom() - height);
+                                (float) itemView.getBottom() - height);
                     } else {
                         background = new RectF(
                                 (float) itemView.getRight() + dX,
@@ -90,10 +90,10 @@ public class FavoritesFragment extends Fragment implements
                                 (float) itemView.getRight(),
                                 (float) itemView.getBottom());
                         icon = new RectF(
-                                (float) itemView.getRight() + dX + width ,
+                                (float) itemView.getRight() + dX + width,
                                 (float) itemView.getTop() + height,
-                                (float) itemView.getRight() + dX + 2*width,
-                                (float)itemView.getBottom() - height);
+                                (float) itemView.getRight() + dX + 2 * width,
+                                (float) itemView.getBottom() - height);
                     }
 
                     p.setColor(ContextCompat.getColor(getContext(), R.color.red));
@@ -116,14 +116,14 @@ public class FavoritesFragment extends Fragment implements
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bbc_content_list, container, false);
-        mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.srl_content_container);
+        mSwipeContainer = view.findViewById(R.id.srl_content_container);
         mSwipeContainer.setOnRefreshListener(this);
         mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
 
         /*Set the recycler view*/
         mBBCContentAdapter = new BBCContentAdapter(getContext(),
                 new OnBBCItemClickListener(getContext()));
-        RecyclerView contentRecycleView = (RecyclerView) view.findViewById(R.id.rv_content_list);
+        RecyclerView contentRecycleView = view.findViewById(R.id.rv_content_list);
         contentRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/

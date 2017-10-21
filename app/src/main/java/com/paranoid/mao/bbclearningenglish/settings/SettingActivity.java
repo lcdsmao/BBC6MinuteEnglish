@@ -1,11 +1,11 @@
 package com.paranoid.mao.bbclearningenglish.settings;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.R;
+import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 
 public class SettingActivity extends AppCompatActivity {
 

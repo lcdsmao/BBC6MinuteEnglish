@@ -14,7 +14,7 @@ import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncJobDispatcher;
 
 public class SettingFragment extends PreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener{
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

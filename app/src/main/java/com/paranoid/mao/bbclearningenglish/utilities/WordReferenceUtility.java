@@ -39,7 +39,7 @@ public class WordReferenceUtility {
 
     @Nullable
     private static Element getTrans(Document doc) {
-        Elements trans =  doc.select("#article > .entryRH");
+        Elements trans = doc.select("#article > .entryRH");
         if (trans.size() == 0) {
             return null;
         } else {
@@ -63,12 +63,13 @@ public class WordReferenceUtility {
     private static String getDefinition(Element trans) {
         Elements def = trans.select(".rh_def");
         String defStr = "";
-        for (int i = 0; i < Math.min(def.size(), 2); i++) {
+        int maxNum = Math.min(def.size(), 2);
+        for (int i = 0; i < maxNum; i++) {
             String d = def.get(i).ownText();
             int l = d.length() - 1;
             if (d.charAt(l) == ':') d = d.substring(0, l);
-            if (i != 0) defStr += "\n\n";
             defStr += (i + 1) + ". " + d;
+            if (i < maxNum - 1) defStr += "\n\n";
         }
         return defStr;
     }

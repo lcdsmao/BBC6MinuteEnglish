@@ -5,28 +5,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
+import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.data.VocabularyDefinition;
-import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
+import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
+import com.paranoid.mao.bbclearningenglish.utilities.NetworkUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.NotificationUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.WordReferenceUtility;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.io.IOException;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Created by MAO on 7/24/2017.
@@ -35,13 +27,13 @@ import okhttp3.ResponseBody;
 public class SyncTask {
 
 
-    synchronized static void syncArticle (Context context,
-                                                @NonNull Uri uriWithTimeStamp,
-                                                @NonNull String articleHref) {
+    synchronized static boolean syncArticle(Context context,
+                                            @NonNull Uri uriWithTimeStamp,
+                                            @NonNull String articleHref) {
 
         try {
-            String response = request(articleHref);
-            if (response == null) return;
+            String response = NetworkUtility.request(articleHref, context);
+            if (response == null) return false;
             Document document = BBCHtmlUtility.getArticleDocument(response);
             String article = BBCHtmlUtility.getArticleHtml(document);
             String audioHref = BBCHtmlUtility.getMp3Href(document);
@@ -58,19 +50,21 @@ public class SyncTask {
                     null);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
 
+        return true;
     }
 
-    synchronized static void syncCategoryList(Context context, String category) {
+    synchronized static boolean syncCategoryList(Context context, String category) {
         String url = BBCCategory.getCategoryUrl(category);
-        if (url == null) return;
+        if (url == null) return false;
         int MAX_NUM = 200;
         try {
-            String response = request(url);
-            if (response == null) return;
+            String response = NetworkUtility.request(url, context);
+            if (response == null) return false;
             Elements contentList = BBCHtmlUtility.getContentsList(response);
-            if (contentList == null) return;
+            if (contentList == null) return false;
 
             int max = Math.min(MAX_NUM, contentList.size());
             ContentResolver contentResolver = context.getContentResolver();
@@ -97,9 +91,8 @@ public class SyncTask {
             }
 
             long newestContentTime = BBCHtmlUtility.getTimeStamp(contentList.get(0));
-            Log.v("time", "" + newestContentTime + "" + BBCPreference.getLastUpdateTime(context, category));
             boolean isNew = newestContentTime > BBCPreference.getLastUpdateTime(context, category);
-            if (isNew) {
+            if (isNew && !MyApp.isActivityVisible()) {
                 NotificationUtility.showNewContentNotification(context,
                         category,
                         BBCHtmlUtility.getTitle(contentList.get(0)));
@@ -107,19 +100,18 @@ public class SyncTask {
             BBCPreference.setLastUpdateTime(context, category, System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            SyncUtility.sIsContentListSyncComplete = true;
+            return false;
         }
-
+        return true;
     }
 
-    synchronized static void syncVocab(Context context,
-                                              Uri uriWithID,
-                                              String word) {
+    synchronized static boolean syncVocab(Context context,
+                                          Uri uriWithID,
+                                          String word) {
 
         String url = WordReferenceUtility.getWordUrl(word);
         try {
-            String response = request(url);
+            String response = NetworkUtility.request(url, context);
             VocabularyDefinition vocab = WordReferenceUtility.getVocab(response, word);
 
             String symbol = vocab.getSymbol();
@@ -135,20 +127,9 @@ public class SyncTask {
 
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-
+        return true;
     }
 
-    private static String request(String url) throws Exception {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        String responseBody;
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) throw new IOException();
-            responseBody = response.body().string();
-        }
-        return responseBody;
-    }
 }

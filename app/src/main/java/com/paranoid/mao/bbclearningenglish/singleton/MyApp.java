@@ -31,7 +31,7 @@ public class MyApp extends Application {
 
     public static RequestQueue getRequestQueue(Context context) {
         MyApp app = (MyApp) context.getApplicationContext();
-        return app.mRequestQueue == null? (app.mRequestQueue = app.newRequestQueue(context)) : app.mRequestQueue;
+        return app.mRequestQueue == null ? (app.mRequestQueue = app.newRequestQueue(context)) : app.mRequestQueue;
     }
 
     @NonNull

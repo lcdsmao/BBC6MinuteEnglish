@@ -16,7 +16,7 @@ public class ArticlePagerAdapter extends FragmentPagerAdapter {
 
     private List<BBCArticleSection> articleSections;
 
-    public ArticlePagerAdapter(FragmentManager fm){
+    public ArticlePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 

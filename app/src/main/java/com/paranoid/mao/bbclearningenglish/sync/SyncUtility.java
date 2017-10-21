@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -15,7 +17,7 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 
 public class SyncUtility {
 
-    public static boolean sIsContentListSyncComplete = true;
+    public static final String MESSENGER_KEY = "messenger";
 
     synchronized public static void articleInitialize(final Context context,
                                                       @NonNull final Uri uriWithTimeStamp) {
@@ -51,14 +53,9 @@ public class SyncUtility {
 
     }
 
-    synchronized public static void contentListSync(final Context context, final String category){
-        sIsContentListSyncComplete = false;
-        startContentLisSyncByCategory(context, category);
-    }
-
     private static void startArticleSync(@NonNull final Context context,
-                                        final Uri uriWithTimeStamp,
-                                        final String articleHref) {
+                                         final Uri uriWithTimeStamp,
+                                         final String articleHref) {
         Intent intentToSyncImmediately = new Intent(context, BBCSyncArticleIntentService.class);
         intentToSyncImmediately.setData(uriWithTimeStamp);
         intentToSyncImmediately.putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_HREF,
@@ -66,14 +63,17 @@ public class SyncUtility {
         context.startService(intentToSyncImmediately);
     }
 
-    private static void startContentLisSyncByCategory(@NonNull final Context context, final String category) {
+    synchronized public static void startContentLisSyncByCategory(@NonNull Context context,
+                                                                  String category,
+                                                                  Handler handler) {
         Intent intentToSyncImmediately = new Intent(context, BBCSyncContentListIntentService.class)
-                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
+                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category)
+                .putExtra(MESSENGER_KEY, new Messenger(handler));
         context.startService(intentToSyncImmediately);
     }
 
     synchronized public static void wordBookInitialize(final Context context,
-                                                      @NonNull final Uri uriWithID) {
+                                                       @NonNull final Uri uriWithID) {
 
         final String projection[] = {
                 DatabaseContract.VocabularyEntry.COLUMN_VOCAB,
@@ -106,7 +106,7 @@ public class SyncUtility {
 
     }
 
-    private static void startVocabularySync(final Context context, Uri uriWithID, String vocab){
+    private static void startVocabularySync(final Context context, Uri uriWithID, String vocab) {
         Intent intent = new Intent(context, SyncVocabularyIntentService.class)
                 .setData(uriWithID)
                 .putExtra(DatabaseContract.VocabularyEntry.COLUMN_VOCAB, vocab);

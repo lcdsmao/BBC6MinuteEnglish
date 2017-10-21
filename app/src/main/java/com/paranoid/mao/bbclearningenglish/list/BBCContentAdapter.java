@@ -46,7 +46,7 @@ public class BBCContentAdapter extends
         mOnClickListener = listener;
     }
 
-    public interface OnListItemClickListener{
+    public interface OnListItemClickListener {
         void onClickItem(String path);
     }
 
@@ -107,19 +107,19 @@ public class BBCContentAdapter extends
      * ViewHolder for BBC content adapter
      */
     public class BBCContentAdapterViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener{
+            implements View.OnClickListener {
 
         private ImageView mThumbnailImageView;
         private TextView mTitleTextView;
         private TextView mTimeTextView;
         private TextView mDescriptionTextView;
 
-        public BBCContentAdapterViewHolder (View view) {
+        public BBCContentAdapterViewHolder(View view) {
             super(view);
-            mThumbnailImageView = (ImageView) view.findViewById(R.id.iv_thumbnail);
-            mTitleTextView = (TextView) view.findViewById(R.id.tv_title);
-            mTimeTextView = (TextView) view.findViewById(R.id.tv_time);
-            mDescriptionTextView = (TextView) view.findViewById(R.id.tv_description);
+            mThumbnailImageView = view.findViewById(R.id.iv_thumbnail);
+            mTitleTextView = view.findViewById(R.id.tv_title);
+            mTimeTextView = view.findViewById(R.id.tv_time);
+            mDescriptionTextView = view.findViewById(R.id.tv_description);
             view.setOnClickListener(this);
         }
 

@@ -3,6 +3,8 @@ package com.paranoid.mao.bbclearningenglish.list;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -12,20 +14,23 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.sync.SyncUtility;
+import com.paranoid.mao.bbclearningenglish.utilities.NetworkUtility;
+
+import java.lang.ref.WeakReference;
 
 public class BBCContentFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String KEY_CATEGORY = "category";
     private static final int BBC_CONTENT_LOADER_ID = 1;
@@ -35,6 +40,40 @@ public class BBCContentFragment extends Fragment implements
     private BBCContentAdapter mBBCContentAdapter;
     private SwipeRefreshLayout mSwipeContainer;
     private RecyclerView mContentRecycleView;
+
+    private final Handler syncHandler = new SyncHandler(this);
+
+    private static class SyncHandler extends Handler {
+        private final WeakReference<BBCContentFragment> mFragment;
+
+        SyncHandler(BBCContentFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            BBCContentFragment fragment = mFragment.get();
+            if (fragment != null && fragment.isAdded()) {
+                fragment.mSwipeContainer.setRefreshing(false);
+                String textMsg;
+                switch (msg.arg1) {
+                    case 1:
+                        textMsg = fragment.getString(R.string.list_sync_successful_msg);
+                        if (fragment.mCategory.equals(BBCCategory.getItemIdCategory(msg.arg2))) {
+                            Toast.makeText(fragment.getContext(),
+                                    textMsg,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    default:
+                        textMsg = fragment.getString(R.string.error_message);
+                        Toast.makeText(fragment.getContext(),
+                                textMsg,
+                                Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
 
     public BBCContentFragment() {
         // Required empty public constructor
@@ -62,14 +101,14 @@ public class BBCContentFragment extends Fragment implements
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bbc_content_list, container, false);
-        mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.srl_content_container);
+        mSwipeContainer = view.findViewById(R.id.srl_content_container);
         mSwipeContainer.setOnRefreshListener(this);
         mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
 
         /*Set the recycler view*/
         mBBCContentAdapter = new BBCContentAdapter(getContext(),
                 new OnBBCItemClickListener(getContext()));
-        mContentRecycleView = (RecyclerView) view.findViewById(R.id.rv_content_list);
+        mContentRecycleView = view.findViewById(R.id.rv_content_list);
         mContentRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         mContentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
@@ -80,12 +119,12 @@ public class BBCContentFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mSwipeContainer.setRefreshing(true);
         Uri uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
                 .appendPath(mCategory).build();
-        Log.v("BBC", "is update need " + mCategory + BBCPreference.isUpdateNeed(getContext(), mCategory));
-        if (BBCPreference.isUpdateNeed(getContext(), mCategory)) {
-            SyncUtility.contentListSync(getContext(), mCategory);
+        if (BBCPreference.isUpdateNeed(getContext(), mCategory) &&
+                NetworkUtility.isConnected(getContext())) {
+            mSwipeContainer.setRefreshing(true);
+            SyncUtility.startContentLisSyncByCategory(getContext(), mCategory, syncHandler);
         }
         String sortOrder = DatabaseContract.BBCLearningEnglishEntry.NORMAL_SORT_ORDER;
         return new CursorLoader(
@@ -101,9 +140,6 @@ public class BBCContentFragment extends Fragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mBBCContentAdapter.swapCursor(data);
         getActivity().setTitle(BBCCategory.getCategoryStringRecourse(mCategory));
-        if (SyncUtility.sIsContentListSyncComplete) {
-            mSwipeContainer.setRefreshing(false);
-        }
     }
 
     @Override
@@ -113,19 +149,17 @@ public class BBCContentFragment extends Fragment implements
 
     @Override
     public void onRefresh() {
-        SyncUtility.contentListSync(getContext(), mCategory);
+        SyncUtility.startContentLisSyncByCategory(getContext(), mCategory, syncHandler);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (!SyncUtility.sIsContentListSyncComplete) {
-            mSwipeContainer.setRefreshing(true);
-        }
     }
 
     public void swapCategory(String category) {
         mCategory = category;
+        mSwipeContainer.setRefreshing(false);
         getLoaderManager().restartLoader(BBC_CONTENT_LOADER_ID, null, this);
         mContentRecycleView.scrollToPosition(0);
     }
@@ -139,8 +173,13 @@ public class BBCContentFragment extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null ) {
+        if (savedInstanceState != null) {
             mCategory = savedInstanceState.getString(KEY_CATEGORY);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }

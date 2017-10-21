@@ -13,6 +13,10 @@
             android:icon="@drawable/ic_we"
             android:title="@string/category_the_english_we_speak" />
         <item
+            android:id="@+id/category_lingo_hack"
+            android:icon="@drawable/ic_world"
+            android:title="@string/category_lingo_hack"/>
+        <item
             android:id="@+id/category_news_report"
             android:icon="@drawable/ic_news"
             android:title="@string/category_news_report" />
@@ -20,10 +24,7 @@
             android:id="@+id/category_university"
             android:icon="@drawable/ic_university"
             android:title="@string/category_english_at_university"/>
-        <item
-            android:id="@+id/category_lingo_hack"
-            android:icon="@drawable/ic_world"
-            android:title="@string/category_lingo_hack"/>
+
     </group>
 
     <group

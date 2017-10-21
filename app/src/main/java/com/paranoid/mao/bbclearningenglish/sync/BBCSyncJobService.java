@@ -23,7 +23,7 @@ public class BBCSyncJobService extends JobService {
         mSyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                for (String category: BBCCategory.ALL_CATEGORY) {
+                for (String category : BBCCategory.ALL_CATEGORY) {
                     if (BBCPreference.isUpdateNeed(getApplicationContext(), category)) {
                         // only update one at a time
                         SyncTask.syncCategoryList(getApplicationContext(), category);

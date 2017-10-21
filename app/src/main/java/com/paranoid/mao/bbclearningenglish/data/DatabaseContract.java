@@ -18,7 +18,7 @@ public class DatabaseContract {
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-    public static class BBCLearningEnglishEntry implements BaseColumns{
+    public static class BBCLearningEnglishEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_BBC).build();
@@ -49,7 +49,7 @@ public class DatabaseContract {
 
     }
 
-    public static class VocabularyEntry implements BaseColumns{
+    public static class VocabularyEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_VOCABULARY).build();
@@ -60,6 +60,5 @@ public class DatabaseContract {
         public static final String COLUMN_MEAN = "mean";
         public static final String COLUMN_AUDIO_HREF = "audio";
         public static final String COLUMN_SYMBOL = "symbol";
-        //public static final String COLUMN_TIMESTAMP = "timeStamp";
     }
 }

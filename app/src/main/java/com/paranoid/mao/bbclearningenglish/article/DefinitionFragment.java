@@ -20,15 +20,14 @@ import com.paranoid.mao.bbclearningenglish.data.VocabularyDefinition;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.sync.WordReferenceRequest;
 
-import java.io.IOException;
-
 /**
  * Created by Paranoid on 17/9/10.
  */
 
 public class DefinitionFragment extends BottomSheetDialogFragment
-    implements View.OnClickListener{
+        implements View.OnClickListener {
 
+    private static final String TAG = DefinitionFragment.class.getSimpleName();
     private static final String WORD_KEY = "word";
 
     private TextView mDefinitionView;
@@ -89,11 +88,12 @@ public class DefinitionFragment extends BottomSheetDialogFragment
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                         mDefinitionView.setText(getString(R.string.error_message));
+                        mDefinitionView.setText(getString(R.string.error_message));
                     }
                 });
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        request.setTag(TAG);
         MyApp.getRequestQueue(getContext()).add(request);
     }
 
@@ -116,5 +116,11 @@ public class DefinitionFragment extends BottomSheetDialogFragment
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        MyApp.getRequestQueue(getContext()).cancelAll(TAG);
     }
 }

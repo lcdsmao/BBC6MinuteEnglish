@@ -12,13 +12,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.article.ArticleActivity;
 import com.paranoid.mao.bbclearningenglish.article.AudioPlayService;
-import com.paranoid.mao.bbclearningenglish.list.MainActivity;
-import com.paranoid.mao.bbclearningenglish.R;
-import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
+import com.paranoid.mao.bbclearningenglish.list.MainActivity;
 
 /**
  * Created by MAO on 7/28/2017.
@@ -64,7 +63,7 @@ public class NotificationUtility {
                 .addAction(createAction(context, action))
                 .addAction(createAction(context, AudioPlayService.ACTION_FORWARD))
                 .setSmallIcon(R.drawable.ic_headset)
-                .setStyle(new android.support.v7.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0,1,2))
+                .setStyle(new android.support.v7.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
                 .build();
         return notification;
     }
@@ -85,7 +84,7 @@ public class NotificationUtility {
     }
 
     @NonNull
-    private static String getActionName(Context context, String action){
+    private static String getActionName(Context context, String action) {
         switch (action) {
             case AudioPlayService.ACTION_PLAY:
                 return context.getString(R.string.play);
@@ -109,7 +108,6 @@ public class NotificationUtility {
     }
 
     public static void showNewContentNotification(Context context, String category, String contentText) {
-        if (MyApp.isActivityVisible()) return;
         String contentTitle = context.getString(R.string.notification_new_content) + " "
                 + context.getString(BBCCategory.getCategoryStringRecourse(category));
         Intent intent = new Intent(context, MainActivity.class)
@@ -132,11 +130,4 @@ public class NotificationUtility {
         notificationManager.notify(12345, notification);
     }
 
-//    public static String createContent(String category, String title) {
-//        return category + "$" + title;
-//    }
-
-//    private static String[] splitContent(String content) {
-//        return content.split("\\$");
-//    }
 }

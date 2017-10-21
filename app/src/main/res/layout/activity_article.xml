@@ -6,17 +6,16 @@
     android:layout_height="match_parent"
     tools:context="com.paranoid.mao.bbclearningenglish.article.ArticleActivity">
 
-    <include layout="@layout/control_layout"
-        android:id="@+id/control_layout"/>
+    <include
+        layout="@layout/control_layout"
+        android:id="@+id/control_layout" />
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/article_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/control_layout">
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
@@ -43,7 +42,7 @@
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.design.widget.CoordinatorLayout>
 
     <SeekBar
@@ -61,6 +60,6 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         android:layout_centerInParent="true"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
 </RelativeLayout>
