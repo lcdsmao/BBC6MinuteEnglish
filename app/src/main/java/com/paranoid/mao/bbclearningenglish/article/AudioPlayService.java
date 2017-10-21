@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.danikula.videocache.CacheListener;
@@ -215,8 +216,11 @@ public class AudioPlayService extends Service implements
     public void onDestroy() {
         super.onDestroy();
         if (mMediaPlayer != null) {
+            Log.v("audio", " destroy");
             stopMedia();
+            mMediaPlayer.reset();
             mMediaPlayer.release();
+            mMediaPlayer = null;
         }
         // remove audio focus
         removeAudioFocus();

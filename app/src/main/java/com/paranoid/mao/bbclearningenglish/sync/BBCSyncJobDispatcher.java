@@ -17,17 +17,17 @@ public class BBCSyncJobDispatcher {
 
     private static final int JOB_ID = 151515;
 
-    private static final long TRIGGER_INTERVAL = TimeUnit.DAYS.toMillis(1);
+    private static final long TRIGGER_INTERVAL = TimeUnit.HOURS.toMillis(6);
 
     private static void buildScheduleSync(Context context) {
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID,
                 new ComponentName(context, BBCSyncJobService.class));
 
-        builder.setPeriodic(TRIGGER_INTERVAL);
-        builder.setPersisted(true);
-        builder.setBackoffCriteria(JobInfo.DEFAULT_INITIAL_BACKOFF_MILLIS,
-                JobInfo.BACKOFF_POLICY_EXPONENTIAL);
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        builder.setPeriodic(TRIGGER_INTERVAL)
+                .setPersisted(true)
+                .setBackoffCriteria(JobInfo.DEFAULT_INITIAL_BACKOFF_MILLIS,
+                        JobInfo.BACKOFF_POLICY_EXPONENTIAL)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
 
         JobScheduler tm = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         tm.schedule(builder.build());

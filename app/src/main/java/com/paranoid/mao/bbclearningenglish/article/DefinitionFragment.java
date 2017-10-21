@@ -89,7 +89,7 @@ public class DefinitionFragment extends BottomSheetDialogFragment
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                         mDefinitionView.setText(getString(R.string.default_definition));
+                         mDefinitionView.setText(getString(R.string.error_message));
                     }
                 });
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,

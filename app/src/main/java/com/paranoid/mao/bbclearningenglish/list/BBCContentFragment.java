@@ -12,6 +12,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class BBCContentFragment extends Fragment implements
         mContentRecycleView.setAdapter(mBBCContentAdapter);
         /*Set the recycler view complete*/
 
-        getLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, new Bundle(), this);
+        getLoaderManager().initLoader(BBC_CONTENT_LOADER_ID, null, this);
         return view;
     }
 
@@ -82,6 +83,7 @@ public class BBCContentFragment extends Fragment implements
         mSwipeContainer.setRefreshing(true);
         Uri uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_CATEGORY_URI.buildUpon()
                 .appendPath(mCategory).build();
+        Log.v("BBC", "is update need " + mCategory + BBCPreference.isUpdateNeed(getContext(), mCategory));
         if (BBCPreference.isUpdateNeed(getContext(), mCategory)) {
             SyncUtility.contentListSync(getContext(), mCategory);
         }
@@ -98,7 +100,7 @@ public class BBCContentFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mBBCContentAdapter.swapCursor(data);
-        getActivity().setTitle(BBCCategory.sCategoryStringResourceMap.get(mCategory));
+        getActivity().setTitle(BBCCategory.getCategoryStringRecourse(mCategory));
         if (SyncUtility.sIsContentListSyncComplete) {
             mSwipeContainer.setRefreshing(false);
         }

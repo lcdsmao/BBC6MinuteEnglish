@@ -29,10 +29,10 @@ public class BBCCategory {
     };
 
 
-    public static final HashMap<String, String> sCategoryUrlMap = createCategoryUrlMap();
-    public static final HashMap<String, Integer> sCategoryItemIdMap = createCategoryItemIdMap();
-    public static final HashMap<String, Integer> sCategoryStringResourceMap = createCategoryStringResourceMap();
-    public static final SparseArray<String> sCategoryItemIdMapInverse = createCategoryItemIdMapInverse();
+    private static final HashMap<String, String> sCategoryUrlMap = createCategoryUrlMap();
+    private static final HashMap<String, Integer> sCategoryItemIdMap = createCategoryItemIdMap();
+    private static final HashMap<String, Integer> sCategoryStringResourceMap = createCategoryStringResourceMap();
+    private static final SparseArray<String> sCategoryItemIdMapInverse = createCategoryItemIdMapInverse();
 
     private static HashMap<String, Integer> createCategoryStringResourceMap() {
         HashMap<String, Integer> map = new HashMap<>();
@@ -79,5 +79,27 @@ public class BBCCategory {
         map.put(R.id.category_we_speak, CATEGORY_THE_ENGLISH_WE_SPEAK);
         map.put(R.id.category_lingo_hack, CATEGORY_LINGO_HACK);
         return map;
+    }
+
+    public static int getCategoryStringRecourse(String category) {
+        if (!sCategoryStringResourceMap.containsKey(category)) return -1;
+        return sCategoryStringResourceMap.get(category);
+    }
+
+    public static String getCategoryUrl(String category) {
+        return sCategoryUrlMap.get(category);
+    }
+
+    public static String getUrlCategory(String url) {
+        return sCategoryUrlMap.get(url);
+    }
+
+    public static int getCategoryItemId(String category) {
+        if (!sCategoryItemIdMap.containsKey(category)) return -1;
+        return sCategoryItemIdMap.get(category);
+    }
+
+    public static String getItemIdCategory(int itemId) {
+        return sCategoryItemIdMapInverse.get(itemId);
     }
 }

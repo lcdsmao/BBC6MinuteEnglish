@@ -108,21 +108,20 @@ public class NotificationUtility {
                 getDrawable(action), getActionName(context, action), pendingIntentService);
     }
 
-    public static void showNewContentNotification(Context context, String newContent) {
+    public static void showNewContentNotification(Context context, String category, String contentText) {
         if (MyApp.isActivityVisible()) return;
-        String[] content = splitContent(newContent);
         String contentTitle = context.getString(R.string.notification_new_content) + " "
-                + context.getString(BBCCategory.sCategoryStringResourceMap.get(content[0]));
+                + context.getString(BBCCategory.getCategoryStringRecourse(category));
         Intent intent = new Intent(context, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, content[0]);
+                .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_headset)
                 .setContentTitle(contentTitle)
-                .setContentText(content[1])
+                .setContentText(contentText)
                 .setColor(ContextCompat.getColor(context, R.color.primary))
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
@@ -133,11 +132,11 @@ public class NotificationUtility {
         notificationManager.notify(12345, notification);
     }
 
-    public static String createContent(String category, String title) {
-        return category + "$" + title;
-    }
+//    public static String createContent(String category, String title) {
+//        return category + "$" + title;
+//    }
 
-    private static String[] splitContent(String content) {
-        return content.split("\\$");
-    }
+//    private static String[] splitContent(String content) {
+//        return content.split("\\$");
+//    }
 }

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.BBCPreference;
+import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 
 
 /**
@@ -18,12 +19,15 @@ public class BBCSyncJobService extends JobService {
 
     @Override
     public boolean onStartJob(final JobParameters job) {
+        if (MyApp.isActivityVisible()) return false;
         mSyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
                 for (String category: BBCCategory.ALL_CATEGORY) {
                     if (BBCPreference.isUpdateNeed(getApplicationContext(), category)) {
+                        // only update one at a time
                         SyncTask.syncCategoryList(getApplicationContext(), category);
+                        return null;
                     }
                 }
                 return null;

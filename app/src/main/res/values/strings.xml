@@ -67,7 +67,7 @@
     <string name="custom_word_book">Word Book</string>
 
     <string name="definition">Definition</string>
-    <string name="default_definition">Something went wrong</string>
+    <string name="error_message">Something went wrong</string>
 
     <string name="pronunciation">Pronunciation</string>
 

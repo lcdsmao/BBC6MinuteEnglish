@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
+import com.paranoid.mao.bbclearningenglish.sync.SyncTask;
 import com.paranoid.mao.bbclearningenglish.sync.SyncUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.TimeUtility;
 import com.paranoid.mao.bbclearningenglish.utilities.BBCHtmlUtility;
@@ -166,7 +167,7 @@ public class ArticleActivity extends AppCompatActivity implements
         String audioHref = data.getString(AUDIO_HREF_INDEX);
         mIsFavorite = data.getLong(FAVOURITES_INDEX) > 0;
 
-        getSupportActionBar().setTitle(title);
+        setTitle(title);
 
         if (!TextUtils.isEmpty(article)) {
             mArticleAdapter.setArticleSections(BBCHtmlUtility.getArticleSection(this, article));
@@ -224,6 +225,16 @@ public class ArticleActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mBond) {
+            unbindService(mConnection);
+            mAudioService.stopSelf();
+        }
         if (!mIsFavoriteChanged) return;
         long favouriteTime = mIsFavorite ? System.currentTimeMillis() : 0;
         ContentValues contentValues = new ContentValues();
@@ -234,15 +245,7 @@ public class ArticleActivity extends AppCompatActivity implements
                 contentValues,
                 null,
                 null);
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mBond) {
-            unbindService(mConnection);
-            mAudioService.stopSelf();
-        }
     }
 
     private void prepareAudioService(String audioHref) {

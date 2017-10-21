@@ -23,6 +23,7 @@ import com.paranoid.mao.bbclearningenglish.settings.SettingActivity;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.sync.BBCSyncJobDispatcher;
+import com.paranoid.mao.bbclearningenglish.sync.SyncTask;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener{
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = R.id.category_six;
         if (intent.hasExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY)) {
             mCurrentCategory = intent.getStringExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY);
-            id = BBCCategory.sCategoryItemIdMap.get(mCurrentCategory);
+            id = BBCCategory.getCategoryItemId(mCurrentCategory);
         }
         NavigationView.setCheckedItem(id);
 
@@ -89,6 +90,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         MyApp.activityPaused();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.category_news_report:
             case R.id.category_lingo_hack:
             case R.id.category_university:
-                mCurrentCategory = BBCCategory.sCategoryItemIdMapInverse.get(id);
+                mCurrentCategory = BBCCategory.getItemIdCategory(id);
                 fm = getSupportFragmentManager();
                 BBCContentFragment bbcFm = (BBCContentFragment) fm.findFragmentByTag(BBC_CONTENT_TAG);
                 if (bbcFm != null) {
