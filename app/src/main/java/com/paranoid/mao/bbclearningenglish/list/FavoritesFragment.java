@@ -48,6 +48,7 @@ public class FavoritesFragment extends Fragment implements
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                viewHolder.itemView.setAlpha(1.0f);
                 String path = (String) viewHolder.itemView.getTag();
                 Uri uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_URI
                         .buildUpon()
@@ -63,43 +64,7 @@ public class FavoritesFragment extends Fragment implements
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     // Get RecyclerView item from the ViewHolder
                     View itemView = viewHolder.itemView;
-
-                    Paint p = new Paint();
-
-                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
-                    float width = height / 2.5f;
-                    height = height * 0.48f;
-
-                    RectF background;
-                    RectF icon;
-
-                    if (dX > 0) {
-                        background = new RectF((float) itemView.getLeft(),
-                                (float) itemView.getTop(),
-                                dX,
-                                (float) itemView.getBottom());
-                        icon = new RectF(
-                                dX - 2 * width,
-                                (float) itemView.getTop() + height,
-                                dX - width,
-                                (float) itemView.getBottom() - height);
-                    } else {
-                        background = new RectF(
-                                (float) itemView.getRight() + dX,
-                                (float) itemView.getTop(),
-                                (float) itemView.getRight(),
-                                (float) itemView.getBottom());
-                        icon = new RectF(
-                                (float) itemView.getRight() + dX + width,
-                                (float) itemView.getTop() + height,
-                                (float) itemView.getRight() + dX + 2 * width,
-                                (float) itemView.getBottom() - height);
-                    }
-
-                    p.setColor(ContextCompat.getColor(getContext(), R.color.red));
-                    c.drawRect(background, p);
-                    p.setColor(ContextCompat.getColor(getContext(), R.color.icons));
-                    c.drawRect(icon, p);
+                    itemView.setAlpha(1.0f - Math.abs(dX) / itemView.getWidth());
 
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }

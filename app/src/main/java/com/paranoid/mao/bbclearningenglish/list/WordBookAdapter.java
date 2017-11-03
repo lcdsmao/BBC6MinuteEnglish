@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,25 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
         return new VocabularyViewHolder(view);
     }
 
+    public void updateExpendedSet(int position) {
+        Set<Integer> set = new HashSet<>();
+        Log.v("Update set", "" + position);
+        for (int p: mExpendedSet) {
+            if (p < position) {
+                set.add(p);
+            } else if (p > position) {
+                set.add(p - 1);
+            }
+        }
+        mExpendedSet.clear();
+        mExpendedSet.addAll(set);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(VocabularyViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+    }
+
     @Override
     public void onBindViewHolder(final VocabularyViewHolder holder, int position) {
         mCursor.moveToPosition(position);
@@ -96,7 +116,13 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
         });
 
         boolean isExpended = mExpendedSet.contains(position);
-        holder.mDetailView.setVisibility(isExpended ? View.VISIBLE : View.GONE);
+        if (isExpended) {
+            holder.mDetailView.setVisibility(View.VISIBLE);
+            holder.itemView.requestLayout();
+        } else {
+            holder.mDetailView.setVisibility(View.GONE);
+        }
+        Log.v("On binde ViewHolder", "" + position + " " + isExpended + " detail view" + holder.mDetailView.getVisibility());
         holder.itemView.setActivated(isExpended);
     }
 

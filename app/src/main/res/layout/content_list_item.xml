@@ -1,78 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
-    android:layout_alignParentTop="true"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
-    android:orientation="horizontal"
-    android:background="?android:attr/selectableItemBackground">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardElevation="2dp">
 
-    <ImageView
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:id="@+id/iv_thumbnail"
-        android:layout_width="@dimen/list_item_img_width"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/thumbnail"
-        android:layout_alignParentEnd="true"
-        android:scaleType="centerCrop"
-        tool:src="@mipmap/example" />
-
-    <LinearLayout
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    <RelativeLayout
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="top"
-        android:orientation="vertical"
-        android:layout_toStartOf="@+id/iv_thumbnail">
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground">
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:alpha="0.87"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:maxLines="1"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            tool:text="How do pets navigate?" />
+        <ImageView
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/list_item_img_width"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/thumbnail"
+            android:layout_alignParentEnd="true"
+            android:scaleType="centerCrop"
+            tool:src="@mipmap/example" />
 
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:fontFamily="sans-serif-regular"
-            android:alpha="0.87"
-            android:maxLines="2"
-            android:ellipsize="end"
-            tool:text="How do lost cats and dogs find their way home?" />
-
-        <TextView
-            android:id="@+id/tv_time"
+        <LinearLayout
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="bottom"
-            android:textSize="12sp"
-            android:fontFamily="sans-serif-regular"
-            android:textColor="@android:color/darker_gray"
-            tool:text="EPISODE 170713 / 13 JUL 2017" />
+            android:layout_gravity="top"
+            android:orientation="vertical"
+            android:layout_toStartOf="@+id/iv_thumbnail">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:alpha="0.87"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tool:text="How do pets navigate?" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:background="?android:attr/dividerHorizontal" />
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:fontFamily="sans-serif-regular"
+                android:alpha="0.87"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tool:text="How do lost cats and dogs find their way home?" />
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-regular"
+                android:textColor="@android:color/darker_gray"
+                tool:text="EPISODE 170713 / 13 JUL 2017" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="?android:attr/dividerHorizontal" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

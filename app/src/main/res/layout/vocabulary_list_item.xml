@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-
-    apps:cardBackgroundColor="@android:color/white"
+    apps:cardBackgroundColor="@color/cardview_light_background"
     apps:cardElevation="2dp">
 
     <RelativeLayout
@@ -95,7 +94,7 @@
                 android:id="@+id/tv_detail_definition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:paddingBottom="16dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 tools:text="1.the seat occupied by a sovereign at certain occasions or ceremonies.\n\n2.the rank, office, or dignity of a king or queen:
 to assume the throne" />
