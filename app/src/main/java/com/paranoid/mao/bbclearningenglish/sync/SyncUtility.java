@@ -63,9 +63,9 @@ public class SyncUtility {
         context.startService(intentToSyncImmediately);
     }
 
-    synchronized public static void startContentLisSyncByCategory(@NonNull Context context,
-                                                                  String category,
-                                                                  Handler handler) {
+    synchronized public static void startContentListSyncByCategory(@NonNull Context context,
+                                                                   String category,
+                                                                   Handler handler) {
         Intent intentToSyncImmediately = new Intent(context, BBCSyncContentListIntentService.class)
                 .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category)
                 .putExtra(MESSENGER_KEY, new Messenger(handler));

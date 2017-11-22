@@ -124,7 +124,7 @@ public class BBCContentFragment extends Fragment implements
         if (BBCPreference.isUpdateNeed(getContext(), mCategory) &&
                 NetworkUtility.isConnected(getContext())) {
             mSwipeContainer.setRefreshing(true);
-            SyncUtility.startContentLisSyncByCategory(getContext(), mCategory, syncHandler);
+            SyncUtility.startContentListSyncByCategory(getContext(), mCategory, syncHandler);
         }
         String sortOrder = DatabaseContract.BBCLearningEnglishEntry.NORMAL_SORT_ORDER;
         return new CursorLoader(
@@ -149,7 +149,7 @@ public class BBCContentFragment extends Fragment implements
 
     @Override
     public void onRefresh() {
-        SyncUtility.startContentLisSyncByCategory(getContext(), mCategory, syncHandler);
+        SyncUtility.startContentListSyncByCategory(getContext(), mCategory, syncHandler);
     }
 
     @Override
