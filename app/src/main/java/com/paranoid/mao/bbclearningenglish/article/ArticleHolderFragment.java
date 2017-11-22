@@ -5,6 +5,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.Html;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -22,7 +25,7 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
  * Created by Paranoid on 17/7/31.
  */
 
-public class ArticleHolderFragment extends Fragment {
+public class ArticleHolderFragment extends Fragment{
 
     private static final String ARTICLE_KEY = "article_text";
 

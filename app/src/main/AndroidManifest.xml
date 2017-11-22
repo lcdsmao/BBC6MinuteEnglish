@@ -27,7 +27,6 @@
         </activity>
         <activity
             android:name=".article.ArticleActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:launchMode="singleTask"
             android:parentActivityName=".list.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -51,7 +50,7 @@
             android:name=".sync.BBCSyncContentListIntentService"
             android:exported="false" />
         <service
-            android:name=".article.AudioPlayService"
+            android:name=".audio.AudioPlayService"
             android:enabled="true"
             android:exported="false" />
         <service

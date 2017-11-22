@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.article.ArticleActivity;
-import com.paranoid.mao.bbclearningenglish.article.AudioPlayService;
+import com.paranoid.mao.bbclearningenglish.audio.AudioPlayService;
 import com.paranoid.mao.bbclearningenglish.data.BBCCategory;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.list.MainActivity;

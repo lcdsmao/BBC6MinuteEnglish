@@ -1,4 +1,4 @@
-package com.paranoid.mao.bbclearningenglish.article;
+package com.paranoid.mao.bbclearningenglish.audio;
 
 import android.app.Notification;
 import android.app.Service;
@@ -59,6 +59,7 @@ public class AudioPlayService extends Service implements
     private boolean mIsPrepared;
     private Uri mUriWithTimeStamp;
     private int mCachedProgress;
+    private boolean mIsInitialized = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -94,6 +95,8 @@ public class AudioPlayService extends Service implements
 
     private void initialize(Intent intent) {
 
+        if (mIsInitialized) return;
+
         if (!requestAudioFocus()) {
             stopSelf();
         }
@@ -107,7 +110,8 @@ public class AudioPlayService extends Service implements
             initMediaPlayer();
         }
 
-        updateNotification(ACTION_INITIALIZE);
+        updateNotification(ACTION_PLAY);
+        mIsInitialized = true;
     }
 
     private void updateNotification(String action) {
