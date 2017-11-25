@@ -56,7 +56,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/add_to_favourite"
+        android:contentDescription="@string/add_to_favourites"
         android:paddingBottom="8dp"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"

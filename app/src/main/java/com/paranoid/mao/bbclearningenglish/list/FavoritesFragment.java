@@ -3,10 +3,9 @@ package com.paranoid.mao.bbclearningenglish.list;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -50,13 +49,21 @@ public class FavoritesFragment extends Fragment implements
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 viewHolder.itemView.setAlpha(1.0f);
                 String path = (String) viewHolder.itemView.getTag();
-                Uri uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_URI
+                final Uri uri = DatabaseContract.BBCLearningEnglishEntry.CONTENT_URI
                         .buildUpon()
                         .appendEncodedPath(path)
                         .build();
-                ContentValues contentValues = new ContentValues();
+                final ContentValues contentValues = new ContentValues();
                 contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, 0);
                 getContext().getContentResolver().update(uri, contentValues, null, null);
+                Snackbar.make(viewHolder.itemView, R.string.favourites_deleted, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, 1);
+                                getContext().getContentResolver().update(uri, contentValues, null, null);
+                            }
+                        }).show();
             }
 
             @Override
@@ -77,7 +84,7 @@ public class FavoritesFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getActivity().setTitle(R.string.custom_favourite);
+        getActivity().setTitle(R.string.custom_favourites);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bbc_content_list, container, false);

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/menu_favourite"
-        android:title="@string/add_to_favourite"
+        android:title="@string/add_to_favourites"
         android:icon="@drawable/ic_not_favorite"
         android:checkable="true"
         app:showAsAction="ifRoom" />

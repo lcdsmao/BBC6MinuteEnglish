@@ -7,8 +7,8 @@
     <string name="category_the_english_we_speak">The English We Speak</string>
     <string name="category_lingo_hack">LingoHack</string>
 
-    <string name="custom_favourite">Favorites</string>
-    <string name="add_to_favourite">Add to Favorites</string>
+    <string name="custom_favourites">Favorites</string>
+    <string name="add_to_favourites">Add to Favorites</string>
 
     <string name="setting">Settings</string>
     <string name="audio_service_notification">Audio Service Notification</string>
@@ -23,8 +23,8 @@
     <string name="article_summary">Summary</string>
     <string name="article_exercise">Exercise</string>
 
-    <string name="cache_start">Start download audio</string>
-    <string name="cache_complete">Download audio complete</string>
+    <string name="cache_start">Downloading audio</string>
+    <string name="cache_complete">Completed</string>
 
     <string name="setting_general">General</string>
 
@@ -54,7 +54,11 @@
 
     <string name="definition">Definition</string>
 
-    <string name="error_message">Something went wrong</string>
-    <string name="list_sync_successful_msg">Updated successfully</string>
+    <string name="error_message">Something wrong</string>
+    <string name="list_sync_successful_msg">Updated</string>
+
+    <string name="favourites_deleted">Favourites deleted</string>
+    <string name="vocabulary_deleted">Vocabulary deleted</string>
+    <string name="undo">undo</string>
 
 </resources>

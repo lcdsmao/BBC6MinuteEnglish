@@ -1,5 +1,6 @@
 package com.paranoid.mao.bbclearningenglish.list;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,6 +9,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +21,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
@@ -55,7 +58,9 @@ public class WordBookFragment extends Fragment implements
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                mAdapter.updateExpendedSet(viewHolder.getAdapterPosition());
+                final int position = viewHolder.getAdapterPosition();
+                final String vocabulary = ((TextView) viewHolder.itemView.findViewById(R.id.tv_vocabulary)).getText().toString();
+                mAdapter.updateExpendedSet(position, true);
                 viewHolder.itemView.setAlpha(1.0f);
                 long ID = (long) viewHolder.itemView.getTag();
                 Uri uri = DatabaseContract.VocabularyEntry.CONTENT_URI
@@ -63,6 +68,17 @@ public class WordBookFragment extends Fragment implements
                         .appendEncodedPath(String.valueOf(ID))
                         .build();
                 getContext().getContentResolver().delete(uri, null, null);
+                Snackbar.make(viewHolder.itemView, R.string.vocabulary_deleted, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put(DatabaseContract.VocabularyEntry.COLUMN_VOCAB, vocabulary);
+                                getContext().getContentResolver().
+                                        insert(DatabaseContract.VocabularyEntry.CONTENT_URI, contentValues);
+                                mAdapter.updateExpendedSet(position, false);
+                            }
+                        }).show();
             }
 
             @Override

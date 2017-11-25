@@ -63,14 +63,15 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
         return new VocabularyViewHolder(view);
     }
 
-    public void updateExpendedSet(int position) {
+    public void updateExpendedSet(int position, boolean isDelete) {
         Set<Integer> set = new HashSet<>();
         Log.v("Update set", "" + position);
         for (int p: mExpendedSet) {
-            if (p < position) {
-                set.add(p);
-            } else if (p > position) {
-                set.add(p - 1);
+            if (!isDelete) {
+                set.add(p + 1);
+            } else {
+                if (p < position) set.add(p);
+                else if (p >= position) set.add(p - 1);
             }
         }
         mExpendedSet.clear();
