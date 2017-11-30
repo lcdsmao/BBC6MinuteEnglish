@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -96,8 +97,14 @@ public class FavoritesFragment extends Fragment implements
         mBBCContentAdapter = new BBCContentAdapter(getContext(),
                 new OnBBCItemClickListener(getContext()));
         RecyclerView contentRecycleView = view.findViewById(R.id.rv_content_list);
-        contentRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        contentRecycleView.setLayoutManager(manager);
         contentRecycleView.setAdapter(mBBCContentAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                manager.getOrientation());
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider));
+        contentRecycleView.addItemDecoration(dividerItemDecoration);
+
         /*Set the recycler view complete*/
 
         mSwipeToDeleteHelper.attachToRecyclerView(contentRecycleView);
