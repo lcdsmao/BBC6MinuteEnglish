@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
+import android.transition.AutoTransition;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,10 @@ import android.widget.TextView;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
-import com.paranoid.mao.bbclearningenglish.utilities.ExpansionAnimatorUtility;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
+import static com.paranoid.mao.bbclearningenglish.utilities.AnimatorUtility.getFastOutSlowInInterpolator;
 
 /**
  * Created by Paranoid on 17/9/10.
@@ -39,43 +41,39 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
     private static final int SYMBOL_INDEX = 3;
     private static final int AUDIO_HREF_INDEX = 4;
 
+    private static final int EXPAND = 0x1;
+    private static final int COLLAPSE = 0x2;
+
     private Context mContext;
     private Cursor mCursor;
-    private Set<Integer> mExpendedSet;
+    private RecyclerView mWordList;
+    private int mExpandedPosition = RecyclerView.NO_POSITION;
+    private final Transition mExpandCollapse;
+
 
     private OnItemClickListener mListener;
 
-    public WordBookAdapter(Context context, OnItemClickListener listener) {
+    public WordBookAdapter(Context context,
+                           RecyclerView wordList,
+                           OnItemClickListener listener) {
         mContext = context;
         mListener = listener;
-        mExpendedSet = new HashSet<>();
+        mWordList = wordList;
+
+        mExpandCollapse = new AutoTransition();
+        mExpandCollapse.setDuration(120);
+        mExpandCollapse.setInterpolator(getFastOutSlowInInterpolator(mContext));
     }
 
     interface OnItemClickListener {
         void OnPronunciationClick(String audioHref);
-
         void OnDetailClick(long id);
     }
 
     @Override
     public VocabularyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.vocabulary_list_item, parent, false);
-        return new VocabularyViewHolder(view);
-    }
-
-    public void updateExpendedSet(int position, boolean isDelete) {
-        Set<Integer> set = new HashSet<>();
-        Log.v("Update set", "" + position);
-        for (int p: mExpendedSet) {
-            if (!isDelete) {
-                set.add(p + 1);
-            } else {
-                if (p < position) set.add(p);
-                else if (p >= position) set.add(p - 1);
-            }
-        }
-        mExpendedSet.clear();
-        mExpendedSet.addAll(set);
+        return new VocabularyViewHolder(LayoutInflater.from(mContext).
+                inflate(R.layout.vocabulary_list_item, parent, false));
     }
 
     @Override
@@ -85,8 +83,10 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
 
     @Override
     public void onBindViewHolder(final VocabularyViewHolder holder, int position) {
-        mCursor.moveToPosition(position);
 
+        boolean isExpanded = position == mExpandedPosition;
+
+        mCursor.moveToPosition(position);
         final long id = mCursor.getInt(ID_INDEX);
         holder.itemView.setTag(id);
 
@@ -94,37 +94,64 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
         holder.mSymbolTextView.setText(mCursor.getString(SYMBOL_INDEX));
         holder.mDefinitionTextView.setText(mCursor.getString(MEAN_INDEX));
         holder.mAudioHref = mCursor.getString(AUDIO_HREF_INDEX);
-        holder.mProgressBar.setVisibility(
-                TextUtils.isEmpty(mCursor.getString(MEAN_INDEX)) ? View.VISIBLE : View.GONE);
-        holder.mPronunciationImageView.setVisibility(
-                TextUtils.isEmpty(holder.mAudioHref) ? View.GONE : View.VISIBLE);
 
-        holder.mVocabularyTextView.setOnClickListener(new View.OnClickListener() {
+        // set visibility
+        holder.itemView.setActivated(isExpanded);
+        holder.mProgressBar.setVisibility(
+                TextUtils.isEmpty(mCursor.getString(MEAN_INDEX)) && isExpanded ? View.VISIBLE : View.GONE);
+        holder.mSymbolTextView.setVisibility(
+                !TextUtils.isEmpty(mCursor.getString(SYMBOL_INDEX)) && isExpanded? View.VISIBLE : View.GONE);
+        holder.mDefinitionTextView.setVisibility(
+                !TextUtils.isEmpty(mCursor.getString(MEAN_INDEX)) && isExpanded? View.VISIBLE : View.GONE);
+
+        holder.mVocabularyContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int curPosition = holder.getAdapterPosition();
-                if (mExpendedSet.contains(curPosition)) {
-                    holder.itemView.setActivated(false);
-                    ExpansionAnimatorUtility.animateClose(holder.mDetailView);
-                    mExpendedSet.remove(curPosition);
-                } else {
-                    holder.itemView.setActivated(true);
-                    ExpansionAnimatorUtility.animateOpen(holder.mDetailView);
-                    mExpendedSet.add(curPosition);
+                final int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
+
+                TransitionManager.beginDelayedTransition(mWordList, mExpandCollapse);
+
+                // collapse currently expanded items
+                if (RecyclerView.NO_POSITION != mExpandedPosition) {
+                    notifyItemChanged(mExpandedPosition, COLLAPSE);
                 }
+
+                // expand this item
+                if (mExpandedPosition != position) {
+                    mExpandedPosition = position;
+                    notifyItemChanged(position, EXPAND);
+                } else {
+                    mExpandedPosition = RecyclerView.NO_POSITION;
+                }
+
                 mListener.OnDetailClick(id);
             }
         });
+    }
 
-        boolean isExpended = mExpendedSet.contains(position);
-        if (isExpended) {
-            holder.mDetailView.setVisibility(View.VISIBLE);
-            holder.itemView.requestLayout();
+    @Override
+    public void onBindViewHolder(VocabularyViewHolder holder, int position, List<Object> payloads) {
+        if (payloads.contains(COLLAPSE) || payloads.contains(EXPAND)) {
+            boolean isExpanded = position == mExpandedPosition;
+            mCursor.moveToPosition(position);
+            // set visibility
+            holder.itemView.setActivated(isExpanded);
+            holder.mProgressBar.setVisibility(
+                    TextUtils.isEmpty(mCursor.getString(MEAN_INDEX)) && isExpanded ? View.VISIBLE : View.GONE);
+            holder.mSymbolTextView.setVisibility(
+                    !TextUtils.isEmpty(mCursor.getString(SYMBOL_INDEX)) && isExpanded? View.VISIBLE : View.GONE);
+            holder.mDefinitionTextView.setVisibility(
+                    !TextUtils.isEmpty(mCursor.getString(MEAN_INDEX)) && isExpanded? View.VISIBLE : View.GONE);
         } else {
-            holder.mDetailView.setVisibility(View.GONE);
+            onBindViewHolder(holder, position);
         }
-        Log.v("On binde ViewHolder", "" + position + " " + isExpended + " detail view" + holder.mDetailView.getVisibility());
-        holder.itemView.setActivated(isExpended);
+    }
+
+    public void clearDeletedExpandedPosition(int deletedPosition) {
+        if (mExpandedPosition == deletedPosition) {
+            mExpandedPosition = RecyclerView.NO_POSITION;
+        }
     }
 
     @Override
@@ -140,23 +167,21 @@ public class WordBookAdapter extends RecyclerView.Adapter<WordBookAdapter.Vocabu
     class VocabularyViewHolder extends RecyclerView.ViewHolder {
 
         TextView mVocabularyTextView;
-        ViewGroup mDetailView;
         TextView mSymbolTextView;
         TextView mDefinitionTextView;
+        ViewGroup mVocabularyContainer;
         ProgressBar mProgressBar;
-        ImageView mPronunciationImageView;
         String mAudioHref;
 
         VocabularyViewHolder(View itemView) {
             super(itemView);
             mVocabularyTextView = itemView.findViewById(R.id.tv_vocabulary);
-            mDetailView = itemView.findViewById(R.id.detail_container);
             mSymbolTextView = itemView.findViewById(R.id.tv_detail_symbol);
             mDefinitionTextView = itemView.findViewById(R.id.tv_detail_definition);
             mProgressBar = itemView.findViewById(R.id.pb_detail);
-            mPronunciationImageView = itemView.findViewById(R.id.iv_detail_pronunciation);
+            mVocabularyContainer = itemView.findViewById(R.id.vocabulary_container);
 
-            mPronunciationImageView.setOnClickListener(new View.OnClickListener() {
+            mSymbolTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mListener.OnPronunciationClick(mAudioHref);

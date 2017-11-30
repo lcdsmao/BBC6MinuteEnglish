@@ -3,8 +3,6 @@ package com.paranoid.mao.bbclearningenglish.list;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,16 +10,19 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
@@ -60,12 +61,13 @@ public class WordBookFragment extends Fragment implements
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 final String vocabulary = ((TextView) viewHolder.itemView.findViewById(R.id.tv_vocabulary)).getText().toString();
-                mAdapter.updateExpendedSet(position, true);
+                final long id = (long) viewHolder.itemView.getTag();
+
+                mAdapter.clearDeletedExpandedPosition(position);
                 viewHolder.itemView.setAlpha(1.0f);
-                long ID = (long) viewHolder.itemView.getTag();
                 Uri uri = DatabaseContract.VocabularyEntry.CONTENT_URI
                         .buildUpon()
-                        .appendEncodedPath(String.valueOf(ID))
+                        .appendEncodedPath(String.valueOf(id))
                         .build();
                 getContext().getContentResolver().delete(uri, null, null);
                 Snackbar.make(viewHolder.itemView, R.string.vocabulary_deleted, Snackbar.LENGTH_INDEFINITE)
@@ -74,9 +76,9 @@ public class WordBookFragment extends Fragment implements
                             public void onClick(View v) {
                                 ContentValues contentValues = new ContentValues();
                                 contentValues.put(DatabaseContract.VocabularyEntry.COLUMN_VOCAB, vocabulary);
+                                contentValues.put(DatabaseContract.VocabularyEntry._ID, id);
                                 getContext().getContentResolver().
                                         insert(DatabaseContract.VocabularyEntry.CONTENT_URI, contentValues);
-                                mAdapter.updateExpendedSet(position, false);
                             }
                         }).show();
             }
@@ -103,12 +105,18 @@ public class WordBookFragment extends Fragment implements
 
         View view = inflater.inflate(R.layout.fragent_word_book_list, container, false);
 
-        mAdapter = new WordBookAdapter(getContext(), this);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         RecyclerView recyclerView = view.findViewById(R.id.rv_word_book_list);
+        WordItemAnimator animator = new WordItemAnimator();
+        recyclerView.setItemAnimator(animator);
+        mAdapter = new WordBookAdapter(getContext(), recyclerView, this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(manager);
         mSwipeToDeleteHelper.attachToRecyclerView(recyclerView);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                manager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         getLoaderManager().initLoader(WORD_BOOK_LOADER_ID, null, this);
 
@@ -138,7 +146,9 @@ public class WordBookFragment extends Fragment implements
 
     @Override
     public void OnPronunciationClick(String audioHref) {
-        if (mCurrentAudioHref.equals(audioHref) && mMediaPlayer != null) {
+        if (TextUtils.isEmpty(audioHref)) {
+            Toast.makeText(getContext(), R.string.no_audio, Toast.LENGTH_SHORT).show();
+        } else if (mCurrentAudioHref.equals(audioHref) && mMediaPlayer != null) {
             mMediaPlayer.start();
         } else {
             prepareMedia(audioHref);
@@ -181,6 +191,15 @@ public class WordBookFragment extends Fragment implements
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
+        }
+    }
+
+    static class WordItemAnimator extends DefaultItemAnimator {
+
+        @Override
+        public boolean animateMove(
+                RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
+            return false;
         }
     }
 }
