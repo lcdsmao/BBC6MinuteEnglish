@@ -3,7 +3,7 @@
 
     <PreferenceCategory android:title="@string/setting_general">
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:title="@string/setting_notification_title"
             android:key="@string/setting_notification_key"
             android:defaultValue="true"
@@ -16,7 +16,7 @@
 
         <Preference
             android:title="@string/setting_version_title"
-            android:key="@string/setting_version_key"></Preference>
+            android:key="@string/setting_version_key"/>
         <Preference
             android:title="@string/setting_licenses_title"
             android:key="@string/setting_licenses_key" />
