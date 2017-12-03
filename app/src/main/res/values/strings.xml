@@ -29,7 +29,7 @@
     <string name="setting_general">General</string>
 
     <string name="setting_notification_title">Receive Notifications</string>
-    <string name="setting_notification_summary">Enable this to receive new content notification</string>
+    <string name="setting_notification_summary">Enable this to receive new content notifications</string>
     <string name="setting_notification_key" translatable="false">notification_key</string>
     <string name="setting_about">About</string>
 
