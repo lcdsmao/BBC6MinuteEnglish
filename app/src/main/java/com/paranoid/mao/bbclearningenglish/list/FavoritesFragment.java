@@ -55,13 +55,14 @@ public class FavoritesFragment extends Fragment implements
                         .appendEncodedPath(path)
                         .build();
                 final ContentValues contentValues = new ContentValues();
+                final long favouritesTimes = getFavouriteTime(uri);
                 contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, 0);
                 getContext().getContentResolver().update(uri, contentValues, null, null);
                 Snackbar.make(viewHolder.itemView, R.string.favourites_deleted, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, 1);
+                                contentValues.put(DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES, favouritesTimes);
                                 getContext().getContentResolver().update(uri, contentValues, null, null);
                             }
                         }).show();
@@ -79,6 +80,21 @@ public class FavoritesFragment extends Fragment implements
             }
         };
         mSwipeToDeleteHelper = new ItemTouchHelper(swipeToDelete);
+    }
+
+    private long getFavouriteTime(Uri uri) {
+        Cursor cursor = getContext().getContentResolver().query(uri,
+                new String[]{DatabaseContract.BBCLearningEnglishEntry.COLUMN_FAVOURITES},
+                null,
+                null,
+                null);
+        long favouritesTime = 0;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            favouritesTime = cursor.getLong(0);
+            cursor.close();
+        }
+        return favouritesTime;
     }
 
     @Override
