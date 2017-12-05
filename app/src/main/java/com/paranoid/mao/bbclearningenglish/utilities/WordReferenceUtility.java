@@ -62,16 +62,18 @@ public class WordReferenceUtility {
 
     private static String getDefinition(Element trans) {
         Elements def = trans.select(".rh_def");
-        String defStr = "";
+        StringBuilder defStr = new StringBuilder();
         int maxNum = Math.min(def.size(), 2);
         for (int i = 0; i < maxNum; i++) {
             String d = def.get(i).ownText();
             int l = d.length() - 1;
             if (d.charAt(l) == ':') d = d.substring(0, l);
-            defStr += (i + 1) + ". " + d;
-            if (i < maxNum - 1) defStr += "\n\n";
+            defStr.append(i + 1);
+            defStr.append(". ");
+            defStr.append(d);
+            if (i < maxNum - 1) defStr.append("\n\n");
         }
-        return defStr;
+        return defStr.toString();
     }
 
     public static VocabularyDefinition getVocab(String html, String defaultWord) {

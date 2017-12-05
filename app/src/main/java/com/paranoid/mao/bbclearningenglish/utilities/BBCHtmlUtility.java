@@ -151,7 +151,7 @@ public class BBCHtmlUtility {
         List<BBCArticleSection> list = new ArrayList<>();
         Elements elements = Jsoup.parse(articleHtml, "", Parser.xmlParser()).children();
         String title = context.getString(R.string.article_summary);
-        String article = "";
+        StringBuilder article = new StringBuilder();
         for (Element element : elements) {
             if (element.is("h3")) {
                 String text = element.toString();
@@ -159,31 +159,31 @@ public class BBCHtmlUtility {
                     title = context.getString(R.string.article_summary);
                 } else if (text.matches("(.*[Vv]ocabulary.*)|(.*[Ww]ords.*)")) {
                     if (!TextUtils.isEmpty(article)) {
-                        list.add(new BBCArticleSection(title, article));
-                        article = "";
+                        list.add(new BBCArticleSection(title, article.toString()));
+                        article = new StringBuilder();
                     }
                     title = context.getString(R.string.article_vocabulary);
                 } else if (text.matches(".*[Tt]ranscript.*")) {
                     if (!TextUtils.isEmpty(article)) {
-                        list.add(new BBCArticleSection(title, article));
-                        article = "";
+                        list.add(new BBCArticleSection(title, article.toString()));
+                        article = new StringBuilder();
                     }
                     title = context.getString(R.string.article_transcript);
                 } else if (text.matches(".*[Ee]xercise.*")) {
                     if (!TextUtils.isEmpty(article)) {
-                        list.add(new BBCArticleSection(title, article));
-                        article = "";
+                        list.add(new BBCArticleSection(title, article.toString()));
+                        article = new StringBuilder();
                     }
                     title = context.getString(R.string.article_exercise);
                 } else {
-                    article += text;
+                    article.append(text);
                 }
             } else {
-                article += element.toString();
+                article.append(element.toString());
             }
         }
         if (!TextUtils.isEmpty(article)) {
-            list.add(new BBCArticleSection(title, article));
+            list.add(new BBCArticleSection(title, article.toString()));
         }
         return list;
     }
