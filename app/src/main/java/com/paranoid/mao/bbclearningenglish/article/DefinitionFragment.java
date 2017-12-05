@@ -1,12 +1,15 @@
 package com.paranoid.mao.bbclearningenglish.article;
 
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
+
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +22,8 @@ import com.paranoid.mao.bbclearningenglish.data.DatabaseContract;
 import com.paranoid.mao.bbclearningenglish.data.VocabularyDefinition;
 import com.paranoid.mao.bbclearningenglish.singleton.MyApp;
 import com.paranoid.mao.bbclearningenglish.sync.WordReferenceRequest;
+
+import java.io.IOException;
 
 /**
  * Created by Paranoid on 17/9/10.
@@ -34,13 +39,12 @@ public class DefinitionFragment extends BottomSheetDialogFragment
     private TextView mWordView;
     private TextView mSymbolView;
     private ImageView mAddView;
+    private ImageView mPronunciationView;
 
     private String mWord;
     private String mPronUrl;
 
     private MediaPlayer mMediaPlayer;
-
-    private BottomSheetBehavior mBehavior;
 
     public static DefinitionFragment newInstance(String word) {
         Bundle args = new Bundle();
@@ -50,16 +54,10 @@ public class DefinitionFragment extends BottomSheetDialogFragment
         return fagFragment;
     }
 
+    @Nullable
     @Override
-    public void onStart() {
-        super.onStart();
-        mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
-    @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-        View view = View.inflate(getContext(), R.layout.fragment_definition, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_definition, container);
         mWord = getArguments().getString(WORD_KEY);
 
         mDefinitionView = view.findViewById(R.id.tv_definition);
@@ -67,11 +65,10 @@ public class DefinitionFragment extends BottomSheetDialogFragment
         mSymbolView = view.findViewById(R.id.tv_symbol);
         mAddView = view.findViewById(R.id.iv_add);
         mWordView.setText(mWord);
-
-        dialog.setContentView(view);
-        mBehavior = BottomSheetBehavior.from((View) view.getParent());
+        mPronunciationView = view.findViewById(R.id.iv_pronunciation);
 
         getDefinition(mWord);
+        return view;
     }
 
     private void getDefinition(String word) {
@@ -83,6 +80,14 @@ public class DefinitionFragment extends BottomSheetDialogFragment
                         mSymbolView.setText(response.getSymbol());
                         mDefinitionView.setText(response.getDefinition());
                         mAddView.setOnClickListener(DefinitionFragment.this);
+                        mPronUrl = response.getAudioHref();
+                        if (!TextUtils.isEmpty(mPronUrl)) {
+                            mPronunciationView.setVisibility(View.VISIBLE);
+                            mPronunciationView.setOnClickListener(DefinitionFragment.this);
+                            prepareMedia();
+                        } else {
+                            mPronunciationView.setVisibility(View.GONE);
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -113,8 +118,35 @@ public class DefinitionFragment extends BottomSheetDialogFragment
                             getString(R.string.added_to_word_book), Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.iv_pronunciation:
+                if (mMediaPlayer != null) {
+                    mMediaPlayer.start();
+                }
+                break;
             default:
                 break;
+        }
+    }
+
+    private void prepareMedia(){
+        if (mMediaPlayer == null) {
+            mMediaPlayer = new MediaPlayer();
+            try {
+                mMediaPlayer.setDataSource(mPronUrl);
+                mMediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
         }
     }
 
