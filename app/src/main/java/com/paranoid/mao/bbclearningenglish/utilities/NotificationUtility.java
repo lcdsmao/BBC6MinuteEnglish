@@ -9,8 +9,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.app.NotificationCompat.MediaStyle;
 
 import com.paranoid.mao.bbclearningenglish.R;
 import com.paranoid.mao.bbclearningenglish.article.ArticleActivity;
@@ -33,6 +35,9 @@ public class NotificationUtility {
     private static final int TITLE_INDEX = 0;
     private static final int DESCRIPTION_INDEX = 1;
 
+    private static final String FOREGROUND_CHANNEL_ID = "channel_id_0";
+    private static final String NOTIFICATION_CHANNEL_ID = "channel_id_1";
+
     @Nullable
     public static Notification buildAudioServiceNotification(Context context,
                                                              Uri uriWithTimeStamp,
@@ -53,7 +58,7 @@ public class NotificationUtility {
         PendingIntent pendingIntentActivity =
                 PendingIntent.getActivity(context, 0, intentActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, FOREGROUND_CHANNEL_ID)
                 .setColor(ContextCompat.getColor(context, R.color.primary))
                 .setShowWhen(false)
                 .setContentTitle(title)
@@ -63,9 +68,9 @@ public class NotificationUtility {
                 .addAction(createAction(context, action))
                 .addAction(createAction(context, AudioPlayService.ACTION_FORWARD))
                 .setSmallIcon(R.drawable.ic_headset)
-                .setStyle(new android.support.v7.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
-                .build();
-        return notification;
+                .setStyle(new MediaStyle().setShowActionsInCompactView(0, 1, 2));
+
+        return notificationBuilder.build();
     }
 
     private static int getDrawable(String action) {
@@ -115,7 +120,7 @@ public class NotificationUtility {
                 .putExtra(DatabaseContract.BBCLearningEnglishEntry.COLUMN_CATEGORY, category);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new NotificationCompat.Builder(context)
+        Notification notification = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_headset)
                 .setContentTitle(contentTitle)
