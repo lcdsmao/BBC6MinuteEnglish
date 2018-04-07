@@ -38,6 +38,7 @@ public class AudioPlayerFragment extends Fragment implements
     private TextView mDurationTimeText;
     private ImageView mForwardButton;
     private ImageView mReplayButton;
+    private ImageView mLoopButton;
     private boolean mBond = false;
 
     private Handler mPlayerHandler = new Handler();
@@ -68,6 +69,8 @@ public class AudioPlayerFragment extends Fragment implements
         mReplayButton.setOnClickListener(this);
         mCurrentTimeText = (TextView) view.findViewById(R.id.tv_current);
         mDurationTimeText = (TextView) view.findViewById(R.id.tv_duration);
+        mLoopButton = view.findViewById(R.id.iv_loop);
+        mLoopButton.setOnClickListener(this);
     }
 
     @Override
@@ -111,15 +114,14 @@ public class AudioPlayerFragment extends Fragment implements
             mPlayButton.setEnabled(true);
             mReplayButton.setEnabled(true);
             mForwardButton.setEnabled(true);
-            if (mAudioService.isPlaying()) {
-                mPlayButton.setImageResource(R.drawable.ic_pause);
-            } else {
-                mPlayButton.setImageResource(R.drawable.ic_play_arrow);
-            }
+            mLoopButton.setEnabled(true);
+            mPlayButton.setImageResource(mAudioService.isPlaying()? R.drawable.ic_pause : R.drawable.ic_play_arrow);
+            mLoopButton.setActivated(mAudioService.getIsLoop());
         } else {
             mPlayButton.setEnabled(false);
             mReplayButton.setEnabled(false);
             mForwardButton.setEnabled(false);
+            mLoopButton.setEnabled(false);
         }
     }
 
@@ -169,6 +171,9 @@ public class AudioPlayerFragment extends Fragment implements
                 // 5 seconds
                 newPosition = mAudioService.getCurrentPosition() - 5000;
                 mAudioService.controlSeekPosition(newPosition);
+                break;
+            case R.id.iv_loop:
+                mAudioService.setIsLoop(!mLoopButton.isActivated());
                 break;
         }
     }

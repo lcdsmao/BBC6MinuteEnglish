@@ -24,8 +24,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/thumbnail"
             android:layout_alignParentEnd="true"
-            android:scaleType="centerCrop"
-            tool:src="@mipmap/example" />
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_marginTop="@dimen/activity_vertical_margin"

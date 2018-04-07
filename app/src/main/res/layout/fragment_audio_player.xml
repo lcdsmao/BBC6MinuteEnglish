@@ -22,6 +22,12 @@
             android:layout_marginStart="8dp"
             android:gravity="start" />
 
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/control_play_button2_height"
+            android:layout_gravity="center_vertical" />
+
         <ImageView
             android:id="@+id/iv_replay"
             android:layout_weight="1"
@@ -62,6 +68,15 @@
             android:layout_height="@dimen/control_play_button2_height"
             android:contentDescription="@string/forward"
             android:src="@drawable/ic_forward_5"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_gravity="center_vertical" />
+
+        <ImageView
+            android:id="@+id/iv_loop"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/control_play_button2_height"
+            android:src="@drawable/selector_loop"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_gravity="center_vertical" />
 

@@ -60,6 +60,7 @@ public class AudioPlayService extends Service implements
     private Uri mUriWithTimeStamp;
     private int mCachedProgress;
     private boolean mIsInitialized = false;
+    private boolean mIsLoop = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -157,9 +158,14 @@ public class AudioPlayService extends Service implements
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        stopMedia();
-        removeAudioFocus();
-        stopSelf();
+        if (mIsLoop) {
+            seekMedia(0);
+            resumeMedia();
+        } else {
+            stopMedia();
+            removeAudioFocus();
+            stopSelf();
+        }
     }
 
     @Override
@@ -378,6 +384,14 @@ public class AudioPlayService extends Service implements
         } else {
             return -1;
         }
+    }
+
+    public void setIsLoop(boolean isLoop) {
+        mIsLoop = isLoop;
+    }
+
+    public boolean getIsLoop() {
+        return mIsLoop;
     }
 
     public boolean isPrepared() {
